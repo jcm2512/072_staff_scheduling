@@ -7,6 +7,7 @@
     "dev": "vite",
     "build": "vite build",
     "deploy": "vite build && firebase deploy",
+    "live": "vite build && firebase deploy && vite",
     "lint": "eslint .",
     "preview": "vite preview"
   },
