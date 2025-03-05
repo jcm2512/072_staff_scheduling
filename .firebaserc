@@ -1,5 +1,7 @@
 {
   "projects": {
-    "default": "staff-management-dd6af"
-  }
+    "default": "elc-scheduling"
+  },
+  "targets": {},
+  "etags": {}
 }

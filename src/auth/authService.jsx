@@ -3,7 +3,7 @@ import {
   googleProvider,
   signInWithPopup,
   signOut,
-} from "../firbaseConfig";
+} from "../firebaseConfig";
 
 export function signInWithGoogle() {
   return signInWithPopup(auth, googleProvider)
