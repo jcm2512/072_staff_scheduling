@@ -1,27 +1,10 @@
 import { useState } from "react";
-import {
-  Box,
-  Button,
-  Container,
-  Heading,
-  Text,
-  VStack,
-  Image,
-} from "@chakra-ui/react";
-import { signInWithGoogle, logOut } from "./auth/authService";
+import { Box, Container } from "@chakra-ui/react";
+import Home from "./components/home";
+import Signin from "./components/signin";
 
 function App() {
   const [user, setUser] = useState(null);
-
-  const handleSignIn = async () => {
-    const signedInUser = await signInWithGoogle();
-    setUser(signedInUser);
-  };
-
-  const handleLogout = async () => {
-    await logOut();
-    setUser(null);
-  };
 
   return (
     <Box
@@ -40,35 +23,7 @@ function App() {
         borderRadius="md"
         p={8}
       >
-        <VStack spacing={6}>
-          <Heading as="h1" size="xl">
-            Welcome to My Chakra UI Landing Page
-          </Heading>
-          <Text fontSize="lg" color="gray.600">
-            This is a simple landing page built with Chakra UI and React.
-          </Text>
-
-          {user ? (
-            <>
-              <Image
-                borderRadius="full"
-                boxSize="80px"
-                src={user.photoURL}
-                alt="User Profile"
-              />
-              <Text fontSize="lg" fontWeight="bold">
-                {user.displayName}
-              </Text>
-              <Button colorScheme="red" size="lg" onClick={handleLogout}>
-                Logout
-              </Button>
-            </>
-          ) : (
-            <Button colorScheme="blue" size="lg" onClick={handleSignIn}>
-              Sign in with Google
-            </Button>
-          )}
-        </VStack>
+        {user ? <Home {...{ user, setUser }} /> : <Signin {...{ setUser }} />}
       </Container>
     </Box>
   );
