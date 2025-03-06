@@ -8,6 +8,7 @@ import {
   Image,
 } from "@chakra-ui/react";
 import { signInWithGoogle, logOut } from "@/auth/authService";
+import GoogleSignInButton from "./googleSignInButton";
 
 function Signin({ setUser }) {
   const handleSignIn = async () => {
@@ -17,15 +18,7 @@ function Signin({ setUser }) {
 
   return (
     <>
-      <VStack spacing={6}>
-        <Heading as="h1" size="xl">
-          ELC Scheduling
-        </Heading>
-
-        <Button colorScheme="blue" size="lg" onClick={handleSignIn}>
-          Sign in with Google
-        </Button>
-      </VStack>
+      <GoogleSignInButton setUser={setUser} />
     </>
   );
 }

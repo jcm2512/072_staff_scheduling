@@ -9,31 +9,7 @@ function Home({ user, setUser }) {
   };
 
   return (
-    <>
-      <VStack spacing={6}>
-        <Heading as="h1" size="xl">
-          Welcome to My Chakra UI Landing Page
-        </Heading>
-        <Text fontSize="lg" color="gray.600">
-          This is a simple landing page built with Chakra UI and React.
-        </Text>
-
-        <>
-          <Image
-            borderRadius="full"
-            boxSize="80px"
-            src={user.photoURL}
-            alt="User Profile"
-          />
-          <Text fontSize="lg" fontWeight="bold">
-            {user.displayName}
-          </Text>
-          <Button colorScheme="red" size="lg" onClick={handleLogout}>
-            Logout
-          </Button>
-        </>
-      </VStack>
-    </>
+    <VStack spacing={6} justifyContent="center" alignItems="center"></VStack>
   );
 }
 

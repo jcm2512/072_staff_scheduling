@@ -23,6 +23,4 @@ const auth = getAuth(app);
 const db = getFirestore(app);
 const googleProvider = new GoogleAuthProvider();
 
-console.log("Firebase API Key:", import.meta.env.VITE_FIREBASE_API_KEY);
-
 export { auth, db, googleProvider, signInWithPopup, signOut };
