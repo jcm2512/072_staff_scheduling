@@ -36,19 +36,21 @@ function App() {
               SHIFTLY
             </Heading>
           </Box>
-          <HStack h="40px">{user && <UserAvatar {...{ user }} />}</HStack>
+          <HStack h="40px">
+            {user && <UserAvatar {...{ user, setUser }} />}
+          </HStack>
         </Flex>
       </Box>
 
       {/* Main Content */}
       <Flex align="center" justify="center" minH="calc(100vh - 80px)">
         <Box
-          width="100%"
-          maxW="container.md"
-          bg="white"
-          boxShadow="md"
-          borderRadius="md"
-          p={8}
+        // width="100%"
+        // maxW="container.md"
+        // bg="white"
+        // boxShadow="md"
+        // borderRadius="md"
+        // p={8}
         >
           <VStack align="center">
             <StackDivider borderColor="gray.200" />

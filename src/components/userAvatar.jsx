@@ -17,7 +17,7 @@ import { HiMenu } from "react-icons/hi";
 
 import { logOut } from "@/auth/authService";
 
-function UserAvatar({ user }) {
+function UserAvatar({ user, setUser }) {
   const handleLogout = async () => {
     await logOut();
     setUser(null);
@@ -56,7 +56,7 @@ function UserAvatar({ user }) {
           <PopoverCloseButton />
           <PopoverHeader>Account Info</PopoverHeader>
           <PopoverBody>
-            <Button colorScheme="red" size="lg" onClick={handleLogout}>
+            <Button colorScheme="red" size="sm" onClick={handleLogout}>
               Logout
             </Button>
           </PopoverBody>
