@@ -17,7 +17,7 @@ import classes from "./styles/MobileNavbar.module.css";
 import Home from "./components/home";
 import Signin from "./components/signin";
 import UserAvatar from "./components/userAvatar";
-import logo from "./assets/shiftori_sm.png";
+import logo from "./assets/shiftori_logo.png";
 
 function App() {
   const [user, setUser] = useState(null);
@@ -42,7 +42,7 @@ function App() {
 
               <Title order={1}>シフトリ</Title>
               <Title order={2}>
-                <Text>SHIFTLY</Text>
+                <Text>SHIFTORI</Text>
               </Title>
             </Group>
 
@@ -68,9 +68,7 @@ function App() {
       </AppShell.Navbar>
 
       <AppShell.Main>
-        Navbar is only visible on mobile, links that are rendered in the header
-        on desktop are hidden on mobile in header and rendered in navbar
-        instead.
+        {user ? <Home {...{ user, setUser }} /> : <Signin {...{ setUser }} />}
       </AppShell.Main>
     </AppShell>
   );

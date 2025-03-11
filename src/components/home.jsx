@@ -1,6 +1,6 @@
 import { useState } from "react";
-import { Button, Heading, Text, VStack, Image } from "@chakra-ui/react";
 import { signInWithGoogle, logOut } from "@/auth/authService";
+import { Group } from "@mantine/core";
 
 function Home({ user, setUser }) {
   const handleLogout = async () => {
@@ -8,9 +8,7 @@ function Home({ user, setUser }) {
     setUser(null);
   };
 
-  return (
-    <VStack spacing={6} justifyContent="center" alignItems="center"></VStack>
-  );
+  return <Group>Logged in</Group>;
 }
 
 export default Home;

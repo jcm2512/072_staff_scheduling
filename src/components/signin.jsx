@@ -1,12 +1,3 @@
-import {
-  Box,
-  Button,
-  Container,
-  Heading,
-  Text,
-  VStack,
-  Image,
-} from "@chakra-ui/react";
 import { signInWithGoogle, logOut } from "@/auth/authService";
 import GoogleSignInButton from "./googleSignInButton";
 
