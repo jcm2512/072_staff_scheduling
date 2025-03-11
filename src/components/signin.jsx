@@ -1,5 +1,6 @@
 import { signInWithGoogle, logOut } from "@/auth/authService";
 import GoogleSignInButton from "./googleSignInButton";
+import { AuthenticationForm } from "./authenticationForm";
 
 function Signin({ setUser }) {
   const handleSignIn = async () => {
@@ -9,7 +10,8 @@ function Signin({ setUser }) {
 
   return (
     <>
-      <GoogleSignInButton setUser={setUser} />
+      <AuthenticationForm />
+      {/* <GoogleSignInButton setUser={setUser} /> */}
     </>
   );
 }

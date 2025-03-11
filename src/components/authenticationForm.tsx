@@ -14,9 +14,24 @@ import {
 import { useForm } from "@mantine/form";
 import { upperFirst, useToggle } from "@mantine/hooks";
 import { GoogleButton } from "./GoogleButton";
-import { TwitterButton } from "./TwitterButton";
+import {
+  signInWithGoogle,
+  registerWithEmail,
+  loginWithEmail,
+} from "@/auth/authService";
 
-export function AuthenticationForm(PaperProps) {
+interface AuthenticationFormProps extends PaperProps {
+  setUser: (user: any) => void; // Replace `any` with an actual user type if possible
+}
+
+export function AuthenticationForm({
+  setUser,
+  ...props
+}: AuthenticationFormProps) {
+  const handleSignIn = async () => {
+    const user = await signInWithGoogle();
+    if (user) setUser(user);
+  };
   const [type, toggle] = useToggle(["login", "register"]);
   const form = useForm({
     initialValues: {
@@ -35,20 +50,46 @@ export function AuthenticationForm(PaperProps) {
     },
   });
 
+  const handleEmailAuth = async () => {
+    const { email, password } = form.values;
+    try {
+      let user;
+      if (type === "register") {
+        user = await registerWithEmail(email, password);
+      } else {
+        user = await loginWithEmail(email, password);
+      }
+      setUser(user); // Set user after successful authentication
+    } catch (error: any) {
+      form.setErrors({ email: error.message }); // Display Firebase error
+    }
+  };
+
   return (
-    <Paper radius="md" p="xl" withBorder {...props}>
+    <Paper
+      radius="md"
+      p="xl"
+      withBorder
+      style={{
+        maxWidth: 400, // Set a max width
+        width: "100%", // Allow responsiveness
+        margin: "auto", // Center horizontally
+      }}
+      {...props}
+    >
       <Text size="lg" fw={500}>
-        Welcome to Mantine, {type} with
+        Welcome to SHIFTORI, {type} with
       </Text>
 
       <Group grow mb="md" mt="md">
-        <GoogleButton radius="xl">Google</GoogleButton>
-        <TwitterButton radius="xl">Twitter</TwitterButton>
+        <GoogleButton onClick={handleSignIn} radius="xl">
+          Google
+        </GoogleButton>
       </Group>
 
       <Divider label="Or continue with email" labelPosition="center" my="lg" />
 
-      <form onSubmit={form.onSubmit(() => {})}>
+      <form onSubmit={form.onSubmit(handleEmailAuth)}>
         <Stack>
           {type === "register" && (
             <TextInput

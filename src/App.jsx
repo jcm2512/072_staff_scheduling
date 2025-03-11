@@ -18,7 +18,7 @@ import Home from "./components/home";
 import Signin from "./components/signin";
 import UserAvatar from "./components/userAvatar";
 import logo from "./assets/shiftori_logo.png";
-
+import { AuthenticationForm } from "./components/authenticationForm";
 function App() {
   const [user, setUser] = useState(null);
   const [opened, { toggle }] = useDisclosure();
@@ -67,8 +67,20 @@ function App() {
         <UnstyledButton className={classes.control}>Support</UnstyledButton>
       </AppShell.Navbar>
 
-      <AppShell.Main>
-        {user ? <Home {...{ user, setUser }} /> : <Signin {...{ setUser }} />}
+      <AppShell.Main
+        style={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          minHeight: "100vh", // Full screen height
+          backgroundColor: "hsla(180, 17%, 95%, 1)",
+        }}
+      >
+        {user ? (
+          <Home {...{ user, setUser }} />
+        ) : (
+          <AuthenticationForm {...{ setUser }} />
+        )}
       </AppShell.Main>
     </AppShell>
   );

@@ -15,6 +15,7 @@
     "@chakra-ui/react": "^2.8.2",
     "@emotion/react": "^11.14.0",
     "@mantine/core": "^7.17.1",
+    "@mantine/form": "^7.17.1",
     "@mantine/hooks": "^7.17.1",
     "firebase": "^11.4.0",
     "framer-motion": "^12.4.10",
