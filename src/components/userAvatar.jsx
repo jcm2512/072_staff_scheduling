@@ -1,20 +1,12 @@
 import {
-  Icon,
+  Avatar,
   Button,
   Text,
-  Image,
-  HStack,
-  VStack,
   Popover,
-  PopoverTrigger,
-  PopoverArrow,
-  PopoverCloseButton,
-  PopoverHeader,
-  PopoverBody,
-  PopoverContent,
-} from "@chakra-ui/react";
-import { HiMenu } from "react-icons/hi";
-
+  Group,
+  Stack,
+  Menu,
+} from "@mantine/core";
 import { logOut } from "@/auth/authService";
 
 function UserAvatar({ user, setUser }) {
@@ -22,47 +14,31 @@ function UserAvatar({ user, setUser }) {
     await logOut();
     setUser(null);
   };
+
   return (
-    <>
-      <Image
-        borderRadius="full"
-        boxSize="40px"
-        src={user.photoURL}
-        alt="User Profile"
-      />
-      <VStack spacing={0} align="start" flex={1}>
-        <Text fontSize="lg" fontWeight="bold">
+    <Group spacing="sm">
+      <Avatar src={user.photoURL} alt="User Profile" radius="xl" size="lg" />
+      <Stack spacing={0} align="flex-start">
+        <Text size="md" weight={700}>
           {user.displayName}
         </Text>
-        <Text fontSize="sm" fontWeight="light">
+        <Text size="sm" color="dimmed">
           ELC, North Division
         </Text>
-      </VStack>
-      <Popover>
-        <PopoverTrigger>
-          <Button
-            w="40px"
-            h="40px"
-            p={0}
-            display="flex"
-            alignItems="center"
-            justifyContent="center"
-          >
-            <HiMenu size="80%" />
+      </Stack>
+      <Menu width={150} withArrow position="bottom-end">
+        <Menu.Target>
+          <Button variant="subtle" size="sm" p={0}>
+            -
           </Button>
-        </PopoverTrigger>
-        <PopoverContent>
-          <PopoverArrow />
-          <PopoverCloseButton />
-          <PopoverHeader>Account Info</PopoverHeader>
-          <PopoverBody>
-            <Button colorScheme="red" size="sm" onClick={handleLogout}>
-              Logout
-            </Button>
-          </PopoverBody>
-        </PopoverContent>
-      </Popover>
-    </>
+        </Menu.Target>
+        <Menu.Dropdown>
+          <Menu.Item color="red" onClick={handleLogout}>
+            Logout
+          </Menu.Item>
+        </Menu.Dropdown>
+      </Menu>
+    </Group>
   );
 }
 

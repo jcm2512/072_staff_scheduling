@@ -65,6 +65,7 @@ function App() {
         <UnstyledButton className={classes.control}>Blog</UnstyledButton>
         <UnstyledButton className={classes.control}>Contacts</UnstyledButton>
         <UnstyledButton className={classes.control}>Support</UnstyledButton>
+        {user ? <UserAvatar {...{ user, setUser }} /> : <></>}
       </AppShell.Navbar>
 
       <AppShell.Main
