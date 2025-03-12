@@ -10,6 +10,7 @@ import {
   UnstyledButton,
   Title,
   Text,
+  useMantineTheme,
 } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import classes from "./styles/MobileNavbar.module.css";
@@ -23,6 +24,7 @@ import { AvatarPopover } from "./components/popover";
 function App() {
   const [user, setUser] = useState(null);
   const [opened, { toggle }] = useDisclosure();
+  const theme = useMantineTheme();
 
   return (
     <AppShell
@@ -68,7 +70,12 @@ function App() {
           justifyContent: "center",
           alignItems: "center",
           minHeight: "100vh", // Full screen height
-          backgroundColor: "hsla(180, 17%, 95%, 1)",
+          // backgroundColor: "hsla(180, 17%, 95%, 1)",
+          // backgroundColor:
+          //   theme.colors[
+          //     theme.colorScheme === "dark" ? "pink" : "anti-flash-white"
+          //   ][0],
+          backgroundColor: theme.colors.background[0],
         }}
       >
         {user ? (
