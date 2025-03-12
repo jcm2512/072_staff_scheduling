@@ -17,6 +17,7 @@
     "@mantine/core": "^7.17.1",
     "@mantine/form": "^7.17.1",
     "@mantine/hooks": "^7.17.1",
+    "@tabler/icons-react": "^3.31.0",
     "firebase": "^11.4.0",
     "framer-motion": "^12.4.10",
     "react": "^19.0.0",

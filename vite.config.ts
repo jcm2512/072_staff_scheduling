@@ -9,6 +9,9 @@ export default defineConfig({
       "@": path.resolve(__dirname, "src"),
     },
   },
+  build: {
+    minify: 'esbuild', 
+  },
   server: {
     headers: {
       "Cross-Origin-Opener-Policy": "same-origin-allow-popups",

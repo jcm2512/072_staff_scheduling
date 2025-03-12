@@ -19,6 +19,7 @@ import Signin from "./components/signin";
 import UserAvatar from "./components/userAvatar";
 import logo from "./assets/shiftori_logo.png";
 import { AuthenticationForm } from "./components/authenticationForm";
+import { AvatarPopover } from "./components/popover";
 function App() {
   const [user, setUser] = useState(null);
   const [opened, { toggle }] = useDisclosure();
@@ -49,12 +50,7 @@ function App() {
             <Group ml="xl" gap={0} visibleFrom="sm">
               <UnstyledButton className={classes.control}>Home</UnstyledButton>
               <UnstyledButton className={classes.control}>Blog</UnstyledButton>
-              <UnstyledButton className={classes.control}>
-                Contacts
-              </UnstyledButton>
-              <UnstyledButton className={classes.control}>
-                Support
-              </UnstyledButton>
+              <AvatarPopover />
             </Group>
           </Group>
         </Group>
@@ -63,9 +59,7 @@ function App() {
       <AppShell.Navbar py="md" px={4}>
         <UnstyledButton className={classes.control}>Home</UnstyledButton>
         <UnstyledButton className={classes.control}>Blog</UnstyledButton>
-        <UnstyledButton className={classes.control}>Contacts</UnstyledButton>
-        <UnstyledButton className={classes.control}>Support</UnstyledButton>
-        {user ? <UserAvatar {...{ user, setUser }} /> : <></>}
+        <AvatarPopover />
       </AppShell.Navbar>
 
       <AppShell.Main
