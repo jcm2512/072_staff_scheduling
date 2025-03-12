@@ -50,7 +50,7 @@ function App() {
             <Group ml="xl" gap={0} visibleFrom="sm">
               <UnstyledButton className={classes.control}>Home</UnstyledButton>
               <UnstyledButton className={classes.control}>Blog</UnstyledButton>
-              <AvatarPopover />
+              <AvatarPopover color="primary" />
             </Group>
           </Group>
         </Group>
@@ -59,7 +59,7 @@ function App() {
       <AppShell.Navbar py="md" px={4}>
         <UnstyledButton className={classes.control}>Home</UnstyledButton>
         <UnstyledButton className={classes.control}>Blog</UnstyledButton>
-        <AvatarPopover />
+        <AvatarPopover color="primary" />
       </AppShell.Navbar>
 
       <AppShell.Main
