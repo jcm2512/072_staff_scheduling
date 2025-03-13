@@ -8,7 +8,7 @@ export function AvatarPopover({ color }: AvatarPopoverProps) {
     <Popover width={200} position="bottom" withArrow shadow="md">
       <Popover.Target>
         <Button color={color} autoContrast>
-          Toggle popover
+          Button
         </Button>
       </Popover.Target>
       <Popover.Dropdown>
