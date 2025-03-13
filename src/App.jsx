@@ -5,12 +5,12 @@ import "@mantine/core/styles.css";
 import { useState } from "react";
 import { AppShell, useMantineTheme } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
-import { Header } from "./components/header";
-import { NavItems } from "./components/NavItems";
-import { Main } from "./components/main";
+import { AuthProvider } from "./auth/AuthProvider";
+import { Header } from "./features/layout/Header";
+import { NavItems } from "./features/navigation/NavItems";
+import { MainLayout } from "./features/layout/MainLayout";
 
-function App() {
-  const [user, setUser] = useState(null);
+export function App() {
   const [opened, { toggle }] = useDisclosure();
 
   const theme = useMantineTheme();
@@ -31,16 +31,16 @@ function App() {
   };
 
   return (
-    <AppShell header={{ height: 60 }} navbar={styles.navbar} padding="md">
-      <Header {...{ opened, toggle }}></Header>
-      <AppShell.Navbar py="md" px={4}>
-        <NavItems />
-      </AppShell.Navbar>
-      <AppShell.Main style={styles.main}>
-        <Main {...{ user, setUser }} />
-      </AppShell.Main>
-    </AppShell>
+    <AuthProvider>
+      <AppShell header={{ height: 60 }} navbar={styles.navbar} padding="md">
+        <Header {...{ opened, toggle }}></Header>
+        <AppShell.Navbar py="md" px={4}>
+          <NavItems />
+        </AppShell.Navbar>
+        <AppShell.Main style={styles.main}>
+          <MainLayout />
+        </AppShell.Main>
+      </AppShell>
+    </AuthProvider>
   );
 }
-
-export default App;

@@ -1,17 +1,8 @@
 import "@mantine/core/styles.css";
 
-import {
-  AppShell,
-  Burger,
-  Group,
-  UnstyledButton,
-  Title,
-  Text,
-} from "@mantine/core";
-import classes from "@/styles/MobileNavbar.module.css";
+import { AppShell, Burger, Group, Title, Text } from "@mantine/core";
 import logo from "@/assets/shiftori_logo.png";
-import { AvatarPopover } from "./popover";
-import { NavItems } from "./NavItems";
+import { NavItems } from "@/features/navigation/NavItems";
 
 export function Header(props) {
   return (

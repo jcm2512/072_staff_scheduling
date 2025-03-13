@@ -13,24 +13,16 @@ import {
 } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { upperFirst, useToggle } from "@mantine/hooks";
-import { GoogleButton } from "./GoogleButton";
+import { GoogleButton } from "@/components/ui/GoogleButton";
 import {
   signInWithGoogle,
   registerWithEmail,
   loginWithEmail,
 } from "@/auth/authService";
 
-interface AuthenticationFormProps extends PaperProps {
-  setUser: (user: any) => void; // Replace `any` with an actual user type if possible
-}
-
-export function AuthenticationForm({
-  setUser,
-  ...props
-}: AuthenticationFormProps) {
+export function AuthenticationForm(props: PaperProps) {
   const handleSignIn = async () => {
-    const user = await signInWithGoogle();
-    if (user) setUser(user);
+    await signInWithGoogle();
   };
   const [type, toggle] = useToggle(["login", "register"]);
   const form = useForm({
@@ -42,8 +34,8 @@ export function AuthenticationForm({
     },
 
     validate: {
-      email: (val) => (/^\S+@\S+$/.test(val) ? null : "Invalid email"),
-      password: (val) =>
+      email: (val: any) => (/^\S+@\S+$/.test(val) ? null : "Invalid email"),
+      password: (val: any) =>
         val.length <= 6
           ? "Password should include at least 6 characters"
           : null,
@@ -53,13 +45,11 @@ export function AuthenticationForm({
   const handleEmailAuth = async () => {
     const { email, password } = form.values;
     try {
-      let user;
       if (type === "register") {
-        user = await registerWithEmail(email, password);
+        await registerWithEmail(email, password);
       } else {
-        user = await loginWithEmail(email, password);
+        await loginWithEmail(email, password);
       }
-      setUser(user); // Set user after successful authentication
     } catch (error: any) {
       form.setErrors({ email: error.message }); // Display Firebase error
     }

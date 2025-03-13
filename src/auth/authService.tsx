@@ -5,7 +5,7 @@ import {
   signInWithEmailAndPassword,
   signOut,
 } from "firebase/auth";
-import { auth, googleProvider } from "../firebaseConfig";
+import { auth, googleProvider } from "@/firebaseConfig";
 
 /**
  * Sign in with Google using Firebase authentication.
@@ -14,6 +14,7 @@ import { auth, googleProvider } from "../firebaseConfig";
 export async function signInWithGoogle(): Promise<User | null> {
   try {
     const result = await signInWithPopup(auth, googleProvider);
+    console.log("logged in");
     return result.user;
   } catch (error) {
     console.error("Google Sign-In Error:", error);
