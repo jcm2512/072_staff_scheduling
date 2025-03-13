@@ -7,7 +7,6 @@
     "dev": "vite",
     "build": "vite build",
     "deploy": "vite build && firebase deploy",
-    "live": "vite build && firebase deploy && vite",
     "lint": "eslint .",
     "preview": "vite preview"
   },
@@ -37,7 +36,7 @@
     "postcss": "^8.5.3",
     "postcss-preset-mantine": "^1.17.0",
     "postcss-simple-vars": "^7.0.1",
-    "typescript": "^5.8.2",
+    "typescript": "^5.4.5",
     "vite": "^6.2.0"
   }
 }
