@@ -1,12 +1,14 @@
 // Import styles of packages that you've installed.
 // All packages except `@mantine/hooks` require styles imports
 import "@mantine/core/styles.css";
+import "@mantine/dates/styles.css";
 
 import { useState } from "react";
 import { AppShell, useMantineTheme } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import { AuthProvider } from "./auth/AuthProvider";
 import { Header } from "./features/layout/Header";
+
 import { NavItems } from "./features/navigation/NavItems";
 import { MainLayout } from "./features/layout/MainLayout";
 

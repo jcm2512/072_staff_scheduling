@@ -8,12 +8,6 @@ export function Header(props) {
   return (
     <AppShell.Header>
       <Group h="100%" px="md">
-        <Burger
-          opened={props.opened}
-          onClick={props.toggle}
-          hiddenFrom="sm"
-          size="sm"
-        />
         <Group
           justify="space-between"
           style={{
@@ -39,6 +33,12 @@ export function Header(props) {
             <NavItems />
           </Group>
         </Group>
+        <Burger
+          opened={props.opened}
+          onClick={props.toggle}
+          hiddenFrom="sm"
+          size="sm"
+        />
       </Group>
     </AppShell.Header>
   );

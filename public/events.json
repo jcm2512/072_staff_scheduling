@@ -1,0 +1,13 @@
+{
+  "2025-03-15": [
+    { "time": "14:00", "title": "Meeting", "details": "Project update" }
+  ],
+  "2025-03-16": [
+    { "time": "10:30", "title": "Gym Session", "details": "Leg day" },
+    {
+      "time": "19:00",
+      "title": "Dinner with friends",
+      "details": "At Italian restaurant"
+    }
+  ]
+}
