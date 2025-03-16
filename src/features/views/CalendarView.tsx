@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Paper, Stack, Text } from "@mantine/core";
+import { Paper, Stack, Text, Container } from "@mantine/core";
 import { Calendar, DatesProvider } from "@mantine/dates";
 import { db } from "@/firebaseConfig"; // Import your Firebase config
 import { doc, getDoc } from "firebase/firestore";
@@ -48,26 +48,34 @@ export function CalendarView() {
   }, []);
 
   return (
-    <Paper shadow="xs" p="md">
+    <Paper
+      shadow="xs"
+      p="sm"
+      style={{ borderRadius: `var(--mantine-radius-lg)` }}
+    >
       <DatesProvider settings={{ consistentWeeks: true }}>
         <Calendar
           firstDayOfWeek={0}
-          size="xl"
           withCellSpacing={false}
           maxLevel="month"
           styles={{
-            calendarHeader: { minWidth: "100%" },
-            month: { width: "100%" },
-            levelsGroup: { justifyContent: "center", width: "100%" },
-            day: {
-              border: "solid",
-              borderWidth: "1px",
-              borderColor: "#ddd",
-              height: "auto",
+            calendarHeader: {
+              minWidth: "100%",
+              margin: "0px",
+            },
+            month: {
               width: "100%",
-              borderRadius: "5px",
-              borderRight: "none",
-              borderTop: "none",
+            },
+
+            levelsGroup: { justifyContent: "center", width: "100%" },
+            monthCell: {
+              // backgroundColor: "#f3f6f7",
+              borderWidth: "1px",
+              border: "solid 1px #eaeaea",
+            },
+            day: {
+              height: "100%",
+              width: "100%",
             },
           }}
           renderDay={(date) => {
@@ -79,16 +87,24 @@ export function CalendarView() {
             const daySchedule = schedule[formattedDate] || {};
 
             return (
-              <Stack align="center" justify="center">
-                <div>{day}</div>
-                <Stack align="center" justify="center">
-                  <Text c={"blue"} inline={true}>
-                    {daySchedule.am || "-"}
-                  </Text>
-                  <Text c={"green"} inline={true}>
-                    {daySchedule.pm || "-"}
-                  </Text>
-                </Stack>
+              <Stack align="center" h={"4.5rem"} gap={"0"}>
+                <Text size="xs">{day}</Text>
+
+                <Text
+                  c={daySchedule.am == "Office" ? "gray" : "cyan"}
+                  inline={true}
+                  size="xs"
+                  m={"xs"}
+                >
+                  {daySchedule.am || ""}
+                </Text>
+                <Text
+                  c={daySchedule.pm == "Office" ? "gray" : "green"}
+                  inline={true}
+                  size="xs"
+                >
+                  {daySchedule.pm || ""}
+                </Text>
               </Stack>
             );
           }}
