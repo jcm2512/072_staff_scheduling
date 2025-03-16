@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Paper, Stack, Text, Container } from "@mantine/core";
+import { Paper, Stack, Text } from "@mantine/core";
 import { Calendar, DatesProvider } from "@mantine/dates";
 import { db } from "@/firebaseConfig"; // Import your Firebase config
 import { doc, getDoc } from "firebase/firestore";
@@ -51,13 +51,17 @@ export function CalendarView() {
     <Paper
       shadow="xs"
       p="sm"
-      style={{ borderRadius: `var(--mantine-radius-lg)` }}
+      style={{
+        borderRadius: `var(--mantine-radius-lg)`,
+        height: "fit-content",
+      }}
     >
       <DatesProvider settings={{ consistentWeeks: true }}>
         <Calendar
           firstDayOfWeek={0}
           withCellSpacing={false}
           maxLevel="month"
+          style={{ borderSpacing: "0" }}
           styles={{
             calendarHeader: {
               minWidth: "100%",
@@ -72,6 +76,8 @@ export function CalendarView() {
               // backgroundColor: "#f3f6f7",
               borderWidth: "1px",
               border: "solid 1px #eaeaea",
+
+              lineHeight: "0",
             },
             day: {
               height: "100%",
