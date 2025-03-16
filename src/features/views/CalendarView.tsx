@@ -3,14 +3,7 @@ import { Calendar, DatesProvider, MonthPicker } from "@mantine/dates";
 
 export function CalendarView() {
   return (
-    <Paper
-      shadow="xs"
-      p="md"
-      w={"100%"}
-      styles={{
-        root: { backgroundColor: "purple" },
-      }}
-    >
+    <Paper shadow="xs" p="md">
       <DatesProvider settings={{ consistentWeeks: true }}>
         <Calendar
           firstDayOfWeek={0}
@@ -18,20 +11,15 @@ export function CalendarView() {
           maxLevel="month"
           styles={{
             calendarHeader: {
-              backgroundColor: "red",
               minWidth: "100%",
             },
-            calendarHeaderLevel: {
-              backgroundColor: "orange",
-            },
+            calendarHeaderLevel: {},
             month: {
-              backgroundColor: "green",
               width: "100%",
             },
             levelsGroup: {
               justifyContent: "center",
               width: "100%",
-              backgroundColor: "yellow",
             },
             day: {
               border: "solid",
