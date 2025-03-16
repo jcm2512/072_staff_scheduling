@@ -1,5 +1,5 @@
-import { Paper, Stack } from "@mantine/core";
-import { Calendar, DatesProvider, MonthPicker } from "@mantine/dates";
+import { Paper, Stack, Text } from "@mantine/core";
+import { Calendar, DatesProvider } from "@mantine/dates";
 
 export function CalendarView() {
   return (
@@ -7,13 +7,13 @@ export function CalendarView() {
       <DatesProvider settings={{ consistentWeeks: true }}>
         <Calendar
           firstDayOfWeek={0}
-          size="lg"
+          size="xl"
+          withCellSpacing={false}
           maxLevel="month"
           styles={{
             calendarHeader: {
               minWidth: "100%",
             },
-            calendarHeaderLevel: {},
             month: {
               width: "100%",
             },
@@ -23,8 +23,13 @@ export function CalendarView() {
             },
             day: {
               border: "solid",
+              borderWidth: "1px",
+              borderColor: "#ddd",
               height: "auto",
               width: "100%",
+              borderRadius: "5px",
+              borderRight: "none",
+              borderTop: "none",
             },
           }}
           renderDay={(date) => {
@@ -32,8 +37,10 @@ export function CalendarView() {
             return (
               <Stack align="center" justify="center">
                 <div>{day}</div>
-                <div>AM</div>
-                <div>PM</div>
+                <Stack align="center" justify="center">
+                  <Text c={"blue"}>AM</Text>
+                  <Text c={"green"}>AM</Text>
+                </Stack>
               </Stack>
             );
           }}
