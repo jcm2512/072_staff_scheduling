@@ -21,7 +21,7 @@ export function App() {
     main: {
       display: "flex",
       justifyContent: "center",
-      alignItems: "center",
+      // alignItems: "center",
       minHeight: "100vh",
       backgroundColor: theme.colors.background[0],
     },

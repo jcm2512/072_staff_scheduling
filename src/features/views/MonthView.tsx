@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Group, SimpleGrid, Grid, Text, Paper } from "@mantine/core";
+import { Group, Grid, Text, Paper } from "@mantine/core";
 import { MonthPicker } from "@mantine/dates";
 import dayjs from "dayjs";
 
@@ -30,8 +30,7 @@ export function MonthView() {
             maxLevel="year"
           ></MonthPicker>
         </Group>
-        {/* <SimpleGrid cols={2} spacing="xs"> */}
-        <Grid columns={10}>
+        <Grid columns={4}>
           {days.map((day, index) => {
             const date = day ? dayjs(value).date(day) : null;
             const dayOfWeek = date ? date.format("ddd") : "";
@@ -41,7 +40,7 @@ export function MonthView() {
 
             return (
               <>
-                <Grid.Col span={2}>
+                <Grid.Col span={1}>
                   <Group
                     key={`container-${index}`}
                     style={{
@@ -58,7 +57,11 @@ export function MonthView() {
                     >
                       {day}
                     </Text>
-                    <Text key={`ddd-${index}`} c={isWeekend ? "red" : "gray"}>
+                    <Text
+                      key={`ddd-${index}`}
+                      fw={isWeekend ? 700 : 400}
+                      c={isWeekend ? "red" : "black"}
+                    >
                       {dayOfWeek}
                     </Text>
                   </Group>
@@ -71,7 +74,6 @@ export function MonthView() {
               </>
             );
           })}
-          {/* </SimpleGrid> */}
         </Grid>
       </>
     </Paper>

@@ -2,9 +2,10 @@ import { AuthenticationForm } from "@/features/auth/authenticationForm";
 
 import { useAuth } from "@/auth/AuthProvider";
 
-import { MonthView } from "@/features/views/MonthView";
+// import { MonthView } from "@/features/views/MonthView";
+import { CalendarView } from "@/features/views/CalendarView";
 export function MainLayout() {
   const { user } = useAuth();
 
-  return <>{user ? <MonthView /> : <AuthenticationForm />}</>;
+  return <>{user ? <CalendarView /> : <AuthenticationForm />}</>;
 }
