@@ -1,4 +1,4 @@
-import { AuthenticationForm } from "@/features/auth/authenticationForm";
+import { AuthenticationForm } from "@/features/auth/AuthenticationForm";
 
 import { useAuth } from "@/auth/AuthProvider";
 
