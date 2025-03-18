@@ -55,10 +55,10 @@ export function CalendarComponent({
       }}
       renderDay={(date) => {
         const year = date.getFullYear();
-        const month = String(date.getMonth() + 1).padStart(2, "0"); // Ensure two-digit month
-
-        const day = date.getDate();
-        const formattedDate = `${year}-${month}-${day}`; // Dynamic YYYY-MM-DD
+        const month = String(date.getMonth() + 1).padStart(2, "0");
+        // Pad the day to two digits
+        const day = String(date.getDate()).padStart(2, "0");
+        const formattedDate = `${year}-${month}-${day}`;
         const daySchedule = schedule[formattedDate] || {};
 
         return (
