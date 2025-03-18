@@ -1,8 +1,8 @@
 import { Carousel } from "@mantine/carousel";
 import { useEffect, useState } from "react";
 import { DatesProvider } from "@mantine/dates";
-import { db } from "@/firebaseConfig"; // Import your Firebase config
-import { doc, getDoc } from "firebase/firestore";
+import { db } from "@/firebaseConfig"; // Your Firebase config
+import { collection, getDocs } from "firebase/firestore";
 import { CalendarComponent } from "@/components/Calendar";
 
 type CalendarSwipeViewProps = {
@@ -16,9 +16,7 @@ function getCurrentYearAndMonth(): {
   currentMonth: number;
 } {
   const now = new Date();
-  const currentYear = now.getFullYear();
-  const currentMonth = now.getMonth(); // zero-based month (January is 0)
-  return { currentYear, currentMonth };
+  return { currentYear: now.getFullYear(), currentMonth: now.getMonth() };
 }
 
 const { currentYear, currentMonth } = getCurrentYearAndMonth();
@@ -33,6 +31,7 @@ export function CalendarSwipeView({
     Record<string, { am?: string; pm?: string }>
   >({});
 
+  // Helper to figure out which month/year a given slide index corresponds to
   const getMonthDate = (slideIndex: number) => {
     let month: number;
     let year: number;
@@ -47,10 +46,52 @@ export function CalendarSwipeView({
     return new Date(year, month, 1);
   };
 
+  // Only render the full calendar for slides close to the current slide (for performance)
   const shouldRenderFullCalendar = (index: number) => {
     return Math.abs(index - currentSlide) <= 1;
   };
 
+  useEffect(() => {
+    async function fetchSchedule() {
+      const teacherId = "teacherId016";
+      const companyId = "companyId02";
+
+      console.log("Fetching all schedule docs from Firestore...");
+
+      // Query the entire 'schedule' subcollection (no date filtering)
+      const scheduleCollectionRef = collection(
+        db,
+        "companies",
+        companyId,
+        "teacher",
+        teacherId,
+        "schedule"
+      );
+
+      const snapshot = await getDocs(scheduleCollectionRef);
+      const newSchedule: Record<string, { am?: string; pm?: string }> = {};
+
+      // Each doc.id is presumably the date (e.g. "2025-04-01")
+      snapshot.forEach((doc) => {
+        newSchedule[doc.id] = doc.data() as { am?: string; pm?: string };
+      });
+
+      console.log("Final schedule object:", newSchedule);
+      setSchedule(newSchedule);
+    }
+
+    fetchSchedule();
+  }, []);
+
+  // Calculate the initial slide index to center on the current month
+  const initialSlide =
+    currentYear === defaultYear
+      ? currentMonth - initialMonth
+      : currentYear === defaultYear + 1
+      ? 12 - initialMonth + currentMonth
+      : 0;
+
+  // Build the carousel slides
   const slides = Array.from({ length: numberOfMonths }, (_, i) => {
     const defaultDate = getMonthDate(i);
     return (
@@ -63,68 +104,6 @@ export function CalendarSwipeView({
       </Carousel.Slide>
     );
   });
-
-  useEffect(() => {
-    async function fetchSchedule() {
-      const teacherId = "teacherId016";
-      const companyId = "companyId02";
-
-      console.log("Fetching schedule from Firestore...");
-
-      // Instead of hardcoding a month (e.g., March 2025), define dynamic values:
-      const scheduleYear = 2025;
-      const scheduleMonth = 2; // 0-indexed: 2 represents March
-
-      // Dynamically calculate the number of days in the month:
-      const daysInMonth = new Date(
-        scheduleYear,
-        scheduleMonth + 1,
-        0
-      ).getDate();
-
-      // Generate an array of date strings for the entire month
-      const monthDates = Array.from(
-        { length: daysInMonth },
-        (_, i) =>
-          `${scheduleYear}-${String(scheduleMonth + 1).padStart(
-            2,
-            "0"
-          )}-${String(i + 1).padStart(2, "0")}`
-      );
-
-      const newSchedule: Record<string, { am?: string; pm?: string }> = {};
-
-      for (const date of monthDates) {
-        const docRef = doc(
-          db,
-          "companies",
-          companyId,
-          "teacher",
-          teacherId,
-          "schedule",
-          date
-        );
-        const docSnap = await getDoc(docRef);
-
-        if (docSnap.exists()) {
-          newSchedule[date] = docSnap.data();
-        }
-      }
-
-      console.log("Final schedule object:", newSchedule);
-      setSchedule(newSchedule);
-    }
-
-    fetchSchedule();
-  }, []);
-
-  // Calculate relative slide index when the scheduling year is the current year or the next
-  const initialSlide =
-    currentYear === defaultYear
-      ? currentMonth - initialMonth
-      : currentYear === defaultYear + 1
-      ? 12 - initialMonth + currentMonth
-      : 0;
 
   return (
     <DatesProvider settings={{ consistentWeeks: true }}>
