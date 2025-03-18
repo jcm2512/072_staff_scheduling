@@ -1,6 +1,7 @@
 // Import styles of installed packages
 import "@mantine/core/styles.css";
 import "@mantine/dates/styles.css";
+import "@mantine/carousel/styles.css";
 
 // Component styles
 import classes from "./styles/MobileNavbar.module.css";
@@ -25,6 +26,8 @@ import { AuthProvider } from "./auth/AuthProvider";
 import { AuthenticationForm } from "./features/auth/AuthenticationForm";
 import { SignOut } from "@/features/auth/SignOut";
 import { CalendarView } from "@/features/views/CalendarView";
+import { CalendarSwipeView } from "@/features/views/CalendarSwipeView";
+// import { CalendarScrollView } from "@/features/views/CalendarScrollView";
 import logo from "@/assets/shiftori_logo.png";
 
 // Components
@@ -100,7 +103,11 @@ export function App() {
             backgroundColor: theme.colors.background[0],
           }}
         >
-          {user ? <CalendarView /> : <AuthenticationForm />}
+          {user ? (
+            <CalendarSwipeView defaultYear={2025} />
+          ) : (
+            <AuthenticationForm />
+          )}
         </AppShell.Main>
       </AppShell>
     </AuthProvider>
