@@ -25,6 +25,7 @@ export function CalendarComponent({
         calendarHeader: {
           minWidth: "100%",
           margin: "0px", // remove empty space between calendar header and body
+          // visibility: "hidden",
         },
         month: {
           width: "100%",

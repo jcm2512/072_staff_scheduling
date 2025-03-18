@@ -86,9 +86,9 @@ export function CalendarSwipeView({
   // Calculate the initial slide index to center on the current month
   const initialSlide =
     currentYear === defaultYear
-      ? currentMonth + 1 - initialMonth
+      ? currentMonth - initialMonth
       : currentYear === defaultYear + 1
-      ? 12 - initialMonth + (currentMonth + 1)
+      ? 12 - initialMonth + currentMonth
       : 0;
 
   // Build the carousel slides
@@ -112,8 +112,8 @@ export function CalendarSwipeView({
         slideSize="100%"
         align="center"
         loop={false}
-        withIndicators
         onSlideChange={setCurrentSlide}
+        withControls={false}
       >
         {slides}
       </Carousel>

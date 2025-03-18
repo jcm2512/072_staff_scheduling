@@ -103,7 +103,7 @@ export function App() {
             backgroundColor: theme.colors.background[0],
           }}
         >
-          {user ? <CalendarView /> : <AuthenticationForm />}
+          {user ? <CalendarSwipeView /> : <AuthenticationForm />}
         </AppShell.Main>
       </AppShell>
     </AuthProvider>
