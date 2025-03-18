@@ -103,11 +103,7 @@ export function App() {
             backgroundColor: theme.colors.background[0],
           }}
         >
-          {user ? (
-            <CalendarSwipeView defaultYear={2025} />
-          ) : (
-            <AuthenticationForm />
-          )}
+          {user ? <CalendarView /> : <AuthenticationForm />}
         </AppShell.Main>
       </AppShell>
     </AuthProvider>

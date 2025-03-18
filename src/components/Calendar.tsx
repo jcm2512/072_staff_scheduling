@@ -10,6 +10,7 @@ export function CalendarComponent({
   schedule,
   defaultDate,
 }: CalendarComponentProps) {
+  console.log(defaultDate, schedule);
   return (
     <Calendar
       defaultDate={defaultDate}
