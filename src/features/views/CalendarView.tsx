@@ -6,17 +6,18 @@ import { doc, getDoc } from "firebase/firestore";
 import { CalendarComponent } from "@/components/Calendar";
 
 type CalendarViewProps = {
-  defaultDate?: Date; // Optional, if you want to make it optional
+  defaultDate?: Date;
 };
 
 export function CalendarView({ defaultDate }: CalendarViewProps) {
+  // Compute a fallback date if defaultDate is undefined
+  const computedDefaultDate = defaultDate || new Date();
   const [schedule, setSchedule] = useState<
     Record<string, { am?: string; pm?: string }>
   >({});
 
-  // Determine the year based on defaultDate or the current date
-  const current = defaultDate || new Date();
-  const year = current.getFullYear();
+  // Use computedDefaultDate to determine the year
+  const year = computedDefaultDate.getFullYear();
 
   useEffect(() => {
     async function fetchSchedule() {
@@ -66,11 +67,14 @@ export function CalendarView({ defaultDate }: CalendarViewProps) {
     }
 
     fetchSchedule();
-  }, [year, defaultDate]);
+  }, [year]);
 
   return (
     <DatesProvider settings={{ consistentWeeks: true }}>
-      <CalendarComponent schedule={schedule} defaultDate={defaultDate} />
+      <CalendarComponent
+        schedule={schedule}
+        defaultDate={computedDefaultDate}
+      />
     </DatesProvider>
   );
 }
