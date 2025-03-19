@@ -6,8 +6,9 @@ import "@mantine/carousel/styles.css";
 // Component styles
 import classes from "./styles/MobileNavbar.module.css";
 
-// React
+// React and Hooks
 import { useEffect } from "react";
+import { useSchedule } from "@/hooks/schedule";
 
 // Mantine components and hooks
 import {
@@ -34,21 +35,25 @@ import logo from "@/assets/shiftori_logo.png";
 
 const useSwipe: boolean = true;
 
-// Components
-const NavItems = () => {
-  return (
-    <>
-      <UnstyledButton className={classes.control}>NavItem</UnstyledButton>
-      <SignOut />
-    </>
-  );
-};
+import { scheduleData } from "@/data/schedule";
 
 export function App() {
+  // Hooks
   const [opened, { toggle }] = useDisclosure();
   const { user } = useAuth();
+  const { setMonthlySchedule, loading, error } = useSchedule();
 
   const theme = useMantineTheme();
+
+  // Save Schedule Data to database
+  async function handleSaveSchedule() {
+    await setMonthlySchedule(
+      "companyId02",
+      "teacherId016",
+      "2025-03",
+      scheduleData
+    );
+  }
 
   useEffect(() => {
     const setVH = () => {
@@ -97,7 +102,10 @@ export function App() {
               </Group>
 
               <Group ml="xl" gap={0} visibleFrom="sm">
-                <NavItems />
+                {/* Header Nav */}
+                <>
+                  <SignOut />
+                </>
               </Group>
             </Group>
             <Burger
@@ -109,13 +117,24 @@ export function App() {
           </Group>
         </AppShell.Header>
         <AppShell.Navbar py="md" px={4}>
-          <NavItems />
+          {/* Navbar Menu */}
+          <>
+            <UnstyledButton
+              className={classes.control}
+              onClick={handleSaveSchedule}
+            >
+              Upload
+            </UnstyledButton>
+            <SignOut />
+            {loading && <p>Saving…</p>}
+            {error && <p>Error: {error.message}</p>}
+          </>
         </AppShell.Navbar>
         <AppShell.Main
           style={{
             display: "flex",
             justifyContent: "center",
-            // minHeight: "calc(var(--vh, 1vh) * 100)", //not needed as the AppShell defaults to this anyway
+            // minHeight: "calc(var(--vh, 1vh) * 100)", // may not be needed as the AppShell defaults to this anyway
             backgroundColor: theme.colors.background[0],
           }}
         >
