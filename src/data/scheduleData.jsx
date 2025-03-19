@@ -1,9 +1,19 @@
 export const scheduleData = {
-  shifts: {
-    20250310: { am: "Office", pm: "Office", allday: false },
-    20250318: { am: "Office", pm: "DT", allday: false },
-    20250320: { am: "KE", pm: "Office", allday: false },
-    20250321: { am: "EIA", pm: "EIA", allday: true },
-    20250322: { am: "Tsukaguchi", pm: "Tsukaguchi", allday: true },
+  "2025-03-10": {
+    am: "Office",
+    pm: "Office",
+    allday: false,
+    irregular: false,
+  },
+  "2025-03-18": { am: "Office", pm: "DT", allday: false, irregular: false },
+
+  "2025-03-20": { am: "KE", pm: "Office", allday: false, irregular: false },
+
+  "2025-03-21": { am: "EIA", pm: "EIA", allday: true, irregular: false },
+  "2025-03-22": {
+    am: "Tsukaguchi",
+    pm: "Tsukaguchi",
+    allday: true,
+    irregular: false,
   },
 };

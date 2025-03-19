@@ -3,12 +3,12 @@ import { doc, setDoc } from "firebase/firestore";
 import { db } from "@/firebaseConfig";
 
 type ScheduleData = {
-  shifts: {
-    [date: string]: // "20250118"
-    {
-      am: string; // "DT"
-      pm: string; // "Office"
-    };
+  [date: string]: // "2025-03-01"
+  {
+    am: string; // "DT"
+    pm: string; // "Office"
+    allday: boolean;
+    irregular: boolean;
   };
 };
 

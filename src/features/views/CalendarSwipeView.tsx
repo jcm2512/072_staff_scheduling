@@ -2,7 +2,7 @@ import { Carousel } from "@mantine/carousel";
 import { useEffect, useState } from "react";
 import { DatesProvider } from "@mantine/dates";
 import { db } from "@/firebaseConfig"; // Your Firebase config
-import { collection, getDocs, onSnapshot } from "firebase/firestore";
+import { collection, getDocs, doc, onSnapshot } from "firebase/firestore";
 import { CalendarComponent } from "@/features/components/CalendarComponent";
 
 type CalendarSwipeViewProps = {
@@ -26,70 +26,6 @@ export function CalendarSwipeView({
   initialMonth = 2, // 0-index based, so March = 2
   numberOfMonths = 13,
 }: CalendarSwipeViewProps) {
-  const [schedule, setSchedule] = useState<
-    Record<string, { am?: string; pm?: string }>
-  >({});
-
-  // useEffect(() => {
-  //   const teacherId = "teacherId016";
-  //   const companyId = "companyId02";
-
-  //   console.log("Fetching schedule from Firestore...");
-
-  //   const scheduleCollectionRef = collection(
-  //     db,
-  //     "companies",
-  //     companyId,
-  //     "teacher",
-  //     teacherId,
-  //     "schedule"
-  //   );
-
-  //   const unsubscribe = onSnapshot(scheduleCollectionRef, (snapshot) => {
-  //     const updatedSchedule: Record<string, { am?: string; pm?: string }> = {};
-
-  //     // Each doc.id is the date (e.g. "2025-04-01")
-  //     snapshot.forEach((doc) => {
-  //       updatedSchedule[doc.id] = doc.data() as { am?: string; pm?: string };
-  //     });
-  //     setSchedule(updatedSchedule);
-  //     console.log(updatedSchedule);
-  //   });
-
-  //   return () => unsubscribe();
-  // }, []);
-
-  useEffect(() => {
-    const teacherId = "teacherId016";
-    const companyId = "companyId02";
-
-    console.log("Fetching schedule from Firestore...");
-
-    const scheduleCollectionRef = collection(
-      db,
-      "companies",
-      companyId,
-      "teacher",
-      teacherId,
-      "monthlySchedule"
-    );
-
-    console.log(scheduleCollectionRef);
-
-    const unsubscribe = onSnapshot(scheduleCollectionRef, (snapshot) => {
-      const updatedSchedule: Record<string, { am?: string; pm?: string }> = {};
-
-      // Each doc.id is the date (e.g. "2025-04-01")
-      snapshot.forEach((doc) => {
-        updatedSchedule[doc.id] = doc.data() as { am?: string; pm?: string };
-      });
-      setSchedule(updatedSchedule);
-      console.log(updatedSchedule);
-    });
-
-    return () => unsubscribe();
-  }, []);
-
   //   Calculate the initial slide index to center on the current month
   const initialSlide =
     currentYear === defaultYear
@@ -106,11 +42,7 @@ export function CalendarSwipeView({
 
   const manualSlides = slideNumbers.map((index) => (
     <Carousel.Slide key={index}>
-      <CalendarComponent
-        schedule={schedule}
-        date={new Date(currentYear, index)}
-        swipe={true}
-      />
+      <CalendarComponent date={new Date(currentYear, index)} swipe={true} />
     </Carousel.Slide>
   ));
 
