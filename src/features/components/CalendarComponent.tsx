@@ -1,66 +1,17 @@
 import { Stack, Text } from "@mantine/core";
 import { Calendar } from "@mantine/dates";
-import { useEffect, useState } from "react";
-import { db } from "@/firebaseConfig"; // Your Firebase config
-import { doc, onSnapshot } from "firebase/firestore";
 
 type CalendarComponentProps = {
+  schedule: any;
   date?: Date;
   swipe?: Boolean;
 };
 
-type DaySchedule = {
-  am?: string;
-  pm?: string;
-  allday?: boolean;
-  irregular?: boolean;
-};
-
 export function CalendarComponent({
+  schedule,
   date = new Date(),
   swipe = false,
 }: CalendarComponentProps) {
-  const [schedule, setSchedule] = useState<Record<string, DaySchedule>>({});
-
-  useEffect(() => {
-    const teacherId = "teacherId016";
-    const companyId = "companyId02";
-
-    console.log("Fetching schedule from Firestore...");
-
-    const year = date.getFullYear();
-    const month = String(date.getMonth() + 1).padStart(2, "0");
-    const yearMonth = `${year}-${month}`;
-
-    console.log(yearMonth);
-
-    const scheduleDocRef = doc(
-      db,
-      "companies",
-      companyId,
-      "teacher",
-      teacherId,
-      "monthlySchedule",
-      yearMonth
-    );
-
-    console.log("Fetching schedule from Firestore...");
-
-    const unsubscribe = onSnapshot(scheduleDocRef, (docSnapshot) => {
-      if (docSnapshot.exists()) {
-        const data = docSnapshot.data();
-
-        const days = data ?? {};
-        setSchedule(days);
-        console.log(days);
-      } else {
-        console.log("No document found for this month");
-        setSchedule({});
-      }
-    });
-
-    return () => unsubscribe();
-  }, []);
   return (
     <>
       <Calendar
