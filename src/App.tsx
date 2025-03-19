@@ -35,7 +35,7 @@ import logo from "@/assets/shiftori_logo.png";
 
 const useSwipe: boolean = true;
 
-import { scheduleData } from "@/data/schedule";
+import { scheduleData } from "@/data/scheduleData";
 
 export function App() {
   // Hooks
@@ -46,6 +46,7 @@ export function App() {
   const theme = useMantineTheme();
 
   // Save Schedule Data to database
+  // Should be moved to an admin section
   async function handleSaveSchedule() {
     await setMonthlySchedule(
       "companyId02",
@@ -55,17 +56,17 @@ export function App() {
     );
   }
 
-  useEffect(() => {
-    const setVH = () => {
-      document.documentElement.style.setProperty(
-        "--vh",
-        `${window.innerHeight * 0.01}px`
-      );
-    };
-    setVH();
-    window.addEventListener("resize", setVH);
-    return () => window.removeEventListener("resize", setVH);
-  }, []);
+  // useEffect(() => {
+  //   const setVH = () => {
+  //     document.documentElement.style.setProperty(
+  //       "--vh",
+  //       `${window.innerHeight * 0.01}px`
+  //     );
+  //   };
+  //   setVH();
+  //   window.addEventListener("resize", setVH);
+  //   return () => window.removeEventListener("resize", setVH);
+  // }, []);
 
   return (
     <AuthProvider>
