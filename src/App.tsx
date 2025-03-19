@@ -6,6 +6,9 @@ import "@mantine/carousel/styles.css";
 // Component styles
 import classes from "./styles/MobileNavbar.module.css";
 
+// React
+import { useEffect } from "react";
+
 // Mantine components and hooks
 import {
   AppShell,
@@ -30,6 +33,7 @@ import { CalendarSwipeView } from "@/features/views/CalendarSwipeView";
 import logo from "@/assets/shiftori_logo.png";
 
 const useSwipe: boolean = true;
+
 // Components
 const NavItems = () => {
   return (
@@ -45,6 +49,18 @@ export function App() {
   const { user } = useAuth();
 
   const theme = useMantineTheme();
+
+  useEffect(() => {
+    const setVH = () => {
+      document.documentElement.style.setProperty(
+        "--vh",
+        `${window.innerHeight * 0.01}px`
+      );
+    };
+    setVH();
+    window.addEventListener("resize", setVH);
+    return () => window.removeEventListener("resize", setVH);
+  }, []);
 
   return (
     <AuthProvider>
@@ -99,7 +115,7 @@ export function App() {
           style={{
             display: "flex",
             justifyContent: "center",
-            minHeight: "100vh",
+            // minHeight: "calc(var(--vh, 1vh) * 100)", //not needed as the AppShell defaults to this anyway
             backgroundColor: theme.colors.background[0],
           }}
         >

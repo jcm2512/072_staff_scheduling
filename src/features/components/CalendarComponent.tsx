@@ -4,11 +4,13 @@ import { Calendar } from "@mantine/dates";
 type CalendarComponentProps = {
   schedule: Record<string, any>;
   date?: Date;
+  swipe?: Boolean;
 };
 
 export function CalendarComponent({
   schedule,
   date = new Date(),
+  swipe = false,
 }: CalendarComponentProps) {
   return (
     <>
@@ -22,9 +24,15 @@ export function CalendarComponent({
           height: "fit-content",
         }}
         styles={{
+          calendarHeaderControl: {
+            display: swipe ? "none" : "block",
+          },
           calendarHeader: {
             minWidth: "100%",
-            margin: "0px", // remove empty space between calendar header and body
+            padding: "var(--mantine-font-size-xs)",
+          },
+          calendarHeaderLevel: {
+            fontSize: "var(--mantine-font-size-xl)",
           },
           month: {
             width: "90vw", // cant use % as it will include the whole carousel.

@@ -111,6 +111,7 @@ export function CalendarSwipeView({
       <CalendarComponent
         schedule={schedule}
         date={new Date(currentYear, index)}
+        swipe={true}
       />
     </Carousel.Slide>
   ));
@@ -123,7 +124,16 @@ export function CalendarSwipeView({
         align="center"
         loop={false}
         // onSlideChange={setCurrentSlide}
-        withControls={true}
+        // withControls={false}
+        controlsOffset="1vw"
+        height={"fit-content"}
+        controlSize={30}
+        includeGapInSize={false}
+        skipSnaps={true}
+        slideGap={"xs"}
+        style={{
+          width: "100vw",
+        }}
       >
         {manualSlides}
       </Carousel>
