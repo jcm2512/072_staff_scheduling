@@ -2,7 +2,7 @@ import { Carousel } from "@mantine/carousel";
 import { useEffect, useState } from "react";
 import { DatesProvider } from "@mantine/dates";
 import { db } from "@/firebaseConfig"; // Your Firebase config
-import { collection, getDocs } from "firebase/firestore";
+import { collection, getDocs, onSnapshot } from "firebase/firestore";
 import { CalendarComponent } from "@/features/components/CalendarComponent";
 
 type CalendarSwipeViewProps = {
@@ -30,36 +30,64 @@ export function CalendarSwipeView({
     Record<string, { am?: string; pm?: string }>
   >({});
 
+  //   useEffect(() => {
+  //     async function fetchSchedule() {
+  //       const teacherId = "teacherId016";
+  //       const companyId = "companyId02";
+
+  //       console.log("Fetching all schedule docs from Firestore...");
+
+  //       // Query the entire 'schedule' subcollection (no date filtering)
+  //       const scheduleCollectionRef = collection(
+  //         db,
+  //         "companies",
+  //         companyId,
+  //         "teacher",
+  //         teacherId,
+  //         "schedule"
+  //       );
+
+  //       const snapshot = await getDocs(scheduleCollectionRef);
+  //       const newSchedule: Record<string, { am?: string; pm?: string }> = {};
+
+  //       // Each doc.id is the date (e.g. "2025-04-01")
+  //       snapshot.forEach((doc) => {
+  //         newSchedule[doc.id] = doc.data() as { am?: string; pm?: string };
+  //       });
+
+  //       console.log("Final schedule object:", newSchedule);
+  //       setSchedule(newSchedule);
+  //     }
+
+  //     fetchSchedule();
+  //   }, []);
+
   useEffect(() => {
-    async function fetchSchedule() {
-      const teacherId = "teacherId016";
-      const companyId = "companyId02";
+    const teacherId = "teacherId016";
+    const companyId = "companyId02";
 
-      console.log("Fetching all schedule docs from Firestore...");
+    console.log("Fetching schedule from Firestore...");
 
-      // Query the entire 'schedule' subcollection (no date filtering)
-      const scheduleCollectionRef = collection(
-        db,
-        "companies",
-        companyId,
-        "teacher",
-        teacherId,
-        "schedule"
-      );
+    const scheduleCollectionRef = collection(
+      db,
+      "companies",
+      companyId,
+      "teacher",
+      teacherId,
+      "schedule"
+    );
 
-      const snapshot = await getDocs(scheduleCollectionRef);
-      const newSchedule: Record<string, { am?: string; pm?: string }> = {};
+    const unsubscribe = onSnapshot(scheduleCollectionRef, (snapshot) => {
+      const updatedSchedule: Record<string, { am?: string; pm?: string }> = {};
 
       // Each doc.id is the date (e.g. "2025-04-01")
       snapshot.forEach((doc) => {
-        newSchedule[doc.id] = doc.data() as { am?: string; pm?: string };
+        updatedSchedule[doc.id] = doc.data() as { am?: string; pm?: string };
       });
+      setSchedule(updatedSchedule);
+    });
 
-      console.log("Final schedule object:", newSchedule);
-      setSchedule(newSchedule);
-    }
-
-    fetchSchedule();
+    return () => unsubscribe();
   }, []);
 
   //   Calculate the initial slide index to center on the current month
