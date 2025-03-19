@@ -3,7 +3,9 @@ import { useEffect, useState } from "react";
 import { DatesProvider } from "@mantine/dates";
 import { db } from "@/firebaseConfig"; // Your Firebase config
 import { collection, getDocs } from "firebase/firestore";
-import { CalendarComponent } from "@/components/Calendar";
+// import { CalendarComponent } from "@/components/Calendar";
+import { CalendarComponent } from "@/features/components/CalendarComponent";
+import { Text } from "@mantine/core";
 
 type CalendarSwipeViewProps = {
   initialMonth?: number; // The starting month index (0-indexed)
@@ -23,8 +25,8 @@ const { currentYear, currentMonth } = getCurrentYearAndMonth();
 
 export function CalendarSwipeView({
   defaultYear = currentYear,
-  initialMonth = 2,
-  numberOfMonths = 13,
+  initialMonth = 0,
+  numberOfMonths = 12,
 }: CalendarSwipeViewProps) {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [schedule, setSchedule] = useState<
@@ -36,7 +38,7 @@ export function CalendarSwipeView({
     let month: number;
     let year: number;
 
-    if (slideIndex < 9) {
+    if (slideIndex < 13) {
       month = initialMonth + slideIndex;
       year = defaultYear;
     } else {
@@ -84,20 +86,20 @@ export function CalendarSwipeView({
   }, []);
 
   // Calculate the initial slide index to center on the current month
-  const initialSlide =
-    currentYear === defaultYear
-      ? currentMonth - initialMonth
-      : currentYear === defaultYear + 1
-      ? 12 - initialMonth + currentMonth
-      : 0;
+  //   const initialSlide =
+  //     currentYear === defaultYear
+  //       ? currentMonth - initialMonth
+  //       : currentYear === defaultYear + 1
+  //       ? 12 - initialMonth + currentMonth
+  //       : 0;
+  const initialSlide = 0;
 
   // Build the carousel slides
   const slides = Array.from({ length: numberOfMonths }, (_, i) => {
-    const defaultDate = getMonthDate(i);
     return (
       <Carousel.Slide key={i}>
         {shouldRenderFullCalendar(i) ? (
-          <CalendarComponent schedule={schedule} defaultDate={defaultDate} />
+          <CalendarComponent schedule={schedule} />
         ) : (
           <div style={{ height: "100%" }} />
         )}
@@ -105,17 +107,27 @@ export function CalendarSwipeView({
     );
   });
 
+  const slideNumbers = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
+  const manualSlides = slideNumbers.map((index) => (
+    <Carousel.Slide key={index}>
+      <CalendarComponent
+        schedule={schedule}
+        date={new Date(currentYear, index)}
+      />
+    </Carousel.Slide>
+  ));
+
   return (
     <DatesProvider settings={{ consistentWeeks: true }}>
       <Carousel
         initialSlide={initialSlide}
-        slideSize="100%"
+        slideSize="fit-content"
         align="center"
         loop={false}
-        onSlideChange={setCurrentSlide}
-        withControls={false}
+        // onSlideChange={setCurrentSlide}
+        withControls={true}
       >
-        {slides}
+        {manualSlides}
       </Carousel>
     </DatesProvider>
   );

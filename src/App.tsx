@@ -30,6 +30,8 @@ import { CalendarSwipeView } from "@/features/views/CalendarSwipeView";
 // import { CalendarScrollView } from "@/features/views/CalendarScrollView";
 import logo from "@/assets/shiftori_logo.png";
 
+const useSwipe: boolean = true;
+
 // Components
 const NavItems = () => {
   return (
@@ -103,7 +105,15 @@ export function App() {
             backgroundColor: theme.colors.background[0],
           }}
         >
-          {user ? <CalendarSwipeView /> : <AuthenticationForm />}
+          {user ? (
+            useSwipe ? (
+              <CalendarSwipeView />
+            ) : (
+              <CalendarView />
+            )
+          ) : (
+            <AuthenticationForm />
+          )}
         </AppShell.Main>
       </AppShell>
     </AuthProvider>

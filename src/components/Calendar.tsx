@@ -3,17 +3,13 @@ import { Calendar } from "@mantine/dates";
 
 type CalendarComponentProps = {
   schedule: Record<string, any>;
-  defaultDate?: Date; // Optional, if you want to make it optional
 };
 
-export function CalendarComponent({
-  schedule,
-  defaultDate,
-}: CalendarComponentProps) {
-  console.log(defaultDate, schedule);
+export function CalendarComponent({ schedule }: CalendarComponentProps) {
+  const myDate = new Date(2025, 0);
   return (
     <Calendar
-      defaultDate={defaultDate}
+      defaultDate={myDate}
       firstDayOfWeek={0}
       withCellSpacing={false}
       maxLevel="month"
@@ -25,7 +21,6 @@ export function CalendarComponent({
         calendarHeader: {
           minWidth: "100%",
           margin: "0px", // remove empty space between calendar header and body
-          // visibility: "hidden",
         },
         month: {
           width: "100%",
