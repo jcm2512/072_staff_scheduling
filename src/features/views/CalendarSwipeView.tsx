@@ -3,9 +3,7 @@ import { useEffect, useState } from "react";
 import { DatesProvider } from "@mantine/dates";
 import { db } from "@/firebaseConfig"; // Your Firebase config
 import { collection, getDocs } from "firebase/firestore";
-// import { CalendarComponent } from "@/components/Calendar";
 import { CalendarComponent } from "@/features/components/CalendarComponent";
-import { Text } from "@mantine/core";
 
 type CalendarSwipeViewProps = {
   initialMonth?: number; // The starting month index (0-indexed)
@@ -25,33 +23,12 @@ const { currentYear, currentMonth } = getCurrentYearAndMonth();
 
 export function CalendarSwipeView({
   defaultYear = currentYear,
-  initialMonth = 0,
-  numberOfMonths = 12,
+  initialMonth = 2, // 0-index based, so March = 2
+  numberOfMonths = 13,
 }: CalendarSwipeViewProps) {
-  const [currentSlide, setCurrentSlide] = useState(0);
   const [schedule, setSchedule] = useState<
     Record<string, { am?: string; pm?: string }>
   >({});
-
-  // Helper to figure out which month/year a given slide index corresponds to
-  const getMonthDate = (slideIndex: number) => {
-    let month: number;
-    let year: number;
-
-    if (slideIndex < 13) {
-      month = initialMonth + slideIndex;
-      year = defaultYear;
-    } else {
-      month = slideIndex - 9;
-      year = defaultYear + 1;
-    }
-    return new Date(year, month, 1);
-  };
-
-  // Only render the full calendar for slides close to the current slide (for performance)
-  const shouldRenderFullCalendar = (index: number) => {
-    return Math.abs(index - currentSlide) <= 1;
-  };
 
   useEffect(() => {
     async function fetchSchedule() {
@@ -73,7 +50,7 @@ export function CalendarSwipeView({
       const snapshot = await getDocs(scheduleCollectionRef);
       const newSchedule: Record<string, { am?: string; pm?: string }> = {};
 
-      // Each doc.id is presumably the date (e.g. "2025-04-01")
+      // Each doc.id is the date (e.g. "2025-04-01")
       snapshot.forEach((doc) => {
         newSchedule[doc.id] = doc.data() as { am?: string; pm?: string };
       });
@@ -85,29 +62,22 @@ export function CalendarSwipeView({
     fetchSchedule();
   }, []);
 
-  // Calculate the initial slide index to center on the current month
-  //   const initialSlide =
-  //     currentYear === defaultYear
-  //       ? currentMonth - initialMonth
-  //       : currentYear === defaultYear + 1
-  //       ? 12 - initialMonth + currentMonth
-  //       : 0;
-  const initialSlide = 0;
+  //   Calculate the initial slide index to center on the current month
+  const initialSlide =
+    currentYear === defaultYear
+      ? currentMonth - initialMonth
+      : currentYear === defaultYear + 1
+      ? 12 - initialMonth + currentMonth
+      : 0;
 
-  // Build the carousel slides
-  const slides = Array.from({ length: numberOfMonths }, (_, i) => {
-    return (
-      <Carousel.Slide key={i}>
-        {shouldRenderFullCalendar(i) ? (
-          <CalendarComponent schedule={schedule} />
-        ) : (
-          <div style={{ height: "100%" }} />
-        )}
-      </Carousel.Slide>
-    );
-  });
+  //   const slideNumbers = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
+  const slideNumbers = Array.from(
+    { length: numberOfMonths },
+    (_, i) => initialMonth + i
+  );
 
-  const slideNumbers = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
+  console.log(slideNumbers);
+
   const manualSlides = slideNumbers.map((index) => (
     <Carousel.Slide key={index}>
       <CalendarComponent

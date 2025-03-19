@@ -27,11 +27,9 @@ import { AuthenticationForm } from "./features/auth/AuthenticationForm";
 import { SignOut } from "@/features/auth/SignOut";
 import { CalendarView } from "@/features/views/CalendarView";
 import { CalendarSwipeView } from "@/features/views/CalendarSwipeView";
-// import { CalendarScrollView } from "@/features/views/CalendarScrollView";
 import logo from "@/assets/shiftori_logo.png";
 
 const useSwipe: boolean = true;
-
 // Components
 const NavItems = () => {
   return (

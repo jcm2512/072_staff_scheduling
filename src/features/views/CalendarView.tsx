@@ -3,7 +3,7 @@ import { DatesProvider } from "@mantine/dates";
 import { db } from "@/firebaseConfig"; // Import your Firebase config
 import { doc, getDoc } from "firebase/firestore";
 
-import { CalendarComponent } from "@/components/Calendar";
+import { CalendarComponent } from "@/features/components/CalendarComponent";
 
 type CalendarViewProps = {
   defaultDate?: Date;
@@ -71,10 +71,7 @@ export function CalendarView({ defaultDate }: CalendarViewProps) {
 
   return (
     <DatesProvider settings={{ consistentWeeks: true }}>
-      <CalendarComponent
-        schedule={schedule}
-        defaultDate={computedDefaultDate}
-      />
+      <CalendarComponent schedule={schedule} date={new Date(year, 1)} />
     </DatesProvider>
   );
 }

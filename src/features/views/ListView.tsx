@@ -1,54 +1,81 @@
-import { useState, useEffect } from "react";
-import { Virtuoso } from "react-virtuoso";
-import { Container, Card, Text, Loader } from "@mantine/core";
+import { useState } from "react";
+import { Group, Grid, Text, Paper } from "@mantine/core";
+import { MonthPicker } from "@mantine/dates";
+import dayjs from "dayjs";
 
-const PAGE_SIZE = 20;
+export function MonthView() {
+  const [value, setValue] = useState<Date | null>(null);
 
-const fetchData = (offset: number) => {
-  return new Promise<string[]>((resolve) => {
-    setTimeout(() => {
-      resolve(
-        Array.from({ length: PAGE_SIZE }, (_, i) => `Item ${offset + i + 1}`)
-      );
-    }, 1000);
-  });
-};
+  const getDaysInMonth = (date: Date | null): number[] => {
+    if (!date) return [];
+    const days: number[] = [];
+    const endOfMonth = dayjs(date).endOf("month");
 
-export function ListView() {
-  const [items, setItems] = useState<string[]>([]);
-  const [loading, setLoading] = useState(true);
+    for (let i = 1; i <= endOfMonth.date(); i++) {
+      days.push(i);
+    }
 
-  useEffect(() => {
-    loadMore();
-  }, []);
-
-  const loadMore = async () => {
-    setLoading(true);
-    const newItems = await fetchData(items.length);
-    setItems((prev) => [...prev, ...newItems]);
-    setLoading(false);
+    return days;
   };
 
+  const days = getDaysInMonth(value);
+
   return (
-    <Container style={{ width: "100%", maxWidth: "600px" }}>
-      <Virtuoso
-        style={{ height: "400px", width: "600px" }}
-        data={items}
-        endReached={loadMore}
-        itemContent={(index, item) => (
-          <Card key={index} shadow="sm" padding="md" mb="sm">
-            <Text>{item}</Text>
-          </Card>
-        )}
-        components={{
-          Footer: () =>
-            loading ? (
-              <div style={{ textAlign: "center", padding: "10px" }}>
-                <Loader size="sm" />
-              </div>
-            ) : null,
-        }}
-      />
-    </Container>
+    <Paper shadow="xs" p="md" w={"100%"}>
+      <>
+        <Group justify="center" mb="md">
+          <MonthPicker
+            value={value}
+            onChange={setValue}
+            maxLevel="year"
+          ></MonthPicker>
+        </Group>
+        <Grid columns={4}>
+          {days.map((day, index) => {
+            const date = day ? dayjs(value).date(day) : null;
+            const dayOfWeek = date ? date.format("ddd") : "";
+            const isWeekend = date
+              ? date.day() === 0 || date.day() === 6
+              : false;
+
+            return (
+              <>
+                <Grid.Col span={1}>
+                  <Group
+                    key={`container-${index}`}
+                    style={{
+                      backgroundColor: isWeekend ? "#ffeded" : "transparent",
+                      borderRadius: "4px",
+                      padding: "5px",
+                      gridTemplateColumns: "30px 1fr",
+                    }}
+                  >
+                    <Text
+                      key={`d-${index}`}
+                      fw={isWeekend ? 700 : 400}
+                      c={isWeekend ? "red" : "black"}
+                    >
+                      {day}
+                    </Text>
+                    <Text
+                      key={`ddd-${index}`}
+                      fw={isWeekend ? 700 : 400}
+                      c={isWeekend ? "red" : "black"}
+                    >
+                      {dayOfWeek}
+                    </Text>
+                  </Group>
+                </Grid.Col>
+                <Grid.Col span={8}>
+                  <Text key={`event-${index}`}>
+                    {/* Placeholder for events */}
+                  </Text>
+                </Grid.Col>
+              </>
+            );
+          })}
+        </Grid>
+      </>
+    </Paper>
   );
 }
