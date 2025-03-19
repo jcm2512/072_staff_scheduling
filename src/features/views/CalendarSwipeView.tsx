@@ -30,37 +30,34 @@ export function CalendarSwipeView({
     Record<string, { am?: string; pm?: string }>
   >({});
 
-  //   useEffect(() => {
-  //     async function fetchSchedule() {
-  //       const teacherId = "teacherId016";
-  //       const companyId = "companyId02";
+  // useEffect(() => {
+  //   const teacherId = "teacherId016";
+  //   const companyId = "companyId02";
 
-  //       console.log("Fetching all schedule docs from Firestore...");
+  //   console.log("Fetching schedule from Firestore...");
 
-  //       // Query the entire 'schedule' subcollection (no date filtering)
-  //       const scheduleCollectionRef = collection(
-  //         db,
-  //         "companies",
-  //         companyId,
-  //         "teacher",
-  //         teacherId,
-  //         "schedule"
-  //       );
+  //   const scheduleCollectionRef = collection(
+  //     db,
+  //     "companies",
+  //     companyId,
+  //     "teacher",
+  //     teacherId,
+  //     "schedule"
+  //   );
 
-  //       const snapshot = await getDocs(scheduleCollectionRef);
-  //       const newSchedule: Record<string, { am?: string; pm?: string }> = {};
+  //   const unsubscribe = onSnapshot(scheduleCollectionRef, (snapshot) => {
+  //     const updatedSchedule: Record<string, { am?: string; pm?: string }> = {};
 
-  //       // Each doc.id is the date (e.g. "2025-04-01")
-  //       snapshot.forEach((doc) => {
-  //         newSchedule[doc.id] = doc.data() as { am?: string; pm?: string };
-  //       });
+  //     // Each doc.id is the date (e.g. "2025-04-01")
+  //     snapshot.forEach((doc) => {
+  //       updatedSchedule[doc.id] = doc.data() as { am?: string; pm?: string };
+  //     });
+  //     setSchedule(updatedSchedule);
+  //     console.log(updatedSchedule);
+  //   });
 
-  //       console.log("Final schedule object:", newSchedule);
-  //       setSchedule(newSchedule);
-  //     }
-
-  //     fetchSchedule();
-  //   }, []);
+  //   return () => unsubscribe();
+  // }, []);
 
   useEffect(() => {
     const teacherId = "teacherId016";
@@ -74,8 +71,10 @@ export function CalendarSwipeView({
       companyId,
       "teacher",
       teacherId,
-      "schedule"
+      "monthlySchedule"
     );
+
+    console.log(scheduleCollectionRef);
 
     const unsubscribe = onSnapshot(scheduleCollectionRef, (snapshot) => {
       const updatedSchedule: Record<string, { am?: string; pm?: string }> = {};
@@ -85,6 +84,7 @@ export function CalendarSwipeView({
         updatedSchedule[doc.id] = doc.data() as { am?: string; pm?: string };
       });
       setSchedule(updatedSchedule);
+      console.log(updatedSchedule);
     });
 
     return () => unsubscribe();
@@ -103,8 +103,6 @@ export function CalendarSwipeView({
     { length: numberOfMonths },
     (_, i) => initialMonth + i
   );
-
-  console.log(slideNumbers);
 
   const manualSlides = slideNumbers.map((index) => (
     <Carousel.Slide key={index}>

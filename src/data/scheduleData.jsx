@@ -1,10 +1,9 @@
 export const scheduleData = {
-  month: "2025-03",
-  days: {
-    10: { am: "Office", pm: "Office", allday: false },
-    18: { am: "Office", pm: "DT" },
-    20: { am: "KE", pm: "Office" },
-    21: { am: "EIA", pm: "EIA" },
-    22: { am: "Tsukaguchi", pm: "Tsukaguchi" },
+  shifts: {
+    20250310: { am: "Office", pm: "Office", allday: false },
+    20250318: { am: "Office", pm: "DT", allday: false },
+    20250320: { am: "KE", pm: "Office", allday: false },
+    20250321: { am: "EIA", pm: "EIA", allday: true },
+    20250322: { am: "Tsukaguchi", pm: "Tsukaguchi", allday: true },
   },
 };

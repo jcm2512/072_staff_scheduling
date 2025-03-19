@@ -3,9 +3,8 @@ import { doc, setDoc } from "firebase/firestore";
 import { db } from "@/firebaseConfig";
 
 type ScheduleData = {
-  month: string; // "2025-03"
-  days: {
-    [day: string]: // "01"
+  shifts: {
+    [date: string]: // "20250118"
     {
       am: string; // "DT"
       pm: string; // "Office"
