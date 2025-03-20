@@ -1,5 +1,6 @@
-import { Stack, Text } from "@mantine/core";
+import { Stack, Text, em } from "@mantine/core";
 import { Calendar } from "@mantine/dates";
+import { useMediaQuery } from "@mantine/hooks";
 
 type CalendarComponentProps = {
   schedule: any;
@@ -12,6 +13,8 @@ export function CalendarComponent({
   date = new Date(),
   swipe = false,
 }: CalendarComponentProps) {
+  const isMobile = useMediaQuery(`(max-width: ${em(768)})`);
+
   return (
     <>
       <Calendar
@@ -35,7 +38,8 @@ export function CalendarComponent({
             fontSize: "var(--mantine-font-size-xl)",
           },
           month: {
-            width: "90vw", // cant use % as it will include the whole carousel.
+            // cant use % as it will include the whole carousel.
+            width: isMobile ? "90vw" : "70vw",
           },
           monthTbody: {
             borderStyle: "hidden", // removes outside border on table

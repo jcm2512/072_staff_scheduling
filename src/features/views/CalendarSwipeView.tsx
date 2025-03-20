@@ -1,9 +1,11 @@
 import { Carousel } from "@mantine/carousel";
 import { useEffect, useState } from "react";
 import { DatesProvider } from "@mantine/dates";
+import { em } from "@mantine/core";
 import { db } from "@/firebaseConfig"; // Your Firebase config
 import { collection, onSnapshot } from "firebase/firestore";
 import { CalendarComponent } from "@/features/components/CalendarComponent";
+import { useMediaQuery } from "@mantine/hooks";
 
 type CalendarSwipeViewProps = {
   initialMonth?: number; // The starting month index (0-indexed)
@@ -34,6 +36,7 @@ export function CalendarSwipeView({
   numberOfMonths = 13,
 }: CalendarSwipeViewProps) {
   const [schedule, setSchedule] = useState<Record<string, DaySchedule>>({});
+  const isMobile = useMediaQuery(`(max-width: ${em(768)})`);
 
   useEffect(() => {
     const teacherId = "teacherId016";
@@ -112,7 +115,7 @@ export function CalendarSwipeView({
         skipSnaps={true}
         slideGap={"xs"}
         style={{
-          width: "100vw",
+          width: isMobile ? "100vw" : "80vw",
         }}
       >
         {manualSlides}

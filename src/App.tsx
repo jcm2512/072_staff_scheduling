@@ -19,8 +19,9 @@ import {
   Burger,
   useMantineTheme,
   UnstyledButton,
+  em,
 } from "@mantine/core";
-import { useDisclosure } from "@mantine/hooks";
+import { useDisclosure, useMediaQuery } from "@mantine/hooks";
 
 // Authentication context and components
 import { useAuth } from "./auth/AuthProvider";
@@ -39,9 +40,10 @@ import { scheduleData } from "@/data/scheduleData";
 
 export function App() {
   // Hooks
-  const [opened, { toggle }] = useDisclosure();
+  const [mobileOpened, { toggle: toggleMobile }] = useDisclosure();
   const { user } = useAuth();
   const { setMonthlySchedule, loading, error } = useSchedule();
+  const isMobile = useMediaQuery(`(max-width: ${em(768)})`);
 
   const theme = useMantineTheme();
 
@@ -67,15 +69,14 @@ export function App() {
   //   window.addEventListener("resize", setVH);
   //   return () => window.removeEventListener("resize", setVH);
   // }, []);
-
   return (
     <AuthProvider>
       <AppShell
         header={{ height: 60 }}
         navbar={{
-          width: 300,
+          width: "20vw",
           breakpoint: "sm",
-          collapsed: { desktop: true, mobile: !opened },
+          collapsed: { mobile: !mobileOpened },
         }}
         padding="md"
       >
@@ -101,17 +102,10 @@ export function App() {
                   <Text>SHIFTORI</Text>
                 </Title>
               </Group>
-
-              <Group ml="xl" gap={0} visibleFrom="sm">
-                {/* Header Nav */}
-                <>
-                  <SignOut />
-                </>
-              </Group>
             </Group>
             <Burger
-              opened={opened}
-              onClick={toggle}
+              opened={mobileOpened}
+              onClick={toggleMobile}
               hiddenFrom="sm"
               size="sm"
             />
