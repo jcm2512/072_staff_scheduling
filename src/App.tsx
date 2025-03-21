@@ -19,6 +19,7 @@ import {
   UnstyledButton,
 } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
+import { showNotification } from "@mantine/notifications";
 
 // Authentication context and components
 import { useAuth } from "./auth/AuthProvider";
@@ -99,10 +100,27 @@ export function App() {
             <>
               <UnstyledButton
                 className={classes.control}
-                onClick={handleSaveSchedule}
+                onClick={async () => {
+                  const permission = await Notification.requestPermission();
+                  console.log("Notification Permission:", permission);
+                  if (permission === "granted") {
+                    showNotification({
+                      title: "Notifications Enabled",
+                      message: "You'll now receive shift updates.",
+                      color: "teal",
+                    });
+                  } else {
+                    showNotification({
+                      title: "Notifications Blocked",
+                      message: "You can enable them later in Settings.",
+                      color: "red",
+                    });
+                  }
+                }}
               >
-                Upload
+                Enable Notifications
               </UnstyledButton>
+
               <SignOut />
               {loading && <p>Saving…</p>}
               {error && <p>Error: {error.message}</p>}
