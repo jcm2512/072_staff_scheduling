@@ -7,6 +7,9 @@
     "allowJs": true,
     "checkJs": false,
 
+    /* Vite types */
+    "types": ["vite/client"],
+
     /* Alias Import */
     "baseUrl": "./src",
     "paths": {
@@ -27,6 +30,6 @@
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true
   },
-  "include": ["src", "global.d.ts"],
+  "include": ["src", "global.d.ts", "vite-env.d.ts"],
   "references": [{ "path": "./tsconfig.node.json" }]
 }
