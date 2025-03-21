@@ -25,6 +25,7 @@ messaging.onBackgroundMessage((payload) => {
     body: payload.notification?.body || "You have a new shift update!",
     icon: "/icons/icon-192x192.png",
     badge: "/icons/icon-192x192.png",
+    tag: "shift-updates", // Optional but recommended
     data: { url: payload.data?.url || "/" }, // Ensure deep linking works
   };
 
