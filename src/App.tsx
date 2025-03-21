@@ -5,6 +5,7 @@ import "@mantine/carousel/styles.css";
 import classes from "./styles/MobileNavbar.module.css";
 
 // React and Hooks
+import { useState, useEffect } from "react";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { useSchedule } from "@/hooks/schedule";
 
@@ -24,6 +25,8 @@ import { showNotification } from "@mantine/notifications";
 // Authentication context and components
 import { useAuth } from "./auth/AuthProvider";
 import { AuthProvider } from "./auth/AuthProvider";
+import { getToken } from "firebase/messaging";
+import { messaging } from "@/firebaseConfig"; // Adjust path if needed
 
 // App features and assets
 import { AuthenticationForm } from "./features/auth/AuthenticationForm";
@@ -40,6 +43,20 @@ export function App() {
   const { user } = useAuth();
   const { setMonthlySchedule, loading, error } = useSchedule();
   const theme = useMantineTheme();
+
+  const [fcmToken, setFcmToken] = useState("");
+
+  useEffect(() => {
+    getToken(messaging, { vapidKey: import.meta.env.VITE_FIREBASE_VAPID_KEY })
+      .then((token) => {
+        if (token) {
+          setFcmToken(token);
+        }
+      })
+      .catch((err) => {
+        console.error("Failed to get FCM token:", err);
+      });
+  }, []);
 
   // Save Schedule Data to database
   // Should be moved to an admin section
@@ -124,6 +141,18 @@ export function App() {
               <SignOut />
               {loading && <p>Saving…</p>}
               {error && <p>Error: {error.message}</p>}
+              {fcmToken && (
+                <div
+                  style={{
+                    padding: 16,
+                    backgroundColor: "#eee",
+                    wordBreak: "break-all",
+                  }}
+                >
+                  <strong>FCM Token (iOS):</strong>
+                  <p>{fcmToken}</p>
+                </div>
+              )}
             </>
           </AppShell.Navbar>
           <AppShell.Main
