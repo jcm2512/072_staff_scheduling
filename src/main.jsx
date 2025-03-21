@@ -28,12 +28,12 @@ if ("serviceWorker" in navigator) {
       // Use registration for advanced use
       Notification.requestPermission().then((permission) => {
         if (permission === "granted") {
-          getToken(messaging, { vapidKey: "YOUR_PUBLIC_VAPID_KEY" }).then(
-            (token) => {
-              console.log("FCM Token:", token);
-              // TODO: Save token to Firestore if needed
-            }
-          );
+          getToken(messaging, {
+            vapidKey: import.meta.env.VITE_FIREBASE_VAPID_KEY,
+          }).then((token) => {
+            console.log("FCM Token:", token);
+            // TODO: Save token to Firestore if needed
+          });
         }
       });
     });
