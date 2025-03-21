@@ -8,13 +8,16 @@ import { App } from "@/App.jsx";
 import { theme } from "@/themes/colors.jsx";
 import app, { messaging } from "@/firebaseConfig";
 import { getToken, onMessage } from "firebase/messaging";
+import { BrowserRouter } from "react-router-dom";
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>
     <MantineProvider theme={theme}>
-      <AuthProvider>
-        <App />
-      </AuthProvider>
+      <BrowserRouter>
+        <AuthProvider>
+          <App />
+        </AuthProvider>
+      </BrowserRouter>
     </MantineProvider>
   </StrictMode>
 );
