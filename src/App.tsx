@@ -24,7 +24,7 @@ import { showNotification } from "@mantine/notifications";
 
 // Authentication context and components
 import { useAuth } from "./auth/AuthProvider";
-import { AuthProvider } from "./auth/AuthProvider";
+// import { AuthProvider } from "./auth/AuthProvider";
 import { getToken } from "firebase/messaging";
 import app, { messaging } from "@/firebaseConfig"; // Adjust path if needed
 
@@ -36,6 +36,7 @@ import { CalendarSwipeView } from "@/features/views/CalendarSwipeView";
 import logo from "@/assets/shiftori_logo.png";
 
 import { scheduleData } from "@/data/scheduleData";
+import { subscribeUser, triggerPush } from "@/pushService";
 
 export function App() {
   // Hooks
@@ -125,6 +126,7 @@ export function App() {
               const permission = await Notification.requestPermission();
               console.log("Notification Permission:", permission);
               if (permission === "granted") {
+                await subscribeUser(user?.uid || "test-user");
                 showNotification({
                   title: "Notifications Enabled",
                   message: "You'll now receive shift updates.",
@@ -142,25 +144,26 @@ export function App() {
             Enable Notifications
           </UnstyledButton>
 
+          <UnstyledButton
+            className={classes.control}
+            onClick={() =>
+              triggerPush(
+                user?.uid || "test-user",
+                "Manual Shift Update",
+                "Here's your shift update!"
+              )
+            }
+          >
+            Test Push Notification
+          </UnstyledButton>
+
           <div>
-            <p>App ID from config: {app.options.appId}</p>
+            <p>App ID from config: {import.meta.env.VITE_FIREBASE_APP_ID}</p>
           </div>
 
           <SignOut />
           {loading && <p>Saving…</p>}
           {error && <p>Error: {error.message}</p>}
-          {fcmToken && (
-            <div
-              style={{
-                padding: 16,
-                backgroundColor: "#eee",
-                wordBreak: "break-all",
-              }}
-            >
-              <strong>FCM Token (iOS):</strong>
-              <p>{fcmToken}</p>
-            </div>
-          )}
         </>
       </AppShell.Navbar>
       <AppShell.Main

@@ -1,0 +1,17 @@
+{
+  "name": "shiftori-functions",
+  "description": "Cloud Functions for SHIFTORI Web Push",
+  "version": "1.0.0",
+  "engines": {
+    "node": "18"
+  },
+  "main": "index.js",
+  "dependencies": {
+    "firebase-admin": "^11.10.1",
+    "firebase-functions": "^4.4.1",
+    "web-push": "^3.4.5"
+  },
+  "scripts": {
+    "start": "firebase emulators:start --only functions"
+  }
+}

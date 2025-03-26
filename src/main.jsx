@@ -22,27 +22,9 @@ createRoot(document.getElementById("root")).render(
   </StrictMode>
 );
 
-// PWA Service Worker Registration + FCM Token setup
+// Register service worker
 if ("serviceWorker" in navigator) {
-  navigator.serviceWorker
-    .register("/firebase-messaging-sw.js")
-    .then((registration) => {
-      console.log("Service Worker registered:", registration);
-      // Use registration for advanced use
-      Notification.requestPermission().then((permission) => {
-        if (permission === "granted") {
-          getToken(messaging, {
-            vapidKey: import.meta.env.VITE_FIREBASE_VAPID_KEY,
-          }).then((token) => {
-            console.log("FCM Token:", token);
-            // TODO: Save token to Firestore if needed
-          });
-        }
-      });
-    });
+  navigator.serviceWorker.register("/service-worker.js").then((reg) => {
+    console.log("Service Worker registered", reg);
+  });
 }
-
-// Listen for foreground messages
-onMessage(messaging, (payload) => {
-  console.log("Foreground message received:", payload);
-});
