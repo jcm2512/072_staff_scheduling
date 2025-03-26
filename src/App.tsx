@@ -44,8 +44,8 @@ export function App() {
   const { user } = useAuth();
   const { setMonthlySchedule, loading, error } = useSchedule();
   const theme = useMantineTheme();
+
   const navigate = useNavigate();
-  const [fcmToken, setFcmToken] = useState("");
 
   useEffect(() => {
     if (user) {
@@ -53,17 +53,19 @@ export function App() {
     }
   }, [user, navigate]);
 
-  useEffect(() => {
-    getToken(messaging, { vapidKey: import.meta.env.VITE_FIREBASE_VAPID_KEY })
-      .then((token) => {
-        if (token) {
-          setFcmToken(token);
-        }
-      })
-      .catch((err) => {
-        console.error("Failed to get FCM token:", err);
-      });
-  }, []);
+  // const [fcmToken, setFcmToken] = useState("");
+
+  // useEffect(() => {
+  //   getToken(messaging, { vapidKey: import.meta.env.VITE_FIREBASE_VAPID_KEY })
+  //     .then((token) => {
+  //       if (token) {
+  //         setFcmToken(token);
+  //       }
+  //     })
+  //     .catch((err) => {
+  //       console.error("Failed to get FCM token:", err);
+  //     });
+  // }, []);
 
   // Save Schedule Data to database
   // Should be moved to an admin section
