@@ -24,9 +24,10 @@ import { showNotification } from "@mantine/notifications";
 
 // Authentication context and components
 import { useAuth } from "./auth/AuthProvider";
-// import { AuthProvider } from "./auth/AuthProvider";
-import { getToken } from "firebase/messaging";
-import app, { messaging } from "@/firebaseConfig"; // Adjust path if needed
+import {
+  requestNotificationPermission,
+  listenForMessages,
+} from "@/firebaseConfig";
 
 // App features and assets
 import { AuthenticationForm } from "./features/auth/AuthenticationForm";
@@ -45,7 +46,11 @@ export function App() {
   const { setMonthlySchedule, loading, error } = useSchedule();
   const theme = useMantineTheme();
   const navigate = useNavigate();
-  const [fcmToken, setFcmToken] = useState("");
+
+  useEffect(() => {
+    requestNotificationPermission();
+    listenForMessages();
+  }, []);
 
   useEffect(() => {
     if (user) {

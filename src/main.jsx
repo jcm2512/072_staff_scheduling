@@ -6,8 +6,6 @@ import { MantineProvider } from "@mantine/core";
 import { AuthProvider } from "@/auth/AuthProvider.js";
 import { App } from "@/App.jsx";
 import { theme } from "@/themes/colors.jsx";
-import app, { messaging } from "@/firebaseConfig";
-import { getToken, onMessage } from "firebase/messaging";
 import { BrowserRouter } from "react-router-dom";
 
 createRoot(document.getElementById("root")).render(
