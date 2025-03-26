@@ -1,10 +1,8 @@
 import { doc, setDoc, getFirestore } from "firebase/firestore";
-import { httpsCallable, getFunctions } from "firebase/functions";
 import app from "@/firebaseConfig";
 
 const vapidKey = import.meta.env.VITE_VAPID_PUBLIC_KEY;
 const firestore = getFirestore(app);
-const functions = getFunctions(app);
 
 export async function subscribeUser(userId: string) {
   const registration = await navigator.serviceWorker.ready;
@@ -18,7 +16,21 @@ export async function subscribeUser(userId: string) {
 }
 
 export async function triggerPush(userId: string, title: string, body: string) {
-  const pushTrigger = httpsCallable(functions, "sendPushNotification");
-  await pushTrigger({ userId, title, body });
-  console.log("Manual push triggered");
-}
+    const response = await fetch("https://api.github.com/repos/jcm2512/072_staff_scheduling/actions/workflows/send-push.yml/dispatches", {
+      method: "POST",
+      headers: {
+        "Accept": "application/vnd.github.v3+json",
+        "Authorization": `token ${import.meta.env.VITE_GITHUB_PERSONAL_ACCESS_TOKEN}`,
+      },
+      body: JSON.stringify({
+        ref: "main",
+        inputs: { userId, title, body }
+      })
+    });
+  
+    if (response.ok) {
+      console.log("Push triggered successfully.");
+    } else {
+      console.error("Failed to trigger push:", await response.json());
+    }
+  }

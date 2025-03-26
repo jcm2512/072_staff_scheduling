@@ -156,7 +156,7 @@ export function App() {
               )
             }
           >
-            Test Push Notification
+            Test Push Notification (via GitHub Actions)
           </UnstyledButton>
 
           <div>
