@@ -19,7 +19,7 @@ jobs:
 
       - name: Send FCM Message
         run: |
-          curl -X POST "https://fcm.googleapis.com/v1/projects/YOUR_PROJECT_ID/messages:send" \
+          curl -X POST "https://fcm.googleapis.com/v1/projects/shiftori/messages:send" \
           -H "Authorization: Bearer ${{ steps.get_token.outputs.token }}" \
           -H "Content-Type: application/json" \
           --data '{
