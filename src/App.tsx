@@ -114,34 +114,6 @@ export function App() {
       <AppShell.Navbar py="md" px={4}>
         {/* Navbar Menu */}
         <>
-          <UnstyledButton
-            className={classes.control}
-            onClick={async () => {
-              const permission = await Notification.requestPermission();
-              console.log("Notification Permission:", permission);
-              if (permission === "granted") {
-                await subscribeUser(user?.uid || "test-user");
-                showNotification({
-                  title: "Notifications Enabled",
-                  message: "You'll now receive shift updates.",
-                  color: "teal",
-                });
-              } else {
-                showNotification({
-                  title: "Notifications Blocked",
-                  message: "You can enable them later in Settings.",
-                  color: "red",
-                });
-              }
-            }}
-          >
-            Enable Notifications
-          </UnstyledButton>
-
-          <div>
-            <p>App ID from config: {import.meta.env.VITE_FIREBASE_APP_ID}</p>
-          </div>
-
           <SignOut />
         </>
       </AppShell.Navbar>
