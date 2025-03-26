@@ -9,25 +9,40 @@ jobs:
       - name: Setup Service Account JSON
         run: echo '${{ secrets.FIREBASE_SERVICE_ACCOUNT }}' > service-account.json
 
-      - name: Get Access Token
+      - name: Generate OAuth 2.0 Access Token
         id: get_token
         run: |
-          ACCESS_TOKEN=$(curl -s -X POST -H "Content-Type: application/json" \
-            -d @service-account.json \
-            "https://oauth2.googleapis.com/token?grant_type=urn:ietf:params:oauth:grant-type:jwt-bearer&scope=https://www.googleapis.com/auth/firebase.messaging")
-          echo "token=$(echo $ACCESS_TOKEN | jq -r .access_token)" >> $GITHUB_OUTPUT
+          JWT_HEADER=$(printf '%s' '{"alg":"RS256","typ":"JWT"}' | openssl base64 -e -A | tr '+/' '-_' | tr -d '=')
+          NOW=$(date +%s)
+          EXP=$(($NOW + 3600))
+          SCOPE="https://www.googleapis.com/auth/firebase.messaging"
+          SERVICE_ACCOUNT=$(jq -r .client_email service-account.json)
+          TOKEN_URI=$(jq -r .token_uri service-account.json)
+          PRIVATE_KEY=$(jq -r .private_key service-account.json)
+
+          CLAIM=$(printf '{"iss":"%s","scope":"%s","aud":"%s","exp":%s,"iat":%s}' "$SERVICE_ACCOUNT" "$SCOPE" "$TOKEN_URI" "$EXP" "$NOW" | openssl base64 -e -A | tr '+/' '-_' | tr -d '=')
+
+          SIGNING_INPUT="$JWT_HEADER.$CLAIM"
+          SIGNATURE=$(printf '%s' "$SIGNING_INPUT" | openssl dgst -sha256 -sign <(echo "$PRIVATE_KEY") | openssl base64 -e -A | tr '+/' '-_' | tr -d '=')
+          JWT="$SIGNING_INPUT.$SIGNATURE"
+
+          ACCESS_TOKEN=$(curl -s -X POST -H "Content-Type: application/x-www-form-urlencoded" \
+            -d "grant_type=urn:ietf:params:oauth:grant-type:jwt-bearer&assertion=$JWT" \
+            "$TOKEN_URI" | jq -r .access_token)
+
+          echo "token=$ACCESS_TOKEN" >> $GITHUB_OUTPUT
 
       - name: Send FCM Message
         run: |
           curl -X POST "https://fcm.googleapis.com/v1/projects/shiftori/messages:send" \
-          -H "Authorization: Bearer ${{ steps.get_token.outputs.token }}" \
-          -H "Content-Type: application/json" \
-          --data '{
-            "message": {
-              "token": "USER_FCM_TOKEN",
-              "notification": {
-                "title": "Hello!",
-                "body": "This is a test from GitHub Actions"
+            -H "Authorization: Bearer ${{ steps.get_token.outputs.token }}" \
+            -H "Content-Type: application/json" \
+            --data '{
+              "message": {
+                "token": "fq2BACyet0-z0hB99k64Vh:APA91bEe-9WWW-wDBOXEXctzN4IIfAmOi5jumO1J-rtd7Mhn2dyDptq53J2EPsv6idsfzMra5id5LITYvp2_XuPsvTGOgUarfXR2-jQvHSzD0iUXDjUGUEw",
+                "notification": {
+                  "title": "✅ Hello from GitHub Actions",
+                  "body": "This is a safe FCM test message"
+                }
               }
-            }
-          }'
+            }'
