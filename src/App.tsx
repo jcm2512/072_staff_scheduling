@@ -24,9 +24,6 @@ import { showNotification } from "@mantine/notifications";
 
 // Authentication context and components
 import { useAuth } from "./auth/AuthProvider";
-// import { AuthProvider } from "./auth/AuthProvider";
-import { getToken } from "firebase/messaging";
-import app, { messaging } from "@/firebaseConfig"; // Adjust path if needed
 
 // App features and assets
 import { AuthenticationForm } from "./features/auth/AuthenticationForm";
@@ -53,22 +50,6 @@ export function App() {
     }
   }, [user, navigate]);
 
-  // const [fcmToken, setFcmToken] = useState("");
-
-  // useEffect(() => {
-  //   getToken(messaging, { vapidKey: import.meta.env.VITE_FIREBASE_VAPID_KEY })
-  //     .then((token) => {
-  //       if (token) {
-  //         setFcmToken(token);
-  //       }
-  //     })
-  //     .catch((err) => {
-  //       console.error("Failed to get FCM token:", err);
-  //     });
-  // }, []);
-
-  // Save Schedule Data to database
-  // Should be moved to an admin section
   async function handleSaveSchedule() {
     await setMonthlySchedule(
       "companyId02",
