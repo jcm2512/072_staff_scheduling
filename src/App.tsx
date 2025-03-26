@@ -5,9 +5,8 @@ import "@mantine/carousel/styles.css";
 import classes from "./styles/MobileNavbar.module.css";
 
 // React and Hooks
-import { useState, useEffect } from "react";
+import { useEffect } from "react";
 import { Routes, Route, Navigate, useNavigate } from "react-router-dom";
-import { useSchedule } from "@/hooks/schedule";
 
 // Mantine components and hooks
 import {
@@ -36,14 +35,15 @@ import { MonthView } from "@/features/views/ListView";
 import { CalendarSwipeView } from "@/features/views/CalendarSwipeView";
 import logo from "@/assets/shiftori_logo.png";
 
-import { scheduleData } from "@/data/scheduleData";
-import { subscribeUser, triggerPush } from "@/pushService";
+// Upload schedule data
+// import { useSchedule } from "@/hooks/schedule";
+// import { scheduleData } from "@/data/scheduleData";
 
 export function App() {
   // Hooks
   const [mobileOpened, { toggle: toggleMobile }] = useDisclosure();
   const { user } = useAuth();
-  const { setMonthlySchedule, loading, error } = useSchedule();
+  // const { setMonthlySchedule, loading, error } = useSchedule();
   const theme = useMantineTheme();
   const navigate = useNavigate();
 
@@ -58,28 +58,17 @@ export function App() {
     }
   }, [user, navigate]);
 
-  useEffect(() => {
-    getToken(messaging, { vapidKey: import.meta.env.VITE_FIREBASE_VAPID_KEY })
-      .then((token) => {
-        if (token) {
-          setFcmToken(token);
-        }
-      })
-      .catch((err) => {
-        console.error("Failed to get FCM token:", err);
-      });
-  }, []);
-
   // Save Schedule Data to database
   // Should be moved to an admin section
-  async function handleSaveSchedule() {
-    await setMonthlySchedule(
-      "companyId02",
-      "teacherId016",
-      "2025-03",
-      scheduleData
-    );
-  }
+
+  // async function handleSaveSchedule() {
+  //   await setMonthlySchedule(
+  //     "companyId02",
+  //     "teacherId016",
+  //     "2025-03",
+  //     scheduleData
+  //   );
+  // }
 
   return (
     <AppShell
