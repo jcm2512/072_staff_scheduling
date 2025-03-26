@@ -6,7 +6,6 @@ import { MantineProvider } from "@mantine/core";
 import { AuthProvider } from "@/auth/AuthProvider.js";
 import { App } from "@/App.jsx";
 import { theme } from "@/themes/colors.jsx";
-import app from "@/firebaseConfig";
 import { BrowserRouter } from "react-router-dom";
 
 createRoot(document.getElementById("root")).render(
@@ -23,7 +22,7 @@ createRoot(document.getElementById("root")).render(
 
 // Register service worker
 if ("serviceWorker" in navigator) {
-  navigator.serviceWorker.register("/service-worker.js").then((reg) => {
+  navigator.serviceWorker.register("/sw.js").then((reg) => {
     console.log("Service Worker registered", reg);
   });
 }

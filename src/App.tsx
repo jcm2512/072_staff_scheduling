@@ -5,9 +5,8 @@ import "@mantine/carousel/styles.css";
 import classes from "./styles/MobileNavbar.module.css";
 
 // React and Hooks
-import { useState, useEffect } from "react";
+import { useEffect } from "react";
 import { Routes, Route, Navigate, useNavigate } from "react-router-dom";
-import { useSchedule } from "@/hooks/schedule";
 
 // Mantine components and hooks
 import {
@@ -24,6 +23,10 @@ import { showNotification } from "@mantine/notifications";
 
 // Authentication context and components
 import { useAuth } from "./auth/AuthProvider";
+import {
+  requestNotificationPermission,
+  listenForMessages,
+} from "@/firebaseConfig";
 
 // App features and assets
 import { AuthenticationForm } from "./features/auth/AuthenticationForm";
@@ -32,17 +35,23 @@ import { MonthView } from "@/features/views/ListView";
 import { CalendarSwipeView } from "@/features/views/CalendarSwipeView";
 import logo from "@/assets/shiftori_logo.png";
 
-import { scheduleData } from "@/data/scheduleData";
-import { subscribeUser, triggerPush } from "@/pushService";
+// Upload schedule data
+// import { useSchedule } from "@/hooks/schedule";
+// import { scheduleData } from "@/data/scheduleData";
 
 export function App() {
   // Hooks
   const [mobileOpened, { toggle: toggleMobile }] = useDisclosure();
   const { user } = useAuth();
-  const { setMonthlySchedule, loading, error } = useSchedule();
+  // const { setMonthlySchedule, loading, error } = useSchedule();
   const theme = useMantineTheme();
 
   const navigate = useNavigate();
+
+  useEffect(() => {
+    requestNotificationPermission();
+    listenForMessages();
+  }, []);
 
   useEffect(() => {
     if (user) {
@@ -50,14 +59,17 @@ export function App() {
     }
   }, [user, navigate]);
 
-  async function handleSaveSchedule() {
-    await setMonthlySchedule(
-      "companyId02",
-      "teacherId016",
-      "2025-03",
-      scheduleData
-    );
-  }
+  // Save Schedule Data to database
+  // Should be moved to an admin section
+
+  // async function handleSaveSchedule() {
+  //   await setMonthlySchedule(
+  //     "companyId02",
+  //     "teacherId016",
+  //     "2025-03",
+  //     scheduleData
+  //   );
+  // }
 
   return (
     <AppShell
@@ -103,50 +115,7 @@ export function App() {
       <AppShell.Navbar py="md" px={4}>
         {/* Navbar Menu */}
         <>
-          <UnstyledButton
-            className={classes.control}
-            onClick={async () => {
-              const permission = await Notification.requestPermission();
-              console.log("Notification Permission:", permission);
-              if (permission === "granted") {
-                await subscribeUser(user?.uid || "test-user");
-                showNotification({
-                  title: "Notifications Enabled",
-                  message: "You'll now receive shift updates.",
-                  color: "teal",
-                });
-              } else {
-                showNotification({
-                  title: "Notifications Blocked",
-                  message: "You can enable them later in Settings.",
-                  color: "red",
-                });
-              }
-            }}
-          >
-            Enable Notifications
-          </UnstyledButton>
-
-          <UnstyledButton
-            className={classes.control}
-            onClick={() =>
-              triggerPush(
-                user?.uid || "test-user",
-                "Manual Shift Update",
-                "Here's your shift update!"
-              )
-            }
-          >
-            Test Push Notification (via GitHub Actions)
-          </UnstyledButton>
-
-          <div>
-            <p>App ID from config: {import.meta.env.VITE_FIREBASE_APP_ID}</p>
-          </div>
-
           <SignOut />
-          {loading && <p>Saving…</p>}
-          {error && <p>Error: {error.message}</p>}
         </>
       </AppShell.Navbar>
       <AppShell.Main
