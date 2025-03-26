@@ -138,26 +138,11 @@ export function App() {
             Enable Notifications
           </UnstyledButton>
 
-          <UnstyledButton
-            className={classes.control}
-            onClick={() =>
-              triggerPush(
-                user?.uid || "test-user",
-                "Manual Shift Update",
-                "Here's your shift update!"
-              )
-            }
-          >
-            Test Push Notification
-          </UnstyledButton>
-
           <div>
             <p>App ID from config: {import.meta.env.VITE_FIREBASE_APP_ID}</p>
           </div>
 
           <SignOut />
-          {loading && <p>Saving…</p>}
-          {error && <p>Error: {error.message}</p>}
         </>
       </AppShell.Navbar>
       <AppShell.Main
