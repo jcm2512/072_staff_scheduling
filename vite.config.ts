@@ -8,7 +8,10 @@ export default defineConfig({
     react(),
     VitePWA({
       registerType: "autoUpdate",
-      filename: "sw.js",
+      strategies: "injectManifest",
+      srcDir: "src",
+      filename: "firebase-messaging-sw.ts",
+      injectRegister: "auto",
       manifest: {
         name: "SHIFTORI",
         short_name: "SHIFTORI",
