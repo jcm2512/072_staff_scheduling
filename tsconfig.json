@@ -30,6 +30,6 @@
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true
   },
-  "include": ["src", "global.d.ts", "vite-env.d.ts"],
+  "include": ["src", "global.d.ts", "vite-env.d.ts", "src/firebase-messaging-sw.js"],
   "references": [{ "path": "./tsconfig.node.json" }]
 }

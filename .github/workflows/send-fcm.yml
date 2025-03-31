@@ -39,7 +39,7 @@ jobs:
             -H "Content-Type: application/json" \
             --data '{
               "message": {
-                "token": "fq2BACyet0-z0hB99k64Vh:APA91bEe-9WWW-wDBOXEXctzN4IIfAmOi5jumO1J-rtd7Mhn2dyDptq53J2EPsv6idsfzMra5id5LITYvp2_XuPsvTGOgUarfXR2-jQvHSzD0iUXDjUGUEw",
+                "token": "c9JcS6-F-oyI7CkXAoN8MQ:APA91bFbFlATh5YC6dYYe7wwRbmm3_xE5YTQ0flcoGvgWnyVQkA6C10snRUOd-194NYBG8CeseydP5YGdyoCtCHCK4Fh5BhmR2rWmyDZKTRFWszXdjykGJo",
                 "notification": {
                   "title": "✅ Hello from GitHub Actions",
                   "body": "This is a safe FCM test message"

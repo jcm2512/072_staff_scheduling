@@ -10,8 +10,10 @@ export default defineConfig({
       registerType: "autoUpdate",
       strategies: "injectManifest",
       srcDir: "src",
-      filename: "firebase-messaging-sw.ts",
-      injectRegister: "auto",
+      filename: "firebase-messaging-sw.js",
+      injectManifest: {
+        injectionPoint: undefined,
+      },
       manifest: {
         name: "SHIFTORI",
         short_name: "SHIFTORI",

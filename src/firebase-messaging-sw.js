@@ -26,3 +26,5 @@ onBackgroundMessage(messaging, (payload) => {
     });
   }
 });
+
+// self.__WB_MANIFEST;

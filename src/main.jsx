@@ -20,9 +20,9 @@ createRoot(document.getElementById("root")).render(
   </StrictMode>
 );
 
-// Register service worker
-if ("serviceWorker" in navigator) {
-  navigator.serviceWorker.register("/sw.js").then((reg) => {
-    console.log("Service Worker registered", reg);
-  });
-}
+// // Register service worker
+// if ("serviceWorker" in navigator) {
+//   navigator.serviceWorker.register("/sw.js").then((reg) => {
+//     console.log("Service Worker registered", reg);
+//   });
+// }
