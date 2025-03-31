@@ -19,7 +19,6 @@ import {
   UnstyledButton,
 } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
-import { showNotification } from "@mantine/notifications";
 
 // Authentication context and components
 import { useAuth } from "./auth/AuthProvider";

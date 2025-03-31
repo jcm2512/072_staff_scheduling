@@ -8,9 +8,13 @@ import { App } from "@/App.jsx";
 import { theme } from "@/themes/colors.jsx";
 import { BrowserRouter } from "react-router-dom";
 
+import { Notifications } from "@mantine/notifications";
+
 createRoot(document.getElementById("root")).render(
   <StrictMode>
     <MantineProvider theme={theme}>
+      <Notifications position="top-left" zIndex={1984} />
+
       <BrowserRouter>
         <AuthProvider>
           <App />
@@ -19,10 +23,3 @@ createRoot(document.getElementById("root")).render(
     </MantineProvider>
   </StrictMode>
 );
-
-// // Register service worker
-// if ("serviceWorker" in navigator) {
-//   navigator.serviceWorker.register("/sw.js").then((reg) => {
-//     console.log("Service Worker registered", reg);
-//   });
-// }

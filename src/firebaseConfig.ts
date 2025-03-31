@@ -3,6 +3,8 @@ import { getAuth, GoogleAuthProvider, Auth } from "firebase/auth";
 import { getFirestore, Firestore } from "firebase/firestore";
 import { getMessaging, getToken, onMessage } from "firebase/messaging";
 
+import { showNotification } from "@mantine/notifications";
+
 // Firebase configuration
 const firebaseConfig = {
   apiKey: import.meta.env.VITE_FIREBASE_API_KEY as string,
@@ -40,6 +42,15 @@ export const requestNotificationPermission = async () => {
 
 export const listenForMessages = () => {
   onMessage(messaging, (payload) => {
-    console.log("Message received:", payload);
+    const title = payload.notification?.title ?? "Notification";
+    const body = payload.notification?.body ?? "";
+
+    showNotification({
+      title,
+      message: body,
+      autoClose: 5000,
+      color: "teal", // or "blue", "red", etc.
+      icon: "🔔", // or use an icon component
+    });
   });
 };
