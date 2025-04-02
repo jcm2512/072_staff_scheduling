@@ -9,7 +9,8 @@
     "deploy": "vite build && firebase deploy",
     "lint": "eslint .",
     "preview": "vite preview",
-    "get-fcm-token": "node scripts/get-fcm-token.js"
+    "get-fcm-token": "node scripts/get-fcm-token.js",
+    "move-docs": "node scripts/move-docs.cjs"
   },
   "dependencies": {
     "@emotion/react": "^11.14.0",
@@ -24,6 +25,7 @@
     "dayjs": "^1.11.13",
     "embla-carousel-react": "^7.1.0",
     "firebase": "^11.4.0",
+    "firebase-admin": "^13.2.0",
     "framer-motion": "^12.5.0",
     "google-auth-library": "^9.15.1",
     "react": "^18.3.1",
