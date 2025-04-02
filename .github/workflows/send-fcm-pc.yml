@@ -1,4 +1,4 @@
-name: Send FCM v1 Notification
+name: Send FCM v1 Notification (PC)
 on:
   workflow_dispatch:
 
