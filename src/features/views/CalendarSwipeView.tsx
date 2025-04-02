@@ -103,17 +103,18 @@ export function CalendarSwipeView({
     <DatesProvider settings={{ consistentWeeks: true }}>
       <Carousel
         initialSlide={initialSlide}
-        slideSize="fit-content"
+        // slideSize="fit-content"
+        // slideSize={"90vw"} // needs to match or be greater than calendarComponent -> month: width
         align="center"
         loop={false}
         // onSlideChange={setCurrentSlide}
-        // withControls={false}
-        controlsOffset="1vw"
+        withControls={false} // hide controls to get full view of calendar
+        controlsOffset="4vw"
         height={"fit-content"}
         controlSize={30}
         includeGapInSize={false}
         skipSnaps={true}
-        slideGap={"xs"}
+        slideGap={"2vw"}
         style={{
           width: isMobile ? "100vw" : "80vw",
         }}

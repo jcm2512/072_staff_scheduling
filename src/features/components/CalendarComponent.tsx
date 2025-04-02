@@ -39,7 +39,7 @@ export function CalendarComponent({
           },
           month: {
             // cant use % as it will include the whole carousel.
-            width: isMobile ? "90vw" : "70vw",
+            width: isMobile ? "98vw" : "70vw",
           },
           monthTbody: {
             borderStyle: "hidden", // removes outside border on table
