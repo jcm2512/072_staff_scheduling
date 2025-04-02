@@ -47,18 +47,6 @@ export function App() {
 
   const navigate = useNavigate();
 
-  if (loading) {
-    return (
-      <Center style={{ height: "100vh" }}>
-        <Loader size="lg" color="teal" />
-      </Center>
-    );
-  }
-
-  function EmptyPage() {
-    return <div></div>;
-  }
-
   // handle subcription token
   const [subscription, setSubscription] = useState<string | null>(null);
 
@@ -85,6 +73,18 @@ export function App() {
       navigate("/calendar");
     }
   }, [user, navigate]);
+
+  function EmptyPage() {
+    return <div></div>;
+  }
+
+  if (loading) {
+    return (
+      <Center style={{ height: "100vh" }}>
+        <Loader size="lg" color="teal" />
+      </Center>
+    );
+  }
 
   return (
     <AppShell
