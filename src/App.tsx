@@ -128,9 +128,7 @@ export function App() {
           <Button onClick={handleRequestPermission}>
             Enable Notifications
           </Button>
-          <pre style={{ overflowX: "auto", maxWidth: "100%" }}>
-            {subscription}
-          </pre>
+          <pre>{subscription}</pre>
         </>
       </AppShell.Navbar>
       <AppShell.Main
