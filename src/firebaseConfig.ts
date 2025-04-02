@@ -121,13 +121,13 @@ export const listenForMessages = () => {
   onMessage(messaging, (payload) => {
     const title = payload.notification?.title ?? "Notification";
     const body = payload.notification?.body ?? "";
-
-    showNotification({
-      title,
-      message: body,
-      autoClose: 5000,
-      color: "teal", // or "blue", "red", etc.
-      icon: "🔔", // or use an icon component
-    });
+    console.log("Foreground message received:", title, body);
+    // showNotification({
+    //   title,
+    //   message: body,
+    //   autoClose: 5000,
+    //   color: "teal", // or "blue", "red", etc.
+    //   icon: "🔔", // or use an icon component
+    // });
   });
 };
