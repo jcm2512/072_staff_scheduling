@@ -41,8 +41,8 @@ jobs:
               "message": {
                 "token": "fIba2_ESBGDGnZMgpcXd6D:APA91bE9VgUCma8C4BVc-OyJqrJZ5zzABzMsBNcUKs5rF1tajsrl8mFDTkLF6SAS5QAxeELZ-D__S28G0W_9Odu2MLqSldxCogEonalMfB9rF9Wv0DoAGnM",
                 "notification": {
-                  "title": "Shift Change",
-                  "body": "Wed 5/7 -> TJ [K1, K2, K3] 40mins"
+                  "title": "Shift Change: Wed 5/7",
+                  "body": "TJ Kagai"
                 }
               }
             }'
