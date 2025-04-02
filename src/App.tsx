@@ -152,7 +152,7 @@ export function App() {
         <Routes>
           {user ? (
             <>
-              <Route path="/calendar" element={<EmptyPage />} />
+              <Route path="/calendar" element={<CalendarSwipeView />} />
               <Route path="/shifts" element={<EmptyPage />} />
               <Route path="*" element={<Navigate to="/calendar" />} />
             </>
