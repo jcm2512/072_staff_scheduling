@@ -1,7 +1,7 @@
 import { Carousel } from "@mantine/carousel";
 import { useEffect, useState } from "react";
 import { DatesProvider } from "@mantine/dates";
-import { em } from "@mantine/core";
+import { em, Loader, Center } from "@mantine/core";
 import { db } from "@/firebaseConfig"; // Your Firebase config
 import { collection, onSnapshot, doc, getDoc } from "firebase/firestore";
 import { CalendarComponent } from "@/features/components/CalendarComponent";
@@ -97,7 +97,12 @@ export function CalendarSwipeView({
     </Carousel.Slide>
   ));
 
-  if (loading) return <p>Loading schedule...</p>;
+  if (loading)
+    return (
+      <Center style={{ height: "100vh" }}>
+        <Loader size="lg" color="teal" />
+      </Center>
+    );
 
   return (
     <DatesProvider settings={{ consistentWeeks: true }}>
