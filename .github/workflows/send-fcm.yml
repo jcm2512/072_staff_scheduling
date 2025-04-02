@@ -40,7 +40,7 @@ jobs:
             --data '{
               "message": {
                 "token": "cDDFNq-LdqsrinB7a1_UBG:APA91bHGv4jlyNJBCd6V6PaJDfSeJp6oqnFZ1jsTjv345hsUANrS9RQZhKOAscuQeL6uMYZalWp1QCskVX8r6tz_sZFHAQtrKGTjj8tmE7UHuCZ5bA2bkP0",
-                "notification: null",
+                "notification": null,
                 "data": {
                   "title": "Shift Change: Wed 5/7",
                   "message": "Notification Message",
