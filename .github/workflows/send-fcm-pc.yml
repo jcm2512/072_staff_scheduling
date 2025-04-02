@@ -39,9 +39,11 @@ jobs:
             -H "Content-Type: application/json" \
             --data '{
               "message": {
-                "token": "fIba2_ESBGDGnZMgpcXd6D:APA91bE9VgUCma8C4BVc-OyJqrJZ5zzABzMsBNcUKs5rF1tajsrl8mFDTkLF6SAS5QAxeELZ-D__S28G0W_9Odu2MLqSldxCogEonalMfB9rF9Wv0DoAGnM",
-                "notification": {
+                "token": "fhg8RZfW2xQVpsHENA3JcM:APA91bHmU0htVhjOSsfC1gGdJTNgbMIOSBoKMAOAqqtA23lFoYWtNiuru-LZlOBwh6Az85xk9s2obCKzuATMUyYulMs0CvecpcL-5a3YdAJmh9eegqTeSy4",
+                "notification": null,
+                "data": {
                   "title": "Shift Change: Wed 5/7",
+                  "message": "Notification Message",
                   "body": "TJ Kagai"
                 }
               }
