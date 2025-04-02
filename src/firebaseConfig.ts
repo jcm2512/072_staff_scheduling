@@ -22,8 +22,8 @@ const firebaseConfig = {
   appId: import.meta.env.VITE_FIREBASE_APP_ID as string,
 };
 
-console.log("APP ID:", import.meta.env.VITE_FIREBASE_APP_ID);
-console.log(firebaseConfig);
+// console.log("APP ID:", import.meta.env.VITE_FIREBASE_APP_ID);
+// console.log(firebaseConfig);
 
 // Initialize Firebase
 export const app: FirebaseApp = initializeApp(firebaseConfig);
@@ -39,6 +39,7 @@ const companyId = "companyId02";
 
 export const ensureUserDocumentExists = async (user: User) => {
   const userRef = doc(db, "companies", companyId, "users", user.uid);
+  console.log("userRef", userRef);
   const snap = await getDoc(userRef);
 
   if (!snap.exists()) {

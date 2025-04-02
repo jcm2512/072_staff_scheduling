@@ -25,6 +25,7 @@ export function AuthenticationForm(props: PaperProps) {
   const handleSignIn = async () => {
     const user = await signInWithGoogle(); // <- assuming it returns userCredential
     if (user) {
+      console.log("user exists");
       await ensureUserDocumentExists(user);
     }
   };
