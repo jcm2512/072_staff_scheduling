@@ -7,7 +7,13 @@ import {
   setDoc,
   getDoc,
 } from "firebase/firestore";
-import { getMessaging, getToken, onMessage } from "firebase/messaging";
+import {
+  getMessaging,
+  getToken,
+  onMessage,
+  isSupported,
+  Messaging,
+} from "firebase/messaging";
 
 import { showNotification } from "@mantine/notifications";
 
@@ -22,9 +28,6 @@ const firebaseConfig = {
   appId: import.meta.env.VITE_FIREBASE_APP_ID as string,
 };
 
-// console.log("APP ID:", import.meta.env.VITE_FIREBASE_APP_ID);
-// console.log(firebaseConfig);
-
 // Initialize Firebase
 export const app: FirebaseApp = initializeApp(firebaseConfig);
 
@@ -33,9 +36,25 @@ export const auth: Auth = getAuth(app);
 export const db: Firestore = getFirestore(app);
 export const googleProvider = new GoogleAuthProvider();
 
-export const messaging = getMessaging(app);
-
 const companyId = "companyId02";
+
+let messaging: Messaging | null = null;
+
+export const initMessaging = async (): Promise<Messaging | null> => {
+  const supported = await isSupported();
+  if (!supported) {
+    console.warn("🔥 FCM not supported in this browser.");
+    return null;
+  }
+
+  try {
+    messaging = getMessaging();
+    return messaging;
+  } catch (err) {
+    console.error("FCM setup failed:", err);
+    return null;
+  }
+};
 
 export const ensureUserDocumentExists = async (user: User) => {
   const userRef = doc(db, "companies", companyId, "users", user.uid);
@@ -54,6 +73,11 @@ export const ensureUserDocumentExists = async (user: User) => {
 export const requestNotificationPermission = async (): Promise<
   string | null
 > => {
+  if (!messaging) {
+    console.warn("🔥 Messaging not initialized. Call initMessaging() first.");
+    return null;
+  }
+
   try {
     const token = await getToken(messaging, {
       vapidKey: import.meta.env.VITE_FIREBASE_VAPID_KEY,
@@ -90,6 +114,10 @@ export const requestNotificationPermission = async (): Promise<
 };
 
 export const listenForMessages = () => {
+  if (!messaging) {
+    console.warn("🔥 Messaging not initialized. Call initMessaging() first.");
+    return;
+  }
   onMessage(messaging, (payload) => {
     const title = payload.notification?.title ?? "Notification";
     const body = payload.notification?.body ?? "";

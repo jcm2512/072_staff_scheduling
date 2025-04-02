@@ -1,5 +1,9 @@
 import { initializeApp } from "firebase/app";
-import { getMessaging, onBackgroundMessage } from "firebase/messaging/sw";
+import {
+  getMessaging,
+  isSupported,
+  onBackgroundMessage,
+} from "firebase/messaging/sw";
 
 // Firebase config copied directly (Vite env vars not usable in SW)
 const firebaseConfig = {
@@ -13,7 +17,23 @@ const firebaseConfig = {
 };
 
 const app = initializeApp(firebaseConfig);
-const messaging = getMessaging(app);
+
+export const initMessaging = async () => {
+  const supported = await isSupported();
+  if (!supported) {
+    console.warn("🔥 FCM not supported in this browser.");
+    return null;
+  }
+
+  try {
+    const messaging = getMessaging();
+    // Optional: add your onMessage, getToken logic here
+    return messaging;
+  } catch (err) {
+    console.error("FCM setup failed:", err);
+    return null;
+  }
+};
 
 onBackgroundMessage(messaging, (payload) => {
   console.log("[🔥 FCM background message]", payload);
