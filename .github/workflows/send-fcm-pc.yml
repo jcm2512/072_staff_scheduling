@@ -1,0 +1,48 @@
+name: Send FCM v1 Notification
+on:
+  workflow_dispatch:
+
+jobs:
+  notify:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Setup Service Account JSON
+        run: echo '${{ secrets.FIREBASE_SERVICE_ACCOUNT }}' > service-account.json
+
+      - name: Generate OAuth 2.0 Access Token
+        id: get_token
+        run: |
+          JWT_HEADER=$(printf '%s' '{"alg":"RS256","typ":"JWT"}' | openssl base64 -e -A | tr '+/' '-_' | tr -d '=')
+          NOW=$(date +%s)
+          EXP=$(($NOW + 3600))
+          SCOPE="https://www.googleapis.com/auth/firebase.messaging"
+          SERVICE_ACCOUNT=$(jq -r .client_email service-account.json)
+          TOKEN_URI=$(jq -r .token_uri service-account.json)
+          PRIVATE_KEY=$(jq -r .private_key service-account.json)
+
+          CLAIM=$(printf '{"iss":"%s","scope":"%s","aud":"%s","exp":%s,"iat":%s}' "$SERVICE_ACCOUNT" "$SCOPE" "$TOKEN_URI" "$EXP" "$NOW" | openssl base64 -e -A | tr '+/' '-_' | tr -d '=')
+
+          SIGNING_INPUT="$JWT_HEADER.$CLAIM"
+          SIGNATURE=$(printf '%s' "$SIGNING_INPUT" | openssl dgst -sha256 -sign <(echo "$PRIVATE_KEY") | openssl base64 -e -A | tr '+/' '-_' | tr -d '=')
+          JWT="$SIGNING_INPUT.$SIGNATURE"
+
+          ACCESS_TOKEN=$(curl -s -X POST -H "Content-Type: application/x-www-form-urlencoded" \
+            -d "grant_type=urn:ietf:params:oauth:grant-type:jwt-bearer&assertion=$JWT" \
+            "$TOKEN_URI" | jq -r .access_token)
+
+          echo "token=$ACCESS_TOKEN" >> $GITHUB_OUTPUT
+
+      - name: Send FCM Message
+        run: |
+          curl -X POST "https://fcm.googleapis.com/v1/projects/shiftori/messages:send" \
+            -H "Authorization: Bearer ${{ steps.get_token.outputs.token }}" \
+            -H "Content-Type: application/json" \
+            --data '{
+              "message": {
+                "token": "fIba2_ESBGDGnZMgpcXd6D:APA91bE9VgUCma8C4BVc-OyJqrJZ5zzABzMsBNcUKs5rF1tajsrl8mFDTkLF6SAS5QAxeELZ-D__S28G0W_9Odu2MLqSldxCogEonalMfB9rF9Wv0DoAGnM",
+                "data": {
+                  "title": "Shift Change",
+                  "body": "Wed 5/7 -> TJ [K1, K2, K3] 40mins"
+                }
+              }
+            }'
