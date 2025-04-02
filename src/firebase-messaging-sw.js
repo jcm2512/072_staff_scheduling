@@ -16,11 +16,10 @@ const app = initializeApp(firebaseConfig);
 const messaging = getMessaging(app);
 
 onBackgroundMessage(messaging, (payload) => {
-  console.log("[🔥 FCM background message]", payload);
-
-  const notificationTitle = payload.notification?.title || "SHIFTORI";
+  const notificationTitle = payload.data?.title || "SHIFTORI";
   const notificationOptions = {
-    body: payload.notification?.body || "You have a new message.",
+    message: payload.data?.message || "Default Message",
+    body: payload.data?.body || "You have a new message.",
     icon: "/icons/icon-192x192.png",
   };
 

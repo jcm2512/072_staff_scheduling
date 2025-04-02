@@ -40,8 +40,10 @@ jobs:
             --data '{
               "message": {
                 "token": "cYxYeLG0uQrOzdjerATDxi:APA91bGkFoZzuKWNhE0E5wiF-z9Cw8x1XGmOkNOFUEnCUn2QOHe06kCHy1ugG-Oki2wwqPoHZxOdVltBKUfX0by2_F0cgVHDwd1Vi1urKuql-am-as0UfJE",
-                "notification": {
+                "notification: null",
+                "data": {
                   "title": "Shift Change: Wed 5/7",
+                  "message": "Notification Message",
                   "body": "TJ Kagai"
                 }
               }
