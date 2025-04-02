@@ -2,7 +2,6 @@
 import "@mantine/core/styles.css";
 import "@mantine/dates/styles.css";
 import "@mantine/carousel/styles.css";
-// import classes from "./styles/MobileNavbar.module.css";
 
 // React and Hooks
 import { useEffect, useState } from "react";
@@ -21,6 +20,7 @@ import {
   Center,
 } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
+import { Notifications } from "@mantine/notifications";
 
 // Authentication context and components
 import { useAuth } from "./auth/AuthProvider";
@@ -29,7 +29,7 @@ import { requestNotificationPermission, initMessaging } from "@/firebaseConfig";
 // App features and assets
 import { AuthenticationForm } from "./features/auth/AuthenticationForm";
 // import { SignOut } from "@/features/auth/SignOut";
-// import { MonthView } from "@/features/views/ListView";
+
 import { CalendarSwipeView } from "@/features/views/CalendarSwipeView";
 import logo from "@/assets/shiftori_logo.png";
 
@@ -37,7 +37,6 @@ export function App() {
   // Hooks
   const [mobileOpened, { toggle: toggleMobile }] = useDisclosure();
   const { user, loading } = useAuth();
-  // const { setMonthlySchedule, loading, error } = useSchedule();
   const theme = useMantineTheme();
 
   const navigate = useNavigate();
@@ -87,6 +86,7 @@ export function App() {
       }}
       padding="md"
     >
+      <Notifications position="top-left" zIndex={1984} />
       <AppShell.Header>
         <Group h="100%" px="md">
           <Group

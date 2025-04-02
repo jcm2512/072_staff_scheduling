@@ -15,8 +15,6 @@ import {
   Messaging,
 } from "firebase/messaging";
 
-// import { showNotification } from "@mantine/notifications";
-
 // Firebase configuration
 const firebaseConfig = {
   apiKey: import.meta.env.VITE_FIREBASE_API_KEY as string,
@@ -112,22 +110,3 @@ export const requestNotificationPermission = async (): Promise<
     return null;
   }
 };
-
-// export const listenForMessages = () => {
-//   if (!messaging) {
-//     console.warn("🔥 Messaging not initialized. Call initMessaging() first.");
-//     return;
-//   }
-//   onMessage(messaging, (payload) => {
-//     const title = payload.notification?.title ?? "Notification";
-//     const body = payload.notification?.body ?? "";
-//     console.log("Foreground message received:", title, body);
-//     // showNotification({
-//     //   title,
-//     //   message: body,
-//     //   autoClose: 5000,
-//     //   color: "teal", // or "blue", "red", etc.
-//     //   icon: "🔔", // or use an icon component
-//     // });
-//   });
-// };

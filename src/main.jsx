@@ -13,8 +13,6 @@ import { Notifications } from "@mantine/notifications";
 createRoot(document.getElementById("root")).render(
   <StrictMode>
     <MantineProvider theme={theme}>
-      <Notifications position="top-left" zIndex={1984} />
-
       <BrowserRouter>
         <AuthProvider>
           <App />
