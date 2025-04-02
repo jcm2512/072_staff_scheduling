@@ -6,6 +6,7 @@ import {
   doc,
   setDoc,
   getDoc,
+  updateDoc,
 } from "firebase/firestore";
 import {
   getMessaging,
@@ -85,23 +86,25 @@ export const requestNotificationPermission = async (): Promise<
     const user = auth.currentUser;
 
     if (user && token) {
-      const tokenRef = doc(
-        db,
-        "companies",
-        companyId,
-        "users",
-        user.uid,
-        "tokens",
-        token
-      );
+      const userRef = doc(db, "companies", companyId, "users", user.uid);
 
-      await setDoc(tokenRef, {
-        token,
-        createdAt: new Date(),
+      const tokenData = {
         userAgent: navigator.userAgent,
+        createdAt: new Date(),
+      };
+
+      await updateDoc(userRef, {
+        [`tokens.${token}`]: tokenData,
       });
 
-      console.log("Stored token for user:", user.uid);
+      // await setDoc(
+      //   userRef,
+      //   {
+      //     token,
+      //     userAgent: navigator.userAgent,
+      //   },
+      //   { merge: true }
+      // );
     }
 
     return token;
