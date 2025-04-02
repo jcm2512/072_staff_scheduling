@@ -39,7 +39,7 @@ jobs:
             -H "Content-Type: application/json" \
             --data '{
               "message": {
-                "token": "cYxYeLG0uQrOzdjerATDxi:APA91bGkFoZzuKWNhE0E5wiF-z9Cw8x1XGmOkNOFUEnCUn2QOHe06kCHy1ugG-Oki2wwqPoHZxOdVltBKUfX0by2_F0cgVHDwd1Vi1urKuql-am-as0UfJE",
+                "token": "cDDFNq-LdqsrinB7a1_UBG:APA91bHGv4jlyNJBCd6V6PaJDfSeJp6oqnFZ1jsTjv345hsUANrS9RQZhKOAscuQeL6uMYZalWp1QCskVX8r6tz_sZFHAQtrKGTjj8tmE7UHuCZ5bA2bkP0",
                 "notification: null",
                 "data": {
                   "title": "Shift Change: Wed 5/7",
