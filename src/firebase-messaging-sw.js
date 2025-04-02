@@ -1,9 +1,5 @@
 import { initializeApp } from "firebase/app";
-import {
-  getMessaging,
-  isSupported,
-  onBackgroundMessage,
-} from "firebase/messaging/sw";
+import { getMessaging, onBackgroundMessage } from "firebase/messaging/sw";
 
 // Firebase config copied directly (Vite env vars not usable in SW)
 const firebaseConfig = {
@@ -17,34 +13,16 @@ const firebaseConfig = {
 };
 
 const app = initializeApp(firebaseConfig);
-
-export const initMessaging = async () => {
-  const supported = await isSupported();
-  if (!supported) {
-    console.warn("🔥 FCM not supported in this browser.");
-    return null;
-  }
-
-  try {
-    const messaging = getMessaging();
-    // Optional: add your onMessage, getToken logic here
-    return messaging;
-  } catch (err) {
-    console.error("FCM setup failed:", err);
-    return null;
-  }
-};
+const messaging = getMessaging(app);
 
 onBackgroundMessage(messaging, (payload) => {
   console.log("[🔥 FCM background message]", payload);
 
-  const { title, body } = payload.data ?? {};
-  if (title && body) {
-    self.registration.showNotification(title, {
-      body,
-      icon: "/icons/icon-192x192.png",
-    });
-  }
-});
+  const notificationTitle = payload.notification?.title || "SHIFTORI";
+  const notificationOptions = {
+    body: payload.notification?.body || "You have a new message.",
+    icon: "/icons/icon-192x192.png",
+  };
 
-// self.__WB_MANIFEST;
+  self.registration.showNotification(notificationTitle, notificationOptions);
+});
