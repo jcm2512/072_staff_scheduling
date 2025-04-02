@@ -1,11 +1,12 @@
 import { initializeApp, FirebaseApp } from "firebase/app";
+import { getAuth, GoogleAuthProvider, Auth, User } from "firebase/auth";
 import {
-  getAuth,
-  GoogleAuthProvider,
-  Auth,
-  onAuthStateChanged,
-} from "firebase/auth";
-import { getFirestore, Firestore, doc, setDoc } from "firebase/firestore";
+  getFirestore,
+  Firestore,
+  doc,
+  setDoc,
+  getDoc,
+} from "firebase/firestore";
 import { getMessaging, getToken, onMessage } from "firebase/messaging";
 
 import { showNotification } from "@mantine/notifications";
@@ -35,6 +36,19 @@ export const googleProvider = new GoogleAuthProvider();
 export const messaging = getMessaging(app);
 
 const companyId = "companyId02";
+
+export const ensureUserDocumentExists = async (user: User) => {
+  const userRef = doc(db, "companies", companyId, "users", user.uid);
+  const snap = await getDoc(userRef);
+
+  if (!snap.exists()) {
+    await setDoc(userRef, {
+      email: user.email,
+      createdAt: new Date(),
+    });
+    console.log("Created user document for", user.uid);
+  }
+};
 
 export const requestNotificationPermission = async (): Promise<
   string | null

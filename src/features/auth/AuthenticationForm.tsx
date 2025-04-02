@@ -19,10 +19,14 @@ import {
   registerWithEmail,
   loginWithEmail,
 } from "@/auth/authService";
+import { ensureUserDocumentExists } from "@/firebaseConfig";
 
 export function AuthenticationForm(props: PaperProps) {
   const handleSignIn = async () => {
-    await signInWithGoogle();
+    const user = await signInWithGoogle(); // <- assuming it returns userCredential
+    if (user) {
+      await ensureUserDocumentExists(user);
+    }
   };
   const [type, toggle] = useToggle(["login", "register"]);
   const form = useForm({
@@ -46,7 +50,9 @@ export function AuthenticationForm(props: PaperProps) {
     const { email, password } = form.values;
     try {
       if (type === "register") {
-        await registerWithEmail(email, password);
+        const user = await registerWithEmail(email, password);
+
+        await ensureUserDocumentExists(user);
       } else {
         await loginWithEmail(email, password);
       }
