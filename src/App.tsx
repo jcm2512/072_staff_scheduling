@@ -26,6 +26,7 @@ import { useAuth } from "./auth/AuthProvider";
 import {
   requestNotificationPermission,
   listenForMessages,
+  initMessaging,
 } from "@/firebaseConfig";
 
 // App features and assets
@@ -34,10 +35,6 @@ import { SignOut } from "@/features/auth/SignOut";
 import { MonthView } from "@/features/views/ListView";
 import { CalendarSwipeView } from "@/features/views/CalendarSwipeView";
 import logo from "@/assets/shiftori_logo.png";
-
-// Upload schedule data
-// import { useSchedule } from "@/hooks/schedule";
-// import { scheduleData } from "@/data/scheduleData";
 
 export function App() {
   // Hooks
@@ -63,7 +60,14 @@ export function App() {
   };
 
   useEffect(() => {
-    listenForMessages();
+    const setupFCM = async () => {
+      const messaging = await initMessaging();
+      if (messaging) {
+        listenForMessages();
+      }
+    };
+
+    setupFCM();
   }, []);
 
   useEffect(() => {
@@ -71,18 +75,6 @@ export function App() {
       navigate("/calendar");
     }
   }, [user, navigate]);
-
-  // Save Schedule Data to database
-  // Should be moved to an admin section
-
-  // async function handleSaveSchedule() {
-  //   await setMonthlySchedule(
-  //     "companyId02",
-  //     "teacherId016",
-  //     "2025-03",
-  //     scheduleData
-  //   );
-  // }
 
   return (
     <AppShell
