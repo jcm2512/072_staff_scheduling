@@ -10,12 +10,12 @@ import {
 import {
   getMessaging,
   getToken,
-  onMessage,
+  // onMessage,
   isSupported,
   Messaging,
 } from "firebase/messaging";
 
-import { showNotification } from "@mantine/notifications";
+// import { showNotification } from "@mantine/notifications";
 
 // Firebase configuration
 const firebaseConfig = {
@@ -113,21 +113,21 @@ export const requestNotificationPermission = async (): Promise<
   }
 };
 
-export const listenForMessages = () => {
-  if (!messaging) {
-    console.warn("🔥 Messaging not initialized. Call initMessaging() first.");
-    return;
-  }
-  onMessage(messaging, (payload) => {
-    const title = payload.notification?.title ?? "Notification";
-    const body = payload.notification?.body ?? "";
-    console.log("Foreground message received:", title, body);
-    // showNotification({
-    //   title,
-    //   message: body,
-    //   autoClose: 5000,
-    //   color: "teal", // or "blue", "red", etc.
-    //   icon: "🔔", // or use an icon component
-    // });
-  });
-};
+// export const listenForMessages = () => {
+//   if (!messaging) {
+//     console.warn("🔥 Messaging not initialized. Call initMessaging() first.");
+//     return;
+//   }
+//   onMessage(messaging, (payload) => {
+//     const title = payload.notification?.title ?? "Notification";
+//     const body = payload.notification?.body ?? "";
+//     console.log("Foreground message received:", title, body);
+//     // showNotification({
+//     //   title,
+//     //   message: body,
+//     //   autoClose: 5000,
+//     //   color: "teal", // or "blue", "red", etc.
+//     //   icon: "🔔", // or use an icon component
+//     // });
+//   });
+// };

@@ -2,7 +2,7 @@
 import "@mantine/core/styles.css";
 import "@mantine/dates/styles.css";
 import "@mantine/carousel/styles.css";
-import classes from "./styles/MobileNavbar.module.css";
+// import classes from "./styles/MobileNavbar.module.css";
 
 // React and Hooks
 import { useEffect, useState } from "react";
@@ -17,7 +17,6 @@ import {
   Burger,
   Button,
   useMantineTheme,
-  UnstyledButton,
   Loader,
   Center,
 } from "@mantine/core";
@@ -25,16 +24,12 @@ import { useDisclosure } from "@mantine/hooks";
 
 // Authentication context and components
 import { useAuth } from "./auth/AuthProvider";
-import {
-  requestNotificationPermission,
-  listenForMessages,
-  initMessaging,
-} from "@/firebaseConfig";
+import { requestNotificationPermission, initMessaging } from "@/firebaseConfig";
 
 // App features and assets
 import { AuthenticationForm } from "./features/auth/AuthenticationForm";
-import { SignOut } from "@/features/auth/SignOut";
-import { MonthView } from "@/features/views/ListView";
+// import { SignOut } from "@/features/auth/SignOut";
+// import { MonthView } from "@/features/views/ListView";
 import { CalendarSwipeView } from "@/features/views/CalendarSwipeView";
 import logo from "@/assets/shiftori_logo.png";
 
@@ -58,14 +53,10 @@ export function App() {
   };
 
   useEffect(() => {
-    const setupFCM = async () => {
-      const messaging = await initMessaging();
-      if (messaging) {
-        listenForMessages();
-      }
+    const setup = async () => {
+      await initMessaging();
     };
-
-    setupFCM();
+    setup();
   }, []);
 
   useEffect(() => {
