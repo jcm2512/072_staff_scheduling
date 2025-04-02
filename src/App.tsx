@@ -18,6 +18,8 @@ import {
   Button,
   useMantineTheme,
   UnstyledButton,
+  Loader,
+  Center,
 } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 
@@ -39,11 +41,19 @@ import logo from "@/assets/shiftori_logo.png";
 export function App() {
   // Hooks
   const [mobileOpened, { toggle: toggleMobile }] = useDisclosure();
-  const { user } = useAuth();
+  const { user, loading } = useAuth();
   // const { setMonthlySchedule, loading, error } = useSchedule();
   const theme = useMantineTheme();
 
   const navigate = useNavigate();
+
+  if (loading) {
+    return (
+      <Center style={{ height: "100vh" }}>
+        <Loader size="lg" color="teal" />
+      </Center>
+    );
+  }
 
   function EmptyPage() {
     return <div></div>;
