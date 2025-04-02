@@ -48,6 +48,10 @@ export function App() {
 
   const navigate = useNavigate();
 
+  function EmptyPage() {
+    return <div></div>;
+  }
+
   // handle subcription token
   const [subscription, setSubscription] = useState<string | null>(null);
 
@@ -125,12 +129,16 @@ export function App() {
         {/* Navbar Menu */}
         <>
           {/* <SignOut /> */}
-          <Button onClick={handleRequestPermission}>
-            Enable Notifications
-          </Button>
-          <pre style={{ whiteSpace: "pre-wrap", wordBreak: "break-word" }}>
-            {subscription}
-          </pre>
+          {user && (
+            <>
+              <Button onClick={handleRequestPermission}>
+                Enable Notifications
+              </Button>
+              <pre style={{ whiteSpace: "pre-wrap", wordBreak: "break-word" }}>
+                {subscription}
+              </pre>
+            </>
+          )}
         </>
       </AppShell.Navbar>
       <AppShell.Main
@@ -144,8 +152,8 @@ export function App() {
         <Routes>
           {user ? (
             <>
-              <Route path="/calendar" element={<CalendarSwipeView />} />
-              <Route path="/shifts" element={<MonthView />} />
+              <Route path="/calendar" element={<EmptyPage />} />
+              <Route path="/shifts" element={<EmptyPage />} />
               <Route path="*" element={<Navigate to="/calendar" />} />
             </>
           ) : (

@@ -45,27 +45,28 @@ export const requestNotificationPermission = async (): Promise<
     });
 
     console.log("FCM Token:", token);
+    const user = auth.currentUser;
 
-    // Wait until the user is logged in
-    onAuthStateChanged(auth, async (user) => {
-      if (user) {
-        const tokenRef = doc(
-          db,
-          "companies",
-          companyId,
-          "staff",
-          user.uid,
-          "tokens",
-          token
-        );
-        await setDoc(tokenRef, {
-          token,
-          createdAt: new Date(),
-          userAgent: navigator.userAgent,
-        });
-        console.log("Stored token for user:", user.uid);
-      }
-    });
+    if (user && token) {
+      const tokenRef = doc(
+        db,
+        "companies",
+        companyId,
+        "users",
+        user.uid,
+        "tokens",
+        token
+      );
+
+      await setDoc(tokenRef, {
+        token,
+        createdAt: new Date(),
+        userAgent: navigator.userAgent,
+      });
+
+      console.log("Stored token for user:", user.uid);
+    }
+
     return token;
   } catch (error) {
     console.error("Error getting FCM token:", error);
