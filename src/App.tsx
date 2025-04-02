@@ -128,7 +128,9 @@ export function App() {
           <Button onClick={handleRequestPermission}>
             Enable Notifications
           </Button>
-          <pre>{subscription}</pre>
+          <pre style={{ whiteSpace: "pre-wrap", wordBreak: "break-word" }}>
+            {subscription}
+          </pre>
         </>
       </AppShell.Navbar>
       <AppShell.Main
