@@ -3,9 +3,11 @@ import { useEffect, useState } from "react";
 import { DatesProvider } from "@mantine/dates";
 import { em } from "@mantine/core";
 import { db } from "@/firebaseConfig"; // Your Firebase config
-import { collection, onSnapshot } from "firebase/firestore";
+import { collection, onSnapshot, doc, getDoc } from "firebase/firestore";
 import { CalendarComponent } from "@/features/components/CalendarComponent";
 import { useMediaQuery } from "@mantine/hooks";
+import { useAuth } from "@/auth/AuthProvider";
+import { useEmployeeId } from "@/hooks/useEmployeeId";
 
 type CalendarSwipeViewProps = {
   initialMonth?: number; // The starting month index (0-indexed)
@@ -37,21 +39,18 @@ export function CalendarSwipeView({
 }: CalendarSwipeViewProps) {
   const [schedule, setSchedule] = useState<Record<string, DaySchedule>>({});
   const isMobile = useMediaQuery(`(max-width: ${em(768)})`);
+  const { employeeId, loading } = useEmployeeId();
 
   useEffect(() => {
-    const teacherId = "teacherId016";
-    const companyId = "companyId02";
-
+    if (!employeeId) return;
     const scheduleCollectionRef = collection(
       db,
       "companies",
-      companyId,
+      "companyId02",
       "teacher",
-      teacherId,
+      employeeId,
       "monthlySchedule"
     );
-
-    console.log("Fetching schedule from Firestore...");
 
     const unsubscribe = onSnapshot(scheduleCollectionRef, (snapshot) => {
       let mergedDays: Record<string, DaySchedule> = {};
@@ -69,11 +68,10 @@ export function CalendarSwipeView({
       });
 
       setSchedule(mergedDays);
-      console.log(mergedDays);
     });
 
     return () => unsubscribe();
-  }, []);
+  }, [employeeId]);
 
   //   Calculate the initial slide index to center on the current month
   const initialSlide =
@@ -98,6 +96,8 @@ export function CalendarSwipeView({
       />
     </Carousel.Slide>
   ));
+
+  if (loading) return <p>Loading schedule...</p>;
 
   return (
     <DatesProvider settings={{ consistentWeeks: true }}>
