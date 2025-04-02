@@ -18,7 +18,7 @@ const messaging = getMessaging(app);
 onBackgroundMessage(messaging, (payload) => {
   console.log("[🔥 FCM background message]", payload);
 
-  const { title, body } = payload.notification ?? {};
+  const { title, body } = payload.data ?? {};
   if (title && body) {
     self.registration.showNotification(title, {
       body,

@@ -40,7 +40,7 @@ jobs:
             --data '{
               "message": {
                 "token": "foIpToG1y0YGYgfya-KkBY:APA91bGsnNqRZXFK4ntuksOL7Eay0jN_znKXE1kmApUnVLtaBnuCV2gfmMxnb0nELkmm7i9R-nWLf3PgtUPUpQTgQYeC473IYbMoDyYoyBCyRk0Zv5tGWLk",
-                "notification": {
+                "data": {
                   "title": "✅ Hello from GitHub Actions",
                   "body": "This is a safe FCM test message"
                 }
