@@ -1,6 +1,11 @@
 import { initializeApp, FirebaseApp } from "firebase/app";
-import { getAuth, GoogleAuthProvider, Auth } from "firebase/auth";
-import { getFirestore, Firestore } from "firebase/firestore";
+import {
+  getAuth,
+  GoogleAuthProvider,
+  Auth,
+  onAuthStateChanged,
+} from "firebase/auth";
+import { getFirestore, Firestore, doc, setDoc } from "firebase/firestore";
 import { getMessaging, getToken, onMessage } from "firebase/messaging";
 
 import { showNotification } from "@mantine/notifications";
@@ -29,6 +34,8 @@ export const googleProvider = new GoogleAuthProvider();
 
 export const messaging = getMessaging(app);
 
+const companyId = "companyId02";
+
 export const requestNotificationPermission = async (): Promise<
   string | null
 > => {
@@ -36,7 +43,29 @@ export const requestNotificationPermission = async (): Promise<
     const token = await getToken(messaging, {
       vapidKey: import.meta.env.VITE_FIREBASE_VAPID_KEY,
     });
+
     console.log("FCM Token:", token);
+
+    // Wait until the user is logged in
+    onAuthStateChanged(auth, async (user) => {
+      if (user) {
+        const tokenRef = doc(
+          db,
+          "companies",
+          companyId,
+          "staff",
+          user.uid,
+          "tokens",
+          token
+        );
+        await setDoc(tokenRef, {
+          token,
+          createdAt: new Date(),
+          userAgent: navigator.userAgent,
+        });
+        console.log("Stored token for user:", user.uid);
+      }
+    });
     return token;
   } catch (error) {
     console.error("Error getting FCM token:", error);
