@@ -29,14 +29,18 @@ export const googleProvider = new GoogleAuthProvider();
 
 export const messaging = getMessaging(app);
 
-export const requestNotificationPermission = async () => {
+export const requestNotificationPermission = async (): Promise<
+  string | null
+> => {
   try {
     const token = await getToken(messaging, {
       vapidKey: import.meta.env.VITE_FIREBASE_VAPID_KEY,
     });
     console.log("FCM Token:", token);
+    return token;
   } catch (error) {
     console.error("Error getting FCM token:", error);
+    return null;
   }
 };
 

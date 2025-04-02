@@ -5,7 +5,7 @@ import "@mantine/carousel/styles.css";
 import classes from "./styles/MobileNavbar.module.css";
 
 // React and Hooks
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Routes, Route, Navigate, useNavigate } from "react-router-dom";
 
 // Mantine components and hooks
@@ -15,6 +15,7 @@ import {
   Title,
   Text,
   Burger,
+  Button,
   useMantineTheme,
   UnstyledButton,
 } from "@mantine/core";
@@ -47,8 +48,17 @@ export function App() {
 
   const navigate = useNavigate();
 
+  // handle subcription token
+  const [subscription, setSubscription] = useState<string | null>(null);
+
+  const handleRequestPermission = async () => {
+    const token = await requestNotificationPermission();
+    if (token) {
+      setSubscription(token);
+    }
+  };
+
   useEffect(() => {
-    requestNotificationPermission();
     listenForMessages();
   }, []);
 
@@ -114,7 +124,13 @@ export function App() {
       <AppShell.Navbar py="md" px={4}>
         {/* Navbar Menu */}
         <>
-          <SignOut />
+          {/* <SignOut /> */}
+          <Button onClick={handleRequestPermission}>
+            Enable Notifications
+          </Button>
+          <pre style={{ overflowX: "auto", maxWidth: "100%" }}>
+            {subscription}
+          </pre>
         </>
       </AppShell.Navbar>
       <AppShell.Main
