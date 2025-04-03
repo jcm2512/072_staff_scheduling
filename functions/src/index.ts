@@ -4,9 +4,9 @@ import * as admin from "firebase-admin";
 admin.initializeApp();
 
 export const sendPushToUser = functions.https.onCall(async (data, context) => {
-  const { companyId, userId, title, message, body } = data;
+  const { companyId, userId, title, body } = data;
 
-  if (!companyId || !userId || !title || !message || !body) {
+  if (!companyId || !userId || !title || !body) {
     throw new functions.https.HttpsError("invalid-argument", "Missing fields");
   }
 
@@ -31,7 +31,6 @@ export const sendPushToUser = functions.https.onCall(async (data, context) => {
     const payload = {
       data: {
         title,
-        message,
         body,
       },
     };
