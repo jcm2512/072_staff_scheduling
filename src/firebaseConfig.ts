@@ -7,6 +7,7 @@ import {
   setDoc,
   getDoc,
   updateDoc,
+  serverTimestamp,
 } from "firebase/firestore";
 import {
   getMessaging,
@@ -47,7 +48,7 @@ export const initMessaging = async (): Promise<Messaging | null> => {
   }
 
   try {
-    messaging = getMessaging();
+    messaging = getMessaging(app); // ✅ Pass app explicitly
     return messaging;
   } catch (err) {
     console.error("FCM setup failed:", err);
@@ -63,7 +64,7 @@ export const ensureUserDocumentExists = async (user: User) => {
   if (!snap.exists()) {
     await setDoc(userRef, {
       email: user.email,
-      createdAt: new Date(),
+      createdAt: serverTimestamp(), // ✅ Use server timestamp
     });
     console.log("Created user document for", user.uid);
   }
@@ -79,7 +80,7 @@ export const requestNotificationPermission = async (): Promise<
 
   try {
     const token = await getToken(messaging, {
-      vapidKey: import.meta.env.VITE_FIREBASE_VAPID_KEY,
+      vapidKey: import.meta.env.VITE_FIREBASE_VAPID_KEY as string, // ✅ Explicit cast
     });
 
     console.log("FCM Token:", token);
@@ -90,21 +91,12 @@ export const requestNotificationPermission = async (): Promise<
 
       const tokenData = {
         userAgent: navigator.userAgent,
-        createdAt: new Date(),
+        createdAt: serverTimestamp(), // ✅ Use server timestamp
       };
 
       await updateDoc(userRef, {
         [`tokens.${token}`]: tokenData,
       });
-
-      // await setDoc(
-      //   userRef,
-      //   {
-      //     token,
-      //     userAgent: navigator.userAgent,
-      //   },
-      //   { merge: true }
-      // );
     }
 
     return token;
