@@ -126,9 +126,7 @@ export function App() {
           {/* <SignOut /> */}
           {user && (
             <>
-              <Button onClick={handleRequestPermission}>
-                Enable Notifications
-              </Button>
+              <Button onClick={handleRequestPermission}>Enable Popups</Button>
               <NotifyButton
                 companyId="companyId02"
                 userId="agG3crgplFQ8auLjfiT4U7MxPJz2"
