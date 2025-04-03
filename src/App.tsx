@@ -1,3 +1,5 @@
+import logo from "@/assets/shiftori_logo.png";
+
 // Import styles of installed packages
 import "@mantine/core/styles.css";
 import "@mantine/dates/styles.css";
@@ -31,7 +33,7 @@ import { AuthenticationForm } from "./features/auth/AuthenticationForm";
 // import { SignOut } from "@/features/auth/SignOut";
 
 import { CalendarSwipeView } from "@/features/views/CalendarSwipeView";
-import logo from "@/assets/shiftori_logo.png";
+import { NotifyButton } from "@/components/notifyButton";
 
 export function App() {
   // Hooks
@@ -127,9 +129,10 @@ export function App() {
               <Button onClick={handleRequestPermission}>
                 Enable Notifications
               </Button>
-              <pre style={{ whiteSpace: "pre-wrap", wordBreak: "break-word" }}>
-                {subscription}
-              </pre>
+              <NotifyButton
+                companyId="companyId02"
+                userId="agG3crgplFQ8auLjfiT4U7MxPJz2"
+              />
             </>
           )}
         </>
