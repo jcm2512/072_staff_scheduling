@@ -130,6 +130,7 @@ export function App() {
               <NotifyButton
                 companyId="companyId02"
                 userId="agG3crgplFQ8auLjfiT4U7MxPJz2"
+                body="Hey could you please work on 5/7?"
               />
             </>
           )}

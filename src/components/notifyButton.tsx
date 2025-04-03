@@ -5,16 +5,14 @@ type Props = {
   companyId: string;
   userId: string;
   title?: string;
-  message?: string;
   body?: string;
 };
 
 export const NotifyButton: React.FC<Props> = ({
   companyId,
   userId,
-  title = "Shift Reminder",
-  message = "Check your shift schedule",
-  body = "Message body",
+  title = "Shift Change",
+  body = "You have a new shift change",
 }) => {
   const handleClick = async () => {
     try {
@@ -22,7 +20,6 @@ export const NotifyButton: React.FC<Props> = ({
         companyId,
         userId,
         title,
-        message,
         body,
       });
       console.log("Notification sent:", result);
