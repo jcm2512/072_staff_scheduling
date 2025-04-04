@@ -3,39 +3,28 @@ import * as admin from "firebase-admin";
 
 admin.initializeApp();
 
-export const sendPushToUser = functions.https.onCall(async (data, context) => {
-  const { companyId, userId, title, body } = data;
+type TokenMeta = {
+  userAgent: string;
+  createdAt: string;
+};
 
-  if (!companyId || !userId || !title || !body) {
+// Cloud Function side
+export const sendPushToUser = functions.https.onCall(async (data, context) => {
+  const { tokens, title, body } = data as {
+    tokens: Record<string, TokenMeta>;
+    title: string;
+    body: string;
+  };
+
+  if (!tokens || Object.keys(tokens).length === 0 || !title || !body) {
     throw new functions.https.HttpsError("invalid-argument", "Missing fields");
   }
 
+  const payload = {
+    data: { title, body },
+  };
+
   try {
-    // Retrieve the user document
-    const userDoc = await admin
-      .firestore()
-      .collection("companies")
-      .doc(companyId)
-      .collection("users")
-      .doc(userId)
-      .get();
-
-    // Retrieve the tokens map
-    const tokens = userDoc.data()?.tokens;
-
-    if (!tokens || Object.keys(tokens).length === 0) {
-      throw new functions.https.HttpsError("not-found", "No tokens available");
-    }
-
-    // Prepare the payload
-    const payload = {
-      data: {
-        title,
-        body,
-      },
-    };
-
-    // Send notifications to each token
     const response = await admin.messaging().sendEach(
       Object.keys(tokens).map((token) => ({
         token,
@@ -49,9 +38,6 @@ export const sendPushToUser = functions.https.onCall(async (data, context) => {
     };
   } catch (error) {
     console.error("Error sending push notification:", error);
-    throw new functions.https.HttpsError(
-      "internal",
-      "Failed to send push notification"
-    );
+    throw new functions.https.HttpsError("internal", "Failed to send push notification");
   }
 });

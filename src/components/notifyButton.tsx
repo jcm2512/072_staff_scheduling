@@ -1,5 +1,5 @@
 import React from "react";
-import { sendNotification } from "@/utils/sendNotification";
+import { getUserTokens, sendNotification } from "@/utils/sendNotification";
 
 type Props = {
   companyId: string;
@@ -16,12 +16,18 @@ export const NotifyButton: React.FC<Props> = ({
 }) => {
   const handleClick = async () => {
     try {
-      const result = await sendNotification({
-        companyId,
-        userId,
+      const tokens = await getUserTokens(companyId, userId);
+
+      if (!tokens || Object.keys(tokens).length === 0) {
+        console.warn("No tokens found for user.");
+        return;
+      }
+
+      const result = await sendNotification(
+        tokens,
         title,
         body,
-      });
+      );
       console.log("Notification sent:", result);
     } catch (err) {
       console.error("Failed to send notification:", err);
