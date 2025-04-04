@@ -3,20 +3,22 @@ import * as admin from "firebase-admin";
 
 admin.initializeApp();
 
-type TokenMeta = {
-  userAgent: string;
-  createdAt: string;
-};
-
 // Cloud Function side
 export const sendPushToUser = functions.https.onCall(async (data, context) => {
   const { tokens, title, body } = data as {
-    tokens: Record<string, TokenMeta>;
+    tokens: string[];
     title: string;
+    // message: string;
     body: string;
   };
 
-  if (!tokens || Object.keys(tokens).length === 0 || !title || !body) {
+  if (
+    !tokens ||
+    Object.keys(tokens).length === 0 ||
+    !title ||
+    // !message ||
+    !body
+  ) {
     throw new functions.https.HttpsError("invalid-argument", "Missing fields");
   }
 
@@ -26,7 +28,7 @@ export const sendPushToUser = functions.https.onCall(async (data, context) => {
 
   try {
     const response = await admin.messaging().sendEach(
-      Object.keys(tokens).map((token) => ({
+      tokens.map((token) => ({
         token,
         ...payload,
       }))
@@ -38,6 +40,9 @@ export const sendPushToUser = functions.https.onCall(async (data, context) => {
     };
   } catch (error) {
     console.error("Error sending push notification:", error);
-    throw new functions.https.HttpsError("internal", "Failed to send push notification");
+    throw new functions.https.HttpsError(
+      "internal",
+      "Failed to send push notification"
+    );
   }
 });

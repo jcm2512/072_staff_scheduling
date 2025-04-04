@@ -5,6 +5,7 @@ type Props = {
   companyId: string;
   userId: string;
   title?: string;
+  // message?: string;
   body?: string;
 };
 
@@ -12,22 +13,20 @@ export const NotifyButton: React.FC<Props> = ({
   companyId,
   userId,
   title = "Shift Change",
+  // message = "You have a new shift change",
   body = "You have a new shift change",
 }) => {
   const handleClick = async () => {
     try {
-      const tokens = await getUserTokens(companyId, userId);
+      const tokens = await getUserTokens(companyId, userId); // string[]
+      console.log("Tokens:", tokens);
 
-      if (!tokens || Object.keys(tokens).length === 0) {
+      if (tokens.length === 0) {
         console.warn("No tokens found for user.");
         return;
       }
 
-      const result = await sendNotification(
-        tokens,
-        title,
-        body,
-      );
+      const result = await sendNotification(tokens, title, body);
       console.log("Notification sent:", result);
     } catch (err) {
       console.error("Failed to send notification:", err);
