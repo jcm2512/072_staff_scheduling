@@ -38,31 +38,37 @@ export function CalendarComponent({
             fontSize: "var(--mantine-font-size-xl)",
           },
           month: {
+            // cant use % as it will include the whole carousel.
+            // width: isMobile ? "98vw" : "70vw",
             width: "100%",
+            // height: "100%",
           },
-
+          // monthRow: {
+          //   height: "1rem",
+          // },
           monthTbody: {
             borderStyle: "hidden", // removes outside border on table
           },
           levelsGroup: {
             justifyContent: "center",
             width: "100%",
-            border: "1px solid #eaeaea",
+            border: "2px solid #eaeaea",
             borderRadius: `var(--mantine-radius-lg)`,
             overflow: "hidden",
             boxSizing: "border-box",
             backgroundColor: "white",
+            height: "fit-content",
           },
 
           monthCell: {
+            // backgroundColor: "#f3f6f7",
             borderWidth: "1px",
             border: "solid 1px #eaeaea",
             lineHeight: "0",
           },
           day: {
-            height: "12vh",
+            height: "100%",
             width: "100%",
-            overflow: "hidden",
           },
         }}
         renderDay={(date) => {
@@ -76,42 +82,24 @@ export function CalendarComponent({
           return (
             <Stack
               align="center"
-              style={{ height: "100%", width: "100%" }}
-              gap={0}
+              // justify="flex-start"
+              // gap={0}
+              h={"5rem"}
+              bg={"pink"}
             >
-              <Text size="sm" style={{ fontWeight: "bold" }}>
-                {day}
-              </Text>
-
+              <Text size="xs">{day}</Text>
               <Text
-                c={daySchedule.am == "Office" ? "black" : "#1A535C"}
+                c={daySchedule.am == "Office" ? "gray" : "cyan"}
                 inline={true}
                 size="xs"
-                m={"0.5vh"}
-                bg={daySchedule.am == "Office" ? "lightgrey" : "#4ECDC4"}
-                style={{
-                  width: "90%",
-                  borderRadius: "1rem",
-                  textAlign: "center",
-                  lineHeight: "1.3rem",
-                  // fontWeight: "bold",
-                }}
+                m={"xs"}
               >
                 {daySchedule.am || ""}
               </Text>
               <Text
-                c={daySchedule.pm == "Office" ? "black" : "#055561"}
-                bg={daySchedule.pm == "Office" ? "lightgrey" : "#C4F5FC"}
+                c={daySchedule.pm == "Office" ? "gray" : "green"}
                 inline={true}
                 size="xs"
-                m={"0.5vh"}
-                style={{
-                  width: "90%",
-                  borderRadius: "1rem",
-                  textAlign: "center",
-                  lineHeight: "1.3rem",
-                  // fontWeight: "bold",
-                }}
               >
                 {daySchedule.pm || ""}
               </Text>

@@ -33,6 +33,7 @@ import { AuthenticationForm } from "./features/auth/AuthenticationForm";
 // import { SignOut } from "@/features/auth/SignOut";
 
 import { CalendarSwipeView } from "@/features/views/CalendarSwipeView";
+import { CalendarScrollView } from "@/features/views/CalendarScrollView";
 import { NotifyButton } from "@/components/notifyButton";
 
 export function App() {
@@ -50,6 +51,7 @@ export function App() {
     const token = await requestNotificationPermission();
     if (token) {
       setSubscription(token);
+      console.log(subscription);
     }
   };
 
@@ -60,15 +62,11 @@ export function App() {
     setup();
   }, []);
 
-  useEffect(() => {
-    if (user) {
-      navigate("/calendar");
-    }
-  }, [user, navigate]);
-
-  function EmptyPage() {
-    return <div></div>;
-  }
+  // useEffect(() => {
+  //   if (user) {
+  //     navigate("/calendar");
+  //   }
+  // }, [user, navigate]);
 
   if (loading) {
     return (
@@ -86,7 +84,7 @@ export function App() {
         breakpoint: "sm",
         collapsed: { mobile: !mobileOpened },
       }}
-      padding="md"
+      // padding="md"
     >
       <Notifications position="top-left" zIndex={1984} />
       <AppShell.Header>
@@ -148,9 +146,9 @@ export function App() {
         <Routes>
           {user ? (
             <>
-              <Route path="/calendar" element={<CalendarSwipeView />} />
-              <Route path="/shifts" element={<EmptyPage />} />
-              <Route path="*" element={<Navigate to="/calendar" />} />
+              {/* <Route path="/calendar" element={<CalendarSwipeView />} /> */}
+              <Route path="/calendar" element={<CalendarScrollView />} />
+              {/* <Route path="*" element={<Navigate to="/calendar" />} /> */}
             </>
           ) : (
             <Route path="*" element={<AuthenticationForm />} />
