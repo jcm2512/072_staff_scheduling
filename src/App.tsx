@@ -21,6 +21,7 @@ import {
   Loader,
   Center,
   em,
+  Box,
 } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import { Notifications } from "@mantine/notifications";
@@ -40,6 +41,71 @@ import ColorCarouselPage from "@/features/views/colorCarouselPage";
 // Components
 import { NotifyButton } from "@/components/notifyButton";
 
+type HeaderBarProps = {
+  titleEn: string;
+  titleJp: string;
+  info: string;
+  mobileOpened: boolean;
+  toggleMobile: () => void;
+};
+
+export function HeaderBar({
+  titleEn = "SHIFTORI",
+  titleJp = "シフトリ",
+  info,
+  mobileOpened,
+  toggleMobile,
+}: HeaderBarProps) {
+  return (
+    <Group h="100%" px="md" style={{ position: "relative" }}>
+      {/* Left fixed section */}
+      <Box style={{ width: 60, display: "flex", alignItems: "center", gap: 8 }}>
+        <Group gap="xs">
+          <img
+            src={logo}
+            alt="Shiftori"
+            style={{
+              height: 40,
+            }}
+          />
+
+          <Title order={1}>{titleJp}</Title>
+          <Title order={2}>
+            <Text>{titleEn}</Text>
+          </Title>
+        </Group>
+      </Box>
+
+      {/* Centered info */}
+      <Box
+        style={{
+          position: "absolute",
+          left: 60,
+          right: 40,
+          height: "100%",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          pointerEvents: "none",
+        }}
+      >
+        <Title order={1} style={{ margin: 0, lineHeight: 1 }}>
+          <Text>{info}</Text>
+        </Title>
+      </Box>
+
+      {/* Right burger */}
+      <Burger
+        opened={mobileOpened}
+        onClick={toggleMobile}
+        hiddenFrom="sm"
+        size="sm"
+        style={{ marginLeft: "auto" }}
+      />
+    </Group>
+  );
+}
+
 export function App() {
   // Hooks
   const [mobileOpened, { toggle: toggleMobile }] = useDisclosure();
@@ -48,10 +114,16 @@ export function App() {
   const { user, loading } = useAuth();
   const theme = useMantineTheme();
 
-  const navigate = useNavigate();
-
-  // handle subcription token
   const [subscription, setSubscription] = useState<string | null>(null);
+
+  const [currentMonth, setCurrentMonth] = useState<Date | null>(null);
+
+  const CalendarScrollViewProps = {
+    isMobile,
+    onMonthChange: (date: Date) => {
+      setCurrentMonth(date); // sets current date to month in scroll view
+    },
+  };
 
   const handleRequestPermission = async () => {
     const token = await requestNotificationPermission();
@@ -87,28 +159,33 @@ export function App() {
     >
       <Notifications position="top-left" zIndex={1984} />
       <AppShell.Header>
-        <Group h="100%" px="md">
-          <Group
-            justify="space-between"
-            style={{
-              flex: 1,
-            }}
-          >
-            <Group gap="xs">
-              <img
-                src={logo}
-                alt="Shiftori"
-                style={{
-                  height: 40,
-                }}
-              />
-
-              <Title order={1}>シフトリ</Title>
-              <Title order={2}>
-                <Text>SHIFTORI</Text>
-              </Title>
-            </Group>
+        <Group h="100%" px="md" justify="space-between">
+          {/* Left: Logo and Titles */}
+          <Group gap="xs" w={isMobile ? 60 : 300}>
+            <img src={logo} alt="Shiftori" style={{ height: 40 }} />
+            {!isMobile && (
+              <>
+                <Title order={1}>シフトリ</Title>
+                <Title order={2}>
+                  <Text>SHIFTORI</Text>
+                </Title>
+              </>
+            )}
           </Group>
+
+          {/* Center: Current Month */}
+          <Box style={{ flex: 1, textAlign: "center" }}>
+            <Title order={1}>
+              {currentMonth
+                ? currentMonth.toLocaleString("en", {
+                    month: "long",
+                    year: "numeric",
+                  })
+                : "Loading..."}
+            </Title>
+          </Box>
+
+          {/* Right: Burger Menu */}
           <Burger
             opened={mobileOpened}
             onClick={toggleMobile}
@@ -148,7 +225,7 @@ export function App() {
               {/* <Route path="/calendar" element={<CalendarSwipeView />} /> */}
               <Route
                 path="/scroll"
-                element={<CalendarScrollView {...{ isMobile }} />}
+                element={<CalendarScrollView {...CalendarScrollViewProps} />}
               />
               <Route path="/colors" element={<ColorCarouselPage />} />
               <Route path="*" element={<Navigate to="/scroll" />} />

@@ -1,6 +1,5 @@
 import { Stack, Text, em } from "@mantine/core";
 import { Calendar } from "@mantine/dates";
-import { useMediaQuery } from "@mantine/hooks";
 
 type CalendarComponentProps = {
   isMobile?: boolean;
@@ -15,7 +14,22 @@ export function CalendarComponent({
 }: CalendarComponentProps) {
   return (
     <>
+      <Text
+        size="2em"
+        fw={600}
+        bg={"white"}
+        m={0}
+        style={{
+          textAlign: "center",
+          marginBottom: "0.5rem",
+          // backgroundColor: "white", // color of month card
+        }}
+      >
+        {date.toLocaleString("en", { month: "long" })}{" "}
+        {/* or use format(date, 'MMMM') if using date-fns */}
+      </Text>
       <Calendar
+        hideOutsideDates
         defaultDate={date}
         firstDayOfWeek={0}
         withCellSpacing={false}
@@ -37,46 +51,34 @@ export function CalendarComponent({
           },
           weekday: {
             display: "none",
-            background: "blue",
           },
           month: {
             // parent of monthTbody - handles day labels and overall width of month
             width: "100%", // month fills entire width of slide
-            height: "100%", // IMPORTANT setting height to 100% clashes with setting monthCell to 100%
           },
           monthTbody: {
             // overlays ontop of month
-            borderStyle: "hidden", // removes outside border on table
-            height: "100%",
-            background: "blue",
+            // borderStyle: "hidden", // removes outside border on table
+            borderBottomStyle: "hidden",
+            // height: "100%",
           },
           levelsGroup: {
             // child of Calendar component //
 
-            // --- rounded border --- //
-            // border: "1px solid #eaeaea", // border around each month card
-            // borderRadius: `var(--mantine-radius-lg)`,
-            // overflow: "hidden", // forces border radius to clip content
-            // ---
-
             backgroundColor: "white", // color of month card
             height: "100%", // to fill parent Calendar component
-
-            border: "3px solid red",
           },
 
           monthCell: {
-            // IMPORTANT setting height to 100% clashes with setting month to 100%
+            height: "100%", // IMPORTANT setting height to 100% clashes with setting month to 100%
             borderWidth: "1px", //collapses surrounding cell borders
-            border: "solid 1px #eaeaea",
+            borderTop: "solid 1px #eaeaea",
             lineHeight: "0", // override default line height
           },
           day: {
-            // height: "12vh",
-            // height: "100%",
+            height: "12vh",
             width: "100%", // centers content
             overflow: "hidden",
-            display: "flex", // fixes content from being default baseline aligned (keeps cells the same size)
           },
         }}
         renderDay={(date) => {
@@ -90,7 +92,7 @@ export function CalendarComponent({
           return (
             <Stack
               align="center"
-              // style={{ height: "100%", width: "100%" }}
+              style={{ height: "100%", width: "100%" }} // fixes content from being default baseline aligned (keeps cells the same size)
               gap={0}
             >
               <Text size="sm" style={{ fontWeight: "300" }}>

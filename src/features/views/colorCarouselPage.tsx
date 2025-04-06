@@ -1,42 +1,50 @@
 import { Carousel } from "@mantine/carousel";
 import { Box } from "@mantine/core";
 
-const slides = [
-  { color: "red" },
-  { color: "blue" },
-  { color: "green" },
-  { color: "purplewwwwwwwwwwwww" },
-  { color: "orange" },
-];
-
 export default function ColorCarouselPage() {
+  const slidesContent = Array.from({ length: 30 }, (_, i) => {
+    const colors = [
+      "red.2",
+      "blue.2",
+      "green.2",
+      "yellow.2",
+      "orange.2",
+      "cyan.2",
+      "grape.2",
+      "teal.2",
+      "lime.2",
+      "indigo.2",
+    ];
+    const heights = [100, 250, 150, 180, 220, 130, 170, 210, 140, 200];
+    return (
+      <Box
+        key={i}
+        bg={colors[i % colors.length]}
+        p="md"
+        style={{ height: heights[i % heights.length] }}
+      >
+        Slide {i + 1}
+      </Box>
+    );
+  });
+
   return (
-    <Carousel
-      withIndicators
-      height="100%"
-      loop
-      orientation="vertical"
-      w={"100%"}
-    >
-      {slides.map((slide, index) => (
-        <Carousel.Slide key={index}>
-          <Box
-            h="100%" // Ensure it fills the carousel slide
-            w="100%"
-            style={{
-              backgroundColor: slide.color,
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              color: "white",
-              fontSize: 24,
-              fontWeight: "bold",
-            }}
-          >
-            {slide.color.toUpperCase()}
-          </Box>
-        </Carousel.Slide>
-      ))}
-    </Carousel>
+    <Box style={{ height: "100%", width: "100%", overflow: "hidden" }}>
+      <Carousel
+        orientation="vertical"
+        slideSize="auto"
+        slideGap="sm"
+        align="start"
+        withControls
+        height="100%"
+        styles={{
+          container: { height: "100%" },
+        }}
+      >
+        {slidesContent.map((slide, index) => (
+          <Carousel.Slide key={index}>{slide}</Carousel.Slide>
+        ))}
+      </Carousel>
+    </Box>
   );
 }
