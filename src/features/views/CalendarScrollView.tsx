@@ -1,7 +1,7 @@
 import { Carousel } from "@mantine/carousel";
 import { useEffect, useRef, useState } from "react";
 import { DatesProvider } from "@mantine/dates";
-import { em, Loader, Center } from "@mantine/core";
+import { em, Loader, Center, Box } from "@mantine/core";
 import { db } from "@/firebaseConfig";
 import { collection, onSnapshot } from "firebase/firestore";
 import { CalendarComponent } from "@/features/components/CalendarComponent";
@@ -102,23 +102,24 @@ export function CalendarScrollView({
 
   return (
     <DatesProvider settings={{ consistentWeeks: true }}>
-      <Carousel
-        // dragFree
-        // initialSlide={initialSlide}
-        initialSlide={0}
-        orientation="vertical"
-        align="start"
-        loop={false}
-        withControls={isMobile ? false : true}
-        height="100%" // height of the viewer
-        h={"100%"} // height of each slide
-        style={{ border: "2px solid red" }}
-        w={"100%"}
-        // includeGapInSize={false}
-        // skipSnaps={true}
-      >
-        {manualSlides}
-      </Carousel>
+      <Box style={{ display: "flex", flexDirection: "column", height: "100%" }}>
+        <Carousel
+          // dragFree
+          // initialSlide={initialSlide}
+          initialSlide={0}
+          orientation="vertical"
+          align="start"
+          loop={false}
+          withControls={isMobile ? true : true}
+          height="100%" // height of the viewer
+          h={"100%"} // height of each slide
+          w={"100%"}
+          // includeGapInSize={false}
+          // skipSnaps={true}
+        >
+          {manualSlides}
+        </Carousel>
+      </Box>
     </DatesProvider>
   );
 }
