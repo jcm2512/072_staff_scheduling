@@ -40,6 +40,7 @@ export function CalendarScrollView({
 }: CalendarSwipeViewProps) {
   const [schedule, setSchedule] = useState<Record<string, DaySchedule>>({});
   const { employeeId, loading } = useEmployeeId();
+  const [fetchedSchedule, setFetchedSchedule] = useState(false);
 
   useEffect(() => {
     if (!employeeId) return;
@@ -68,6 +69,7 @@ export function CalendarScrollView({
       });
 
       setSchedule(mergedDays);
+      setFetchedSchedule(true);
     });
 
     return () => unsubscribe();
@@ -105,12 +107,13 @@ export function CalendarScrollView({
     </Carousel.Slide>
   ));
 
-  if (loading)
+  if (loading || !fetchedSchedule) {
     return (
       <Center style={{ height: "100vh" }}>
         <Loader size="lg" color="teal" />
       </Center>
     );
+  }
 
   return (
     <DatesProvider settings={{ consistentWeeks: true }}>
