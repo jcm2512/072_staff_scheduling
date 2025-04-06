@@ -145,6 +145,7 @@ export function CalendarScrollView({
         />
         <Carousel
           dragFree
+          withControls={isMobile ? false : true}
           initialSlide={initialSlide}
           orientation="vertical"
           slideSize="auto"
@@ -154,7 +155,7 @@ export function CalendarScrollView({
           onSlideChange={(index) => {
             const rawMonth = slideNumbers[index];
             const date = new Date(defaultYear, rawMonth);
-            onMonthChange?.(date); // 👈 pass back to parent
+            onMonthChange?.(date);
           }}
           nextControlProps={{
             style: {

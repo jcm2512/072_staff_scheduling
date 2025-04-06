@@ -175,7 +175,7 @@ export function App() {
 
           {/* Center: Current Month */}
           <Box style={{ flex: 1, textAlign: "center" }}>
-            <Title order={1}>
+            <Title order={1} size={"1.5em"}>
               {currentMonth
                 ? currentMonth.toLocaleString("en", {
                     month: "long",
