@@ -85,6 +85,7 @@ export function CalendarScrollView({
     (_, i) => initialMonth + i
   );
 
+  // initialize onMonthChange on first render
   useEffect(() => {
     if (onMonthChange) {
       const rawMonth = slideNumbers[initialSlide];
@@ -175,12 +176,6 @@ export function CalendarScrollView({
           }}
           styles={{
             controls: {
-              // top: 0,
-              // bottom: "auto",
-              // position: "absolute",
-              // width: "100%",
-              // justifyContent: "space-between",
-              // padding: "0 8px", // optional padding
               right: 0,
             },
           }}

@@ -15,14 +15,12 @@ export function CalendarComponent({
   return (
     <>
       <Text
-        size="2em"
+        size="lg"
         fw={600}
         bg={"white"}
-        m={0}
+        pl={"sm"}
         style={{
-          textAlign: "center",
-          marginBottom: "0.5rem",
-          // backgroundColor: "white", // color of month card
+          textAlign: "left",
         }}
       >
         {date.toLocaleString("en", { month: "long" })}{" "}
@@ -72,13 +70,15 @@ export function CalendarComponent({
           monthCell: {
             height: "100%", // IMPORTANT setting height to 100% clashes with setting month to 100%
             borderWidth: "1px", //collapses surrounding cell borders
-            borderTop: "solid 1px #eaeaea",
+            // borderTop: "solid 1px #eaeaea",
             lineHeight: "0", // override default line height
           },
           day: {
             height: "12vh",
             width: "100%", // centers content
             overflow: "hidden",
+            borderRadius: "0",
+            borderBottom: "solid 1px #eaeaea",
           },
         }}
         renderDay={(date) => {
@@ -92,7 +92,10 @@ export function CalendarComponent({
           return (
             <Stack
               align="center"
-              style={{ height: "100%", width: "100%" }} // fixes content from being default baseline aligned (keeps cells the same size)
+              style={{
+                height: "100%",
+                width: "100%",
+              }} // fixes content from being default baseline aligned (keeps cells the same size)
               gap={0}
             >
               <Text size="sm" style={{ fontWeight: "300" }}>

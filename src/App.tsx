@@ -179,9 +179,12 @@ export function App() {
               {currentMonth
                 ? currentMonth.toLocaleString("en", {
                     month: "long",
-                    year: "numeric",
+                    ...(currentMonth.getFullYear() !==
+                      new Date().getFullYear() && {
+                      year: "numeric",
+                    }),
                   })
-                : "Loading..."}
+                : ""}
             </Title>
           </Box>
 
@@ -222,13 +225,12 @@ export function App() {
         <Routes>
           {user ? (
             <>
-              {/* <Route path="/calendar" element={<CalendarSwipeView />} /> */}
+              <Route path="/calendar-old" element={<CalendarSwipeView />} />
               <Route
-                path="/scroll"
+                path="/calendar"
                 element={<CalendarScrollView {...CalendarScrollViewProps} />}
               />
-              <Route path="/colors" element={<ColorCarouselPage />} />
-              <Route path="*" element={<Navigate to="/scroll" />} />
+              <Route path="*" element={<Navigate to="/calendar" />} />
             </>
           ) : (
             <Route path="*" element={<AuthenticationForm />} />
