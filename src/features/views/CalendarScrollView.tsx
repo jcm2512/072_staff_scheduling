@@ -9,6 +9,7 @@ import { useMediaQuery } from "@mantine/hooks";
 import { useEmployeeId } from "@/hooks/useEmployeeId";
 
 type CalendarSwipeViewProps = {
+  isMobile?: boolean;
   initialMonth?: number;
   numberOfMonths?: number;
   defaultYear?: number;
@@ -32,9 +33,9 @@ export function CalendarScrollView({
   defaultYear = currentYear,
   initialMonth = 2,
   numberOfMonths = 13,
+  isMobile,
 }: CalendarSwipeViewProps) {
   const [schedule, setSchedule] = useState<Record<string, DaySchedule>>({});
-  const isMobile = useMediaQuery(`(max-width: ${em(768)})`);
   const { employeeId, loading } = useEmployeeId();
 
   useEffect(() => {
@@ -82,14 +83,13 @@ export function CalendarScrollView({
   );
 
   const manualSlides = slideNumbers.map((index) => (
-    <Carousel.Slide key={index} style={{ height: "100%", paddingTop: "3vh" }}>
-      <div style={{ display: "flex", flexDirection: "column", height: "100%" }}>
-        <CalendarComponent
-          schedule={schedule}
-          date={new Date(currentYear, index)}
-          swipe={true}
-        />
-      </div>
+    <Carousel.Slide key={index}>
+      <CalendarComponent
+        schedule={schedule}
+        date={new Date(currentYear, index)}
+        swipe={true}
+        isMobile={isMobile ?? false}
+      />
     </Carousel.Slide>
   ));
 
@@ -103,15 +103,19 @@ export function CalendarScrollView({
   return (
     <DatesProvider settings={{ consistentWeeks: true }}>
       <Carousel
-        initialSlide={initialSlide}
+        // dragFree
+        // initialSlide={initialSlide}
+        initialSlide={0}
         orientation="vertical"
         align="start"
         loop={false}
-        // withControls={false}
-        height="calc(100vh - var(--app-shell-header-offset, 0rem) - (2 * var(--app-shell-padding)))"
-        // slideSize="calc(100vh - var(--app-shell-header-offset, 0rem) - (2 * var(--app-shell-padding)))"
-        includeGapInSize={false}
-        skipSnaps={true}
+        withControls={isMobile ? false : true}
+        height="100%" // height of the viewer
+        h={"100%"} // height of each slide
+        style={{ border: "2px solid red" }}
+        w={"100%"}
+        // includeGapInSize={false}
+        // skipSnaps={true}
       >
         {manualSlides}
       </Carousel>

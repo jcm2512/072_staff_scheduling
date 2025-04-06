@@ -3,15 +3,15 @@ import { Calendar } from "@mantine/dates";
 import { useMediaQuery } from "@mantine/hooks";
 
 type CalendarComponentProps = {
+  isMobile?: boolean;
   schedule: any;
   date?: Date;
-  swipe?: Boolean;
+  swipe?: boolean;
 };
 
 export function CalendarComponent({
   schedule,
   date = new Date(),
-  swipe = false,
 }: CalendarComponentProps) {
   const isMobile = useMediaQuery(`(max-width: ${em(768)})`);
 
@@ -23,22 +23,22 @@ export function CalendarComponent({
         withCellSpacing={false}
         maxLevel="month"
         style={{
-          borderSpacing: "0",
-          height: "100%",
+          border: "3px solid green",
+          // height: "100%",
         }}
         styles={{
           calendarHeaderControl: {
-            display: swipe ? "none" : "block",
+            display: "none",
           },
           calendarHeader: {
-            minWidth: "100%",
+            // minWidth: "100%",
             padding: "var(--mantine-font-size-xs)",
           },
           calendarHeaderLevel: {
             fontSize: "var(--mantine-font-size-xl)",
           },
           month: {
-            width: "100%",
+            width: "100%", // month fills entire width of slid
           },
 
           monthTbody: {
@@ -46,7 +46,7 @@ export function CalendarComponent({
           },
           levelsGroup: {
             justifyContent: "center",
-            width: "100%",
+            // width: "100%",
             border: "1px solid #eaeaea",
             borderRadius: `var(--mantine-radius-lg)`,
             overflow: "hidden",
@@ -60,8 +60,8 @@ export function CalendarComponent({
             lineHeight: "0",
           },
           day: {
-            height: "12vh",
-            width: "100%",
+            // height: "12vh",
+            // width: "100%",
             overflow: "hidden",
           },
         }}
@@ -76,10 +76,10 @@ export function CalendarComponent({
           return (
             <Stack
               align="center"
-              style={{ height: "100%", width: "100%" }}
+              // style={{ height: "100%", width: "100%" }}
               gap={0}
             >
-              <Text size="sm" style={{ fontWeight: "bold" }}>
+              <Text size="sm" style={{ fontWeight: "300" }}>
                 {day}
               </Text>
 
@@ -91,10 +91,10 @@ export function CalendarComponent({
                 bg={daySchedule.am == "Office" ? "lightgrey" : "#4ECDC4"}
                 style={{
                   width: "90%",
-                  borderRadius: "1rem",
+                  borderRadius: "0.3rem",
                   textAlign: "center",
                   lineHeight: "1.3rem",
-                  // fontWeight: "bold",
+                  fontWeight: "500",
                 }}
               >
                 {daySchedule.am || ""}
@@ -107,10 +107,10 @@ export function CalendarComponent({
                 m={"0.5vh"}
                 style={{
                   width: "90%",
-                  borderRadius: "1rem",
+                  borderRadius: "0.3rem",
                   textAlign: "center",
                   lineHeight: "1.3rem",
-                  // fontWeight: "bold",
+                  fontWeight: "bold",
                 }}
               >
                 {daySchedule.pm || ""}

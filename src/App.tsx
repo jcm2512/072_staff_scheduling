@@ -20,9 +20,11 @@ import {
   useMantineTheme,
   Loader,
   Center,
+  em,
 } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import { Notifications } from "@mantine/notifications";
+import { useMediaQuery } from "@mantine/hooks";
 
 // Authentication context and components
 import { useAuth } from "./auth/AuthProvider";
@@ -34,11 +36,15 @@ import { AuthenticationForm } from "./features/auth/AuthenticationForm";
 
 import { CalendarSwipeView } from "@/features/views/CalendarSwipeView";
 import { CalendarScrollView } from "@/features/views/CalendarScrollView";
+import ColorCarouselPage from "@/features/views/colorCarouselPage";
+// Components
 import { NotifyButton } from "@/components/notifyButton";
 
 export function App() {
   // Hooks
   const [mobileOpened, { toggle: toggleMobile }] = useDisclosure();
+  const isMobile = useMediaQuery(`(max-width: ${em(768)})`);
+
   const { user, loading } = useAuth();
   const theme = useMantineTheme();
 
@@ -62,12 +68,6 @@ export function App() {
     setup();
   }, []);
 
-  // useEffect(() => {
-  //   if (user) {
-  //     navigate("/calendar");
-  //   }
-  // }, [user, navigate]);
-
   if (loading) {
     return (
       <Center style={{ height: "100vh" }}>
@@ -80,11 +80,10 @@ export function App() {
     <AppShell
       header={{ height: 60 }}
       navbar={{
-        width: "20vw",
+        width: 300,
         breakpoint: "sm",
         collapsed: { mobile: !mobileOpened },
       }}
-      // padding="md"
     >
       <Notifications position="top-left" zIndex={1984} />
       <AppShell.Header>
@@ -137,9 +136,9 @@ export function App() {
       </AppShell.Navbar>
       <AppShell.Main
         style={{
+          height: "100vh",
           display: "flex",
           justifyContent: "center",
-          // minHeight: "calc(var(--vh, 1vh) * 100)", // may not be needed as the AppShell defaults to this anyway
           backgroundColor: theme.colors.background[0],
         }}
       >
@@ -147,8 +146,12 @@ export function App() {
           {user ? (
             <>
               {/* <Route path="/calendar" element={<CalendarSwipeView />} /> */}
-              <Route path="/calendar" element={<CalendarScrollView />} />
-              {/* <Route path="*" element={<Navigate to="/calendar" />} /> */}
+              <Route
+                path="/scroll"
+                element={<CalendarScrollView {...{ isMobile }} />}
+              />
+              <Route path="/colors" element={<ColorCarouselPage />} />
+              <Route path="*" element={<Navigate to="/scroll" />} />
             </>
           ) : (
             <Route path="*" element={<AuthenticationForm />} />
