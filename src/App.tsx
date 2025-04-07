@@ -22,6 +22,7 @@ import {
   Center,
   em,
   Box,
+  Stack,
 } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import { Notifications } from "@mantine/notifications";
@@ -140,8 +141,8 @@ export function App() {
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
-                width="24"
-                height="24"
+                width="16"
+                height="16"
                 viewBox="0 0 16 16"
               >
                 <path
@@ -150,22 +151,23 @@ export function App() {
                 />
               </svg>
             </Button>
-
-            <Title
-              order={1}
-              size="1.5em"
-              style={{ width: "8em", textAlign: "center" }}
-            >
-              {currentMonth
-                ? currentMonth.toLocaleString("en", {
-                    month: "long",
-                    ...(currentMonth.getFullYear() !==
-                      new Date().getFullYear() && {
-                      year: "numeric",
-                    }),
-                  })
-                : ""}
-            </Title>
+            <Stack align="center" gap="0">
+              <Title order={4} style={{ width: "6em", textAlign: "center" }}>
+                {currentMonth
+                  ? currentMonth.toLocaleString("en", { month: "long" })
+                  : ""}
+              </Title>
+              {currentMonth &&
+                currentMonth.getFullYear() !== new Date().getFullYear() && (
+                  <Title
+                    order={1}
+                    size="1em"
+                    style={{ width: "6em", textAlign: "center" }}
+                  >
+                    {currentMonth.toLocaleString("en", { year: "numeric" })}
+                  </Title>
+                )}
+            </Stack>
 
             <Button
               variant="transparent"
@@ -174,8 +176,8 @@ export function App() {
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
-                width="24"
-                height="24"
+                width="16"
+                height="16"
                 viewBox="0 0 16 16"
               >
                 <path
