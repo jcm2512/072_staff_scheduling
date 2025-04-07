@@ -6,8 +6,8 @@ import "@mantine/dates/styles.css";
 import "@mantine/carousel/styles.css";
 
 // React and Hooks
-import { useEffect, useState } from "react";
-import { Routes, Route, Navigate, useNavigate } from "react-router-dom";
+import { useEffect, useState, useRef } from "react";
+import { Routes, Route, Navigate } from "react-router-dom";
 
 // Mantine components and hooks
 import {
@@ -37,82 +37,24 @@ import { AuthenticationForm } from "./features/auth/AuthenticationForm";
 
 import { CalendarSwipeView } from "@/features/views/CalendarSwipeView";
 import { CalendarScrollView } from "@/features/views/CalendarScrollView";
-import ColorCarouselPage from "@/features/views/colorCarouselPage";
+import { ColorCarouselPage } from "@/features/views/colorCarouselPage";
+
 // Components
 import { NotifyButton } from "@/components/notifyButton";
-
-type HeaderBarProps = {
-  titleEn: string;
-  titleJp: string;
-  info: string;
-  mobileOpened: boolean;
-  toggleMobile: () => void;
-};
-
-export function HeaderBar({
-  titleEn = "SHIFTORI",
-  titleJp = "シフトリ",
-  info,
-  mobileOpened,
-  toggleMobile,
-}: HeaderBarProps) {
-  return (
-    <Group h="100%" px="md" style={{ position: "relative" }}>
-      {/* Left fixed section */}
-      <Box style={{ width: 60, display: "flex", alignItems: "center", gap: 8 }}>
-        <Group gap="xs">
-          <img
-            src={logo}
-            alt="Shiftori"
-            style={{
-              height: 40,
-            }}
-          />
-
-          <Title order={1}>{titleJp}</Title>
-          <Title order={2}>
-            <Text>{titleEn}</Text>
-          </Title>
-        </Group>
-      </Box>
-
-      {/* Centered info */}
-      <Box
-        style={{
-          position: "absolute",
-          left: 60,
-          right: 40,
-          height: "100%",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          pointerEvents: "none",
-        }}
-      >
-        <Title order={1} style={{ margin: 0, lineHeight: 1 }}>
-          <Text>{info}</Text>
-        </Title>
-      </Box>
-
-      {/* Right burger */}
-      <Burger
-        opened={mobileOpened}
-        onClick={toggleMobile}
-        hiddenFrom="sm"
-        size="sm"
-        style={{ marginLeft: "auto" }}
-      />
-    </Group>
-  );
-}
 
 export function App() {
   // Hooks
   const [mobileOpened, { toggle: toggleMobile }] = useDisclosure();
   const isMobile = useMediaQuery(`(max-width: ${em(768)})`);
+  const emblaRef =
+    useRef<
+      ReturnType<
+        typeof import("@mantine/carousel").Carousel["prototype"]["getEmbla"]
+      >
+    >(null);
 
   const { user, loading } = useAuth();
-  const theme = useMantineTheme();
+  // const theme = useMantineTheme();
 
   const [subscription, setSubscription] = useState<string | null>(null);
 
@@ -123,6 +65,7 @@ export function App() {
     onMonthChange: (date: Date) => {
       setCurrentMonth(date); // sets current date to month in scroll view
     },
+    emblaRef,
   };
 
   const handleRequestPermission = async () => {
@@ -181,8 +124,38 @@ export function App() {
           </Group>
 
           {/* Center: Current Month */}
-          <Box style={{ flex: 1, textAlign: "center" }}>
-            <Title order={1} size={"1.5em"}>
+          <Box
+            style={{
+              flex: 1,
+              display: "flex",
+              flexDirection: "row",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            <Button
+              variant="transparent"
+              size="compact-xs"
+              onClick={() => emblaRef.current?.scrollPrev()}
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                viewBox="0 0 16 16"
+              >
+                <path
+                  fill-rule="evenodd"
+                  d="M7.646 4.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1-.708.708L8 5.707l-5.646 5.647a.5.5 0 0 1-.708-.708z"
+                />
+              </svg>
+            </Button>
+
+            <Title
+              order={1}
+              size="1.5em"
+              style={{ width: "8em", textAlign: "center" }}
+            >
               {currentMonth
                 ? currentMonth.toLocaleString("en", {
                     month: "long",
@@ -193,6 +166,24 @@ export function App() {
                   })
                 : ""}
             </Title>
+
+            <Button
+              variant="transparent"
+              size="compact-xs"
+              onClick={() => emblaRef.current?.scrollNext()}
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                viewBox="0 0 16 16"
+              >
+                <path
+                  fill-rule="evenodd"
+                  d="M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708"
+                />
+              </svg>
+            </Button>
           </Box>
 
           {/* Right: Burger Menu */}
@@ -233,6 +224,8 @@ export function App() {
           {user ? (
             <>
               <Route path="/calendar-old" element={<CalendarSwipeView />} />
+              <Route path="/colors" element={<ColorCarouselPage />} />
+
               <Route
                 path="/calendar"
                 element={<CalendarScrollView {...CalendarScrollViewProps} />}

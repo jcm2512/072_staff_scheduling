@@ -15,6 +15,9 @@ type CalendarSwipeViewProps = {
   numberOfMonths?: number;
   defaultYear?: number;
   onMonthChange?: (date: Date) => void;
+  emblaRef: React.RefObject<
+    ReturnType<(typeof Carousel)["prototype"]["getEmbla"]>
+  >;
 };
 
 type DaySchedule = {
@@ -37,11 +40,13 @@ export function CalendarScrollView({
   numberOfMonths = 13,
   isMobile,
   onMonthChange,
+  emblaRef,
 }: CalendarSwipeViewProps) {
   const [schedule, setSchedule] = useState<Record<string, DaySchedule>>({});
   const { employeeId, loading } = useEmployeeId();
   const [fetchedSchedule, setFetchedSchedule] = useState(false);
   const paddingSm: string = "0.5em";
+
   useEffect(() => {
     if (!employeeId) return;
     const scheduleCollectionRef = collection(
@@ -188,6 +193,9 @@ export function CalendarScrollView({
             controls: {
               right: 0,
             },
+          }}
+          getEmblaApi={(api) => {
+            emblaRef.current = api;
           }}
         >
           {manualSlides}
