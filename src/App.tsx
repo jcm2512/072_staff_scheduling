@@ -194,12 +194,14 @@ export function App() {
           </Box>
 
           {/* Right: Burger Menu */}
-          <Burger
-            opened={mobileOpened}
-            onClick={toggleMobile}
-            hiddenFrom="sm"
-            size="sm"
-          />
+          <Group w={60} justify="flex-end">
+            <Burger
+              opened={mobileOpened}
+              onClick={toggleMobile}
+              hiddenFrom="sm"
+              size="sm"
+            />
+          </Group>
         </Group>
       </AppShell.Header>
       <AppShell.Navbar py="md" px={4}>
