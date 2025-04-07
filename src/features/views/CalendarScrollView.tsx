@@ -129,6 +129,7 @@ export function CalendarScrollView({
           firstDayOfWeek={0}
           withCellSpacing={false}
           maxLevel="month"
+          style={{ marginLeft: "1em", marginRight: "1em" }}
           styles={{
             calendarHeaderControl: {
               display: "none", // removes controls to switch months (use carousel instead)
@@ -138,6 +139,8 @@ export function CalendarScrollView({
             },
             month: {
               width: "100%", // month fills entire width of slide
+              backgroundColor: "#FFF",
+              borderBottom: "solid 1px #eaeaea",
             },
             monthTbody: {
               display: "none",
@@ -156,6 +159,7 @@ export function CalendarScrollView({
           slideGap="0"
           align="start"
           height="100%"
+          controlSize={"2em"}
           onSlideChange={(index) => {
             const rawMonth = slideNumbers[index];
             const date = new Date(defaultYear, rawMonth);
@@ -164,16 +168,16 @@ export function CalendarScrollView({
           nextControlProps={{
             style: {
               position: "absolute",
-              top: 0,
-              right: "2em",
+              top: 2,
+              right: "0.5em",
               zIndex: 9000,
             },
           }}
           previousControlProps={{
             style: {
               position: "absolute",
-              top: 0,
-              right: "5em",
+              top: 2,
+              right: "3.0em",
               zIndex: 9000,
             },
           }}
@@ -182,6 +186,7 @@ export function CalendarScrollView({
               right: 0,
             },
           }}
+          style={{ marginLeft: "1em", marginRight: "1em" }}
         >
           {manualSlides}
         </Carousel>

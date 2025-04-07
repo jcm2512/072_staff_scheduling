@@ -18,7 +18,7 @@ export function CalendarComponent({
         size="lg"
         fw={600}
         bg={"white"}
-        pl={"sm"}
+        pl={"1em"}
         style={{
           textAlign: "left",
         }}
@@ -98,7 +98,14 @@ export function CalendarComponent({
               }} // fixes content from being default baseline aligned (keeps cells the same size)
               gap={0}
             >
-              <Text size="sm" style={{ fontWeight: "300" }}>
+              <Text
+                size="sm"
+                style={{
+                  fontWeight: "300",
+                  alignSelf: "flex-start",
+                  paddingLeft: "0.5em",
+                }}
+              >
                 {day}
               </Text>
 

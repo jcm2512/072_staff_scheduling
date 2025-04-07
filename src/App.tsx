@@ -156,9 +156,14 @@ export function App() {
         breakpoint: "sm",
         collapsed: { mobile: !mobileOpened },
       }}
+      style={{ backgroundColor: "white" }}
     >
       <Notifications position="top-left" zIndex={1984} />
-      <AppShell.Header>
+      <AppShell.Header
+        style={{
+          backgroundColor: "#F3F6F6",
+        }}
+      >
         <Group h="100%" px="md" justify="space-between">
           {/* Left: Logo and Titles */}
           <Group gap="xs" w={isMobile ? 60 : 300}>
@@ -219,7 +224,7 @@ export function App() {
           height: "100vh",
           display: "flex",
           justifyContent: "center",
-          backgroundColor: theme.colors.background[0],
+          // backgroundColor: theme.colors.background[0],
         }}
       >
         <Routes>
