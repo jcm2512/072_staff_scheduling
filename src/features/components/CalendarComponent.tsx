@@ -12,18 +12,19 @@ export function CalendarComponent({
   schedule,
   date = new Date(),
 }: CalendarComponentProps) {
+  const paddingSm: string = "0.5em";
   return (
     <>
       <Text
         size="lg"
         fw={600}
         bg={"white"}
-        pl={"1em"}
+        pl={paddingSm}
         style={{
           textAlign: "left",
         }}
       >
-        {date.toLocaleString("en", { month: "long" })}{" "}
+        {date.toLocaleString("en", { month: "long" })}
         {/* or use format(date, 'MMMM') if using date-fns */}
       </Text>
       <Calendar
@@ -56,9 +57,7 @@ export function CalendarComponent({
           },
           monthTbody: {
             // overlays ontop of month
-            // borderStyle: "hidden", // removes outside border on table
             borderBottomStyle: "hidden",
-            // height: "100%",
           },
           levelsGroup: {
             // child of Calendar component //
@@ -85,7 +84,8 @@ export function CalendarComponent({
           const year = date.getFullYear();
           const month = String(date.getMonth() + 1).padStart(2, "0");
           // Pad the day to two digits
-          const day = String(date.getDate()).padStart(2, "0");
+          const d = String(date.getDate());
+          const day = d.padStart(2, "0");
           const formattedDate = `${year}-${month}-${day}`;
           const daySchedule = schedule[formattedDate] || {};
 
@@ -103,10 +103,10 @@ export function CalendarComponent({
                 style={{
                   fontWeight: "300",
                   alignSelf: "flex-start",
-                  paddingLeft: "0.5em",
+                  paddingLeft: paddingSm,
                 }}
               >
-                {day}
+                {d}
               </Text>
 
               <Text

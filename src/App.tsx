@@ -160,9 +160,11 @@ export function App() {
     >
       <Notifications position="top-left" zIndex={1984} />
       <AppShell.Header
-        style={{
-          backgroundColor: "#F3F6F6",
-        }}
+        style={
+          {
+            // backgroundColor: "#F3F6F6",
+          }
+        }
       >
         <Group h="100%" px="md" justify="space-between">
           {/* Left: Logo and Titles */}

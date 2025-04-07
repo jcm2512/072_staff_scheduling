@@ -41,7 +41,7 @@ export function CalendarScrollView({
   const [schedule, setSchedule] = useState<Record<string, DaySchedule>>({});
   const { employeeId, loading } = useEmployeeId();
   const [fetchedSchedule, setFetchedSchedule] = useState(false);
-
+  const paddingSm: string = "0.5em";
   useEffect(() => {
     if (!employeeId) return;
     const scheduleCollectionRef = collection(
@@ -129,7 +129,6 @@ export function CalendarScrollView({
           firstDayOfWeek={0}
           withCellSpacing={false}
           maxLevel="month"
-          style={{ marginLeft: "1em", marginRight: "1em" }}
           styles={{
             calendarHeaderControl: {
               display: "none", // removes controls to switch months (use carousel instead)
@@ -147,6 +146,10 @@ export function CalendarScrollView({
             },
             day: {
               display: "none",
+            },
+            weekday: {
+              textAlign: "left",
+              paddingLeft: paddingSm,
             },
           }}
         />
@@ -186,7 +189,6 @@ export function CalendarScrollView({
               right: 0,
             },
           }}
-          style={{ marginLeft: "1em", marginRight: "1em" }}
         >
           {manualSlides}
         </Carousel>
