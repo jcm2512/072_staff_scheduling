@@ -47,6 +47,8 @@ export function App() {
   // Hooks
   const [mobileOpened, { toggle: toggleMobile }] = useDisclosure();
   const isMobile = useMediaQuery(`(max-width: ${em(768)})`);
+  const isCompact = useMediaQuery(`(max-width: ${em(500)})`);
+
   const emblaRef =
     useRef<
       ReturnType<
@@ -134,7 +136,7 @@ export function App() {
               justifyContent: "center",
             }}
           >
-            {!isMobile && (
+            {!isCompact && (
               <Button
                 variant="transparent"
                 size="compact-xs"
@@ -170,7 +172,7 @@ export function App() {
                   </Title>
                 )}
             </Stack>
-            {!isMobile && (
+            {!isCompact && (
               <Button
                 variant="transparent"
                 size="compact-xs"
