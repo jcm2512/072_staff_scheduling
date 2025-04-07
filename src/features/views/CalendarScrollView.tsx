@@ -160,39 +160,21 @@ export function CalendarScrollView({
         />
         <Carousel
           dragFree
-          withControls={isMobile ? false : true}
+          withControls={false}
           initialSlide={initialSlide}
           orientation="vertical"
           slideSize="auto"
           slideGap="0"
           align="start"
           height="100%"
-          controlSize={"2em"}
           onSlideChange={(index) => {
-            const rawMonth = slideNumbers[index];
-            const date = new Date(defaultYear, rawMonth);
-            onMonthChange?.(date);
-          }}
-          nextControlProps={{
-            style: {
-              position: "absolute",
-              top: 2,
-              right: "0.5em",
-              zIndex: 9000,
-            },
-          }}
-          previousControlProps={{
-            style: {
-              position: "absolute",
-              top: 2,
-              right: "3.0em",
-              zIndex: 9000,
-            },
-          }}
-          styles={{
-            controls: {
-              right: 0,
-            },
+            setTimeout(() => {
+              // introduce delay so animation has time to play out.
+              // this will remove the sudden jank after swiping
+              const rawMonth = slideNumbers[index];
+              const date = new Date(defaultYear, rawMonth);
+              onMonthChange?.(date);
+            }, 1000);
           }}
           getEmblaApi={(api) => {
             emblaRef.current = api;
