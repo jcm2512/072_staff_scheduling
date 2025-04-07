@@ -134,23 +134,25 @@ export function App() {
               justifyContent: "center",
             }}
           >
-            <Button
-              variant="transparent"
-              size="compact-xs"
-              onClick={() => emblaRef.current?.scrollPrev()}
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="16"
-                height="16"
-                viewBox="0 0 16 16"
+            {!isMobile && (
+              <Button
+                variant="transparent"
+                size="compact-xs"
+                onClick={() => emblaRef.current?.scrollPrev()}
               >
-                <path
-                  fill-rule="evenodd"
-                  d="M7.646 4.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1-.708.708L8 5.707l-5.646 5.647a.5.5 0 0 1-.708-.708z"
-                />
-              </svg>
-            </Button>
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="16"
+                  height="16"
+                  viewBox="0 0 16 16"
+                >
+                  <path
+                    fill-rule="evenodd"
+                    d="M7.646 4.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1-.708.708L8 5.707l-5.646 5.647a.5.5 0 0 1-.708-.708z"
+                  />
+                </svg>
+              </Button>
+            )}
             <Stack align="center" gap="0">
               <Title order={4} style={{ width: "6em", textAlign: "center" }}>
                 {currentMonth
@@ -168,24 +170,25 @@ export function App() {
                   </Title>
                 )}
             </Stack>
-
-            <Button
-              variant="transparent"
-              size="compact-xs"
-              onClick={() => emblaRef.current?.scrollNext()}
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="16"
-                height="16"
-                viewBox="0 0 16 16"
+            {!isMobile && (
+              <Button
+                variant="transparent"
+                size="compact-xs"
+                onClick={() => emblaRef.current?.scrollNext()}
               >
-                <path
-                  fill-rule="evenodd"
-                  d="M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708"
-                />
-              </svg>
-            </Button>
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="16"
+                  height="16"
+                  viewBox="0 0 16 16"
+                >
+                  <path
+                    fill-rule="evenodd"
+                    d="M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708"
+                  />
+                </svg>
+              </Button>
+            )}
           </Box>
 
           {/* Right: Burger Menu */}
