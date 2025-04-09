@@ -237,6 +237,7 @@ export default function Rdp({ onMonthChange, date }: RdpProps) {
                 styles={{
                   months: {
                     maxWidth: "100%",
+                     borderTop: "solid 1px #eaeaea"
                   },
                   month: {
                     width: "100%",
@@ -244,6 +245,7 @@ export default function Rdp({ onMonthChange, date }: RdpProps) {
                     flexDirection: "column",
                   },
                   month_grid: { flexGrow: "1" },
+                  
                 }}
                 mode="multiple"
                 required={false}
