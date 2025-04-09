@@ -1,12 +1,44 @@
-import { useState, useMemo, useRef, useEffect } from "react";
-import { DayPicker } from "react-day-picker";
+// React and libraries
+import {
+  useState,
+  useMemo,
+  useRef,
+  useEffect,
+  Component,
+  ReactNode,
+} from "react";
+import { Stack, Text, Loader, Center, Title } from "@mantine/core";
+import { DayPicker, DayButtonProps } from "react-day-picker";
 import { addMonths, startOfMonth, format } from "date-fns";
+import { collection, onSnapshot } from "firebase/firestore";
+
+// App-specific imports
+import { db } from "@/firebaseConfig";
+import { useEmployeeId } from "@/hooks/useEmployeeId";
+
+// Styles
 import "react-day-picker/dist/style.css";
+
+type RdpProps = {
+  onMonthChange?: (date: Date) => void;
+  schedule?: Record<string, Record<string, any>>; // All months' data
+  date?: Date;
+};
+
+type DaySchedule = {
+  am?: string;
+  pm?: string;
+  allday?: boolean;
+  irregular?: boolean;
+};
 
 const MONTH_HEIGHT = 360;
 const INITIAL_RANGE = 12;
+const LOAD_MONTHS = 3;
 
-export default function Rdp() {
+const PADDING_SM = "0.3rem";
+
+export default function Rdp({ onMonthChange, date }: RdpProps) {
   const containerRef = useRef<HTMLDivElement | null>(null);
   const [selected, setSelected] = useState<Date[] | undefined>([]);
   const [startIndex, setStartIndex] = useState(-6); // 6 months before today
@@ -15,6 +47,12 @@ export default function Rdp() {
   const lastLoggedMonth = useRef<number | null>(null);
   const monthRefs = useRef<Record<number, HTMLDivElement | null>>({});
   const [currentMonthLabel, setCurrentMonthLabel] = useState<string>("");
+
+  const [schedule, setSchedule] = useState<Record<string, DaySchedule>>({});
+  const { employeeId, loading } = useEmployeeId();
+  const [fetchedSchedule, setFetchedSchedule] = useState(false);
+
+  const [isCalendarReady, setIsCalendarReady] = useState(false);
 
   const months = useMemo(() => {
     return Array.from(
@@ -37,6 +75,39 @@ export default function Rdp() {
     }
   };
 
+  useEffect(() => {
+    if (!employeeId) return;
+    const scheduleCollectionRef = collection(
+      db,
+      "companies",
+      "companyId02",
+      "teacher",
+      employeeId,
+      "monthlySchedule"
+    );
+
+    const unsubscribe = onSnapshot(scheduleCollectionRef, (snapshot) => {
+      let mergedDays: Record<string, DaySchedule> = {};
+
+      snapshot.forEach((docSnapshot: any) => {
+        if (docSnapshot.exists()) {
+          const data = docSnapshot.data();
+          const days = data ?? {};
+
+          mergedDays = {
+            ...mergedDays,
+            ...days,
+          };
+        }
+      });
+
+      setSchedule(mergedDays);
+      setFetchedSchedule(true);
+    });
+
+    return () => unsubscribe();
+  }, [employeeId]);
+
   // Scroll logic
   useEffect(() => {
     const container = containerRef.current;
@@ -47,7 +118,7 @@ export default function Rdp() {
 
       // Lazy Load Future Months
       if (scrollTop + clientHeight >= scrollHeight - MONTH_HEIGHT) {
-        setEndIndex((prev) => prev + 6);
+        setEndIndex((prev) => prev + LOAD_MONTHS);
       }
 
       // Lazy Load Past Months
@@ -64,7 +135,7 @@ export default function Rdp() {
           .filter(Boolean)
           .sort((a, b) => a!.distance - b!.distance)[0];
 
-        setStartIndex((prev) => prev - 6);
+        setStartIndex((prev) => prev - LOAD_MONTHS);
 
         requestAnimationFrame(() => {
           requestAnimationFrame(() => {
@@ -77,7 +148,7 @@ export default function Rdp() {
         });
       }
 
-      // Update current visible month (for sticky header)
+      // Update current visible month
       const rects = Object.entries(monthRefs.current)
         .map(([offset, el]) => {
           if (!el) return null;
@@ -96,8 +167,12 @@ export default function Rdp() {
           startOfMonth(new Date()),
           closest.offset
         );
-        setCurrentMonthLabel(format(visibleMonth, "MMMM yyyy"));
+        // setCurrentMonthLabel(format(visibleMonth, "MMMM yyyy"));
         lastLoggedMonth.current = closest.offset;
+
+        if (onMonthChange) {
+          onMonthChange(visibleMonth); // 🔥 trigger parent update
+        }
       }
     };
 
@@ -106,74 +181,163 @@ export default function Rdp() {
   }, [startIndex, endIndex]);
 
   useEffect(() => {
-    requestAnimationFrame(() => {
-      requestAnimationFrame(() => {
-        scrollToToday(false); // instant scroll on mount
-      });
-    });
-  }, []);
+    if (!fetchedSchedule) return;
+
+    const timeout = setTimeout(() => {
+      const todayEl = monthRefs.current[0];
+      if (todayEl && containerRef.current) {
+        scrollToToday(false);
+        setIsCalendarReady(true); // ✅ reveal calendar only when ready
+      } else {
+        console.warn("monthRefs not ready yet.");
+      }
+    }, 50);
+
+    return () => clearTimeout(timeout);
+  }, [fetchedSchedule]);
+
+  // Scroll to the month passed via date prop whenever the prop changes
+  useEffect(() => {
+    if (date) {
+      scrollToMonth(date);
+    }
+  }, [date]);
+
+  const LoadingScreen: React.FC = () => {
+    return (
+      <Center style={{ height: "100vh" }}>
+        <Loader size="lg" color="teal" />
+      </Center>
+    );
+  };
 
   return (
-    <div style={{ position: "relative" }}>
-      {/* Sticky Header */}
-      <div
-        style={{
-          position: "sticky",
-          top: 0,
-          background: "white",
-          zIndex: 10,
-          padding: "0.5rem 1rem",
-          borderBottom: "1px solid #ddd",
-          fontWeight: "bold",
-          fontSize: "1.2rem",
-        }}
-      >
-        {currentMonthLabel || "Loading..."}
-        <button
-          onClick={() => scrollToToday}
-          style={{
-            float: "right",
-            fontSize: "0.9rem",
-            padding: "0.3rem 0.6rem",
-            background: "#007bff",
-            color: "white",
-            border: "none",
-            borderRadius: "4px",
-            cursor: "pointer",
-          }}
-        >
-          Today
-        </button>
-      </div>
-
+    <div style={{ position: "relative", width: "100%" }}>
       {/* Scrollable Calendar */}
+      {loading || !fetchedSchedule ? <LoadingScreen /> : <></>}
       <div
         ref={containerRef}
         style={{
-          height: "80vh",
+          height: "100%",
           overflowY: "scroll",
-          border: "1px solid #ccc",
-          padding: "1rem",
+          visibility: isCalendarReady ? "visible" : "hidden",
         }}
       >
         {months.map((offset) => {
           const month = addMonths(startOfMonth(new Date()), offset);
           return (
-            <div
-              key={offset}
-              ref={(el) => {
-                monthRefs.current[offset] = el;
-              }}
-              style={{ marginBottom: "2rem" }}
-            >
+            <div key={offset}>
+              <div
+                ref={(el) => {
+                  monthRefs.current[offset] = el;
+                }}
+                style={{ height: "1px" }} // or 1px if 0 causes issues
+              />
               <DayPicker
+                styles={{
+                  months: {
+                    maxWidth: "100%",
+                  },
+                  month: {
+                    width: "100%",
+                    display: "flex",
+                    flexDirection: "column",
+                  },
+                  month_grid: { flexGrow: "1" },
+                }}
                 mode="multiple"
                 required={false}
                 month={month}
                 selected={selected}
                 onSelect={setSelected}
-                showOutsideDays
-                disableNavigation
+                hideWeekdays
+                hideNavigation
+                components={{
+                  MonthCaption(props) {
+                    return (
+                      <Title
+                        order={5}
+                        style={{
+                          paddingLeft: PADDING_SM,
+                        }}
+                      >
+                        {props.calendarMonth.date.toLocaleString("en", {
+                          month: "long",
+                        })}
+                      </Title>
+                    );
+                  },
+                  DayButton(props) {
+                    const date = new Date(props.day.date);
+                    const year = date.getFullYear();
+                    const month = String(date.getMonth() + 1).padStart(2, "0");
+                    const dayNum = String(date.getDate()).padStart(2, "0");
+                    const fullDate = `${year}-${month}-${dayNum}`;
+
+                    const daySchedule = schedule[fullDate] || {};
+
+                    return (
+                      <Stack
+                        align="center"
+                        style={{ height: "6rem", width: "100%" }}
+                        gap={0}
+                      >
+                        <Text
+                          size="sm"
+                          style={{
+                            fontWeight: "300",
+                            alignSelf: "flex-start",
+                            paddingLeft: PADDING_SM,
+                          }}
+                        >
+                          {dayNum}
+                        </Text>
+
+                        <Text
+                          c={daySchedule.am === "Office" ? "black" : "#1A535C"}
+                          inline
+                          size="xs"
+                          m="0.5vh"
+                          bg={
+                            daySchedule.am === "Office"
+                              ? "lightgrey"
+                              : "#4ECDC4"
+                          }
+                          style={{
+                            width: "90%",
+                            borderRadius: PADDING_SM,
+                            textAlign: "center",
+                            lineHeight: "1.3rem",
+                            fontWeight: "500",
+                          }}
+                        >
+                          {daySchedule.am || ""}
+                        </Text>
+
+                        <Text
+                          c={daySchedule.pm === "Office" ? "black" : "#055561"}
+                          bg={
+                            daySchedule.pm === "Office"
+                              ? "lightgrey"
+                              : "#C4F5FC"
+                          }
+                          inline
+                          size="xs"
+                          m="0.5vh"
+                          style={{
+                            width: "90%",
+                            borderRadius: PADDING_SM,
+                            textAlign: "center",
+                            lineHeight: "1.3rem",
+                            fontWeight: "bold",
+                          }}
+                        >
+                          {daySchedule.pm || ""}
+                        </Text>
+                      </Stack>
+                    );
+                  },
+                }}
               />
             </div>
           );

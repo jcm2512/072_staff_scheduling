@@ -9,6 +9,8 @@ import "@mantine/carousel/styles.css";
 import { useEffect, useState, useRef } from "react";
 import { Routes, Route, Navigate } from "react-router-dom";
 
+import { addMonths } from "date-fns";
+
 // Mantine components and hooks
 import {
   AppShell,
@@ -80,6 +82,14 @@ export function App() {
     }
   };
 
+  // Method to advance to the next month
+  const handleNextMonth = () => {
+    if (currentMonth) {
+      const nextMonth = addMonths(currentMonth, 1);
+      setCurrentMonth(nextMonth); // Update the parent state with the next month
+    }
+  };
+
   useEffect(() => {
     const setup = async () => {
       await initMessaging();
@@ -137,7 +147,7 @@ export function App() {
               justifyContent: "center",
             }}
           >
-            {!isCompact && (
+            {/* {!isCompact && (
               <Button
                 variant="transparent"
                 size="compact-xs"
@@ -155,7 +165,7 @@ export function App() {
                   />
                 </svg>
               </Button>
-            )}
+            )} */}
             <Stack align="center" gap="0">
               <Title order={4} style={{ width: "6em", textAlign: "center" }}>
                 {currentMonth
@@ -173,11 +183,11 @@ export function App() {
                   </Title>
                 )}
             </Stack>
-            {!isCompact && (
+            {/* {!isCompact && (
               <Button
                 variant="transparent"
                 size="compact-xs"
-                onClick={() => emblaRef.current?.scrollNext()}
+                onClick={handleNextMonth}
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -191,7 +201,7 @@ export function App() {
                   />
                 </svg>
               </Button>
-            )}
+            )} */}
           </Box>
 
           {/* Right: Burger Menu */}
@@ -235,13 +245,16 @@ export function App() {
             <>
               <Route path="/calendar-old" element={<CalendarSwipeView />} />
               <Route path="/colors" element={<ColorCarouselPage />} />
-              <Route path="/rdp" element={<Rdp />} />
+              <Route
+                path="/rdp"
+                element={<Rdp onMonthChange={setCurrentMonth} />}
+              />
 
               <Route
                 path="/calendar"
                 element={<CalendarScrollView {...CalendarScrollViewProps} />}
               />
-              <Route path="*" element={<Navigate to="/calendar" />} />
+              <Route path="*" element={<Navigate to="/rdp" />} />
             </>
           ) : (
             <Route path="*" element={<AuthenticationForm />} />
