@@ -130,7 +130,7 @@ export default function Rdp() {
       >
         {currentMonthLabel || "Loading..."}
         <button
-          onClick={scrollToToday}
+          onClick={() => scrollToToday}
           style={{
             float: "right",
             fontSize: "0.9rem",
