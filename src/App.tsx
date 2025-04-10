@@ -66,6 +66,8 @@ export function App() {
 
   const [currentMonth, setCurrentMonth] = useState<Date | null>(null);
 
+  const [hasHeaderBar, setHasHeaderBar] = useState<boolean>(false);
+
   const CalendarScrollViewProps = {
     isMobile,
     onMonthChange: (date: Date) => {
@@ -114,16 +116,11 @@ export function App() {
         collapsed: { mobile: !mobileOpened },
       }}
       style={{ backgroundColor: "white" }}
+      withBorder={hasHeaderBar ? false : true}
     >
       <Notifications position="top-left" zIndex={1984} />
-      <AppShell.Header
-        style={
-          {
-            // backgroundColor: "#F3F6F6",
-          }
-        }
-      >
-        <Group h="100%" px="md" justify="space-between">
+      <AppShell.Header>
+        <Group id="HeaderTop" p="xs" justify="space-between">
           {/* Left: Logo and Titles */}
           <Group gap="xs" w={isMobile ? 60 : 300}>
             <img src={logo} alt="Shiftori" style={{ height: 40 }} />
@@ -147,25 +144,6 @@ export function App() {
               justifyContent: "center",
             }}
           >
-            {/* {!isCompact && (
-              <Button
-                variant="transparent"
-                size="compact-xs"
-                onClick={() => emblaRef.current?.scrollPrev()}
-              >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="16"
-                  height="16"
-                  viewBox="0 0 16 16"
-                >
-                  <path
-                    fillRule="evenodd"
-                    d="M7.646 4.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1-.708.708L8 5.707l-5.646 5.647a.5.5 0 0 1-.708-.708z"
-                  />
-                </svg>
-              </Button>
-            )} */}
             <Stack align="center" gap="0">
               <Title order={4} style={{ width: "6em", textAlign: "center" }}>
                 {currentMonth
@@ -183,25 +161,6 @@ export function App() {
                   </Title>
                 )}
             </Stack>
-            {/* {!isCompact && (
-              <Button
-                variant="transparent"
-                size="compact-xs"
-                onClick={handleNextMonth}
-              >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="16"
-                  height="16"
-                  viewBox="0 0 16 16"
-                >
-                  <path
-                    fillRule="evenodd"
-                    d="M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708"
-                  />
-                </svg>
-              </Button>
-            )} */}
           </Box>
 
           {/* Right: Burger Menu */}
@@ -247,7 +206,13 @@ export function App() {
               <Route path="/colors" element={<ColorCarouselPage />} />
               <Route
                 path="/rdp"
-                element={<Rdp onMonthChange={setCurrentMonth} />}
+                element={
+                  <Rdp
+                    onMonthChange={setCurrentMonth}
+                    hasHeaderBar={hasHeaderBar}
+                    setHasHeaderBar={setHasHeaderBar}
+                  />
+                }
               />
 
               <Route
