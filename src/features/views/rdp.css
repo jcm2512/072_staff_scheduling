@@ -1,0 +1,4 @@
+.weekend .DayNum {
+  color: red; /* Change the text color for weekends */
+  font-weight: bold; /* Set font weight */
+}

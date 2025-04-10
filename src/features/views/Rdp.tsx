@@ -18,6 +18,7 @@ import { useEmployeeId } from "@/hooks/useEmployeeId";
 
 // Styles
 import "react-day-picker/dist/style.css";
+import "./rdp.css";
 
 type RdpProps = {
   onMonthChange?: (date: Date) => void;
@@ -210,6 +211,9 @@ export default function Rdp({ onMonthChange, date }: RdpProps) {
       </Center>
     );
   };
+  const weekendMatcher = {
+    dayOfWeek: [0, 6],
+  };
 
   return (
     <div style={{ position: "relative", width: "100%" }}>
@@ -235,9 +239,9 @@ export default function Rdp({ onMonthChange, date }: RdpProps) {
               />
               <DayPicker
                 styles={{
+                  week: { borderBottom: "solid 1px #eaeaea" },
                   months: {
                     maxWidth: "100%",
-                     borderTop: "solid 1px #eaeaea"
                   },
                   month: {
                     width: "100%",
@@ -245,7 +249,6 @@ export default function Rdp({ onMonthChange, date }: RdpProps) {
                     flexDirection: "column",
                   },
                   month_grid: { flexGrow: "1" },
-                  
                 }}
                 mode="multiple"
                 required={false}
@@ -254,6 +257,10 @@ export default function Rdp({ onMonthChange, date }: RdpProps) {
                 onSelect={setSelected}
                 hideWeekdays
                 hideNavigation
+                modifiers={{ weekend: weekendMatcher }}
+                modifiersClassNames={{
+                  weekend: "weekend",
+                }}
                 components={{
                   MonthCaption(props) {
                     return (
@@ -285,6 +292,7 @@ export default function Rdp({ onMonthChange, date }: RdpProps) {
                         gap={0}
                       >
                         <Text
+                          className="DayNum"
                           size="sm"
                           style={{
                             fontWeight: "300",
