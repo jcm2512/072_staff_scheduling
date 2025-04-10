@@ -7,7 +7,7 @@ import {
   Component,
   ReactNode,
 } from "react";
-import { Stack, Text, Loader, Center, Title } from "@mantine/core";
+import { Stack, Text, Loader, Center, Title, Group } from "@mantine/core";
 import { DayPicker, DayButtonProps } from "react-day-picker";
 import { addMonths, startOfMonth, format } from "date-fns";
 import { collection, onSnapshot } from "firebase/firestore";
@@ -24,6 +24,8 @@ type RdpProps = {
   onMonthChange?: (date: Date) => void;
   schedule?: Record<string, Record<string, any>>; // All months' data
   date?: Date;
+  hasHeaderBar: boolean;
+  setHasHeaderBar: (value: boolean) => void;
 };
 
 type DaySchedule = {
@@ -34,12 +36,19 @@ type DaySchedule = {
 };
 
 const MONTH_HEIGHT = 360;
-const INITIAL_RANGE = 12;
+// const INITIAL_RANGE = 12;
 const LOAD_MONTHS = 3;
 
 const PADDING_SM = "0.3rem";
 
-export default function Rdp({ onMonthChange, date }: RdpProps) {
+const DaysOfWeek = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+
+export default function Rdp({
+  onMonthChange,
+  date,
+  setHasHeaderBar,
+}: RdpProps) {
+  setHasHeaderBar(true);
   const containerRef = useRef<HTMLDivElement | null>(null);
   const [selected, setSelected] = useState<Date[] | undefined>([]);
   const [startIndex, setStartIndex] = useState(-6); // 6 months before today
@@ -47,7 +56,7 @@ export default function Rdp({ onMonthChange, date }: RdpProps) {
 
   const lastLoggedMonth = useRef<number | null>(null);
   const monthRefs = useRef<Record<number, HTMLDivElement | null>>({});
-  const [currentMonthLabel, setCurrentMonthLabel] = useState<string>("");
+  // const [currentMonthLabel, setCurrentMonthLabel] = useState<string>;
 
   const [schedule, setSchedule] = useState<Record<string, DaySchedule>>({});
   const { employeeId, loading } = useEmployeeId();
@@ -197,13 +206,6 @@ export default function Rdp({ onMonthChange, date }: RdpProps) {
     return () => clearTimeout(timeout);
   }, [fetchedSchedule]);
 
-  // Scroll to the month passed via date prop whenever the prop changes
-  useEffect(() => {
-    if (date) {
-      scrollToMonth(date);
-    }
-  }, [date]);
-
   const LoadingScreen: React.FC = () => {
     return (
       <Center style={{ height: "100vh" }}>
@@ -227,6 +229,28 @@ export default function Rdp({ onMonthChange, date }: RdpProps) {
           visibility: isCalendarReady ? "visible" : "hidden",
         }}
       >
+        <Group
+          gap="0"
+          grow
+          style={{
+            position: "sticky",
+            top: 0,
+            backgroundColor: "white",
+            zIndex: 9999,
+          }}
+        >
+          {DaysOfWeek.map((day) => {
+            return (
+              <Text
+                style={{
+                  paddingLeft: PADDING_SM,
+                }}
+              >
+                {day}{" "}
+              </Text>
+            );
+          })}
+        </Group>
         {months.map((offset) => {
           const month = addMonths(startOfMonth(new Date()), offset);
           return (
@@ -239,7 +263,8 @@ export default function Rdp({ onMonthChange, date }: RdpProps) {
               />
               <DayPicker
                 styles={{
-                  week: { borderBottom: "solid 1px #eaeaea" },
+                  day: { padding: "0" },
+                  week: { borderTop: "solid 1px #eaeaea" },
                   months: {
                     maxWidth: "100%",
                   },
@@ -288,7 +313,10 @@ export default function Rdp({ onMonthChange, date }: RdpProps) {
                     return (
                       <Stack
                         align="center"
-                        style={{ height: "6rem", width: "100%" }}
+                        style={{
+                          height: "6rem",
+                          width: "100%",
+                        }}
                         gap={0}
                       >
                         <Text
