@@ -45,7 +45,7 @@ const DaysOfWeek = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
 export default function Rdp({
   onMonthChange,
-  date,
+  // date,
   setHasHeaderBar,
 }: RdpProps) {
   setHasHeaderBar(true);
@@ -235,8 +235,11 @@ export default function Rdp({
           style={{
             position: "sticky",
             top: 0,
-            backgroundColor: "white",
             zIndex: 9999,
+            borderBottom: "solid 1px #eaeaea",
+            background: "rgba(255, 255, 255, 0.7)",
+            backdropFilter: "blur(1rem)",
+            WebkitBackdropFilter: "blur(1rem)",
           }}
         >
           {DaysOfWeek.map((day) => {
@@ -246,7 +249,7 @@ export default function Rdp({
                   paddingLeft: PADDING_SM,
                 }}
               >
-                {day}{" "}
+                {day}
               </Text>
             );
           })}
