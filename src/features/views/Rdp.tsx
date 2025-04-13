@@ -53,8 +53,8 @@ export default function Rdp({}: RdpProps) {
   const [mobileOpened, { toggle: toggleMobile }] = useDisclosure();
   const containerRef = useRef<HTMLDivElement | null>(null);
   const [selected, setSelected] = useState<Date[] | undefined>([]);
-  const [startIndex, setStartIndex] = useState(-6);
-  const [endIndex, setEndIndex] = useState(18);
+  const [startIndex, setStartIndex] = useState(-LOAD_MONTHS);
+  const [endIndex, setEndIndex] = useState(LOAD_MONTHS);
   const lastLoggedMonth = useRef<number | null>(null);
   const monthRefs = useRef<Record<number, HTMLDivElement | null>>({});
   const [schedule, setSchedule] = useState<Record<string, DaySchedule>>({});
@@ -64,27 +64,9 @@ export default function Rdp({}: RdpProps) {
   const HEADER_HEIGHT = 100;
 
   const months = useMemo(() => {
-    const monthNames = [
-      "January",
-      "February",
-      "March",
-      "April",
-      "May",
-      "June",
-      "July",
-      "August",
-      "September",
-      "October",
-      "November",
-      "December",
-    ];
-
     return Array.from({ length: endIndex - startIndex + 1 }, (_, i) => {
       const monthIndex = startIndex + i;
-      // Normalize negative monthIndex by adding 12 before applying modulo
-      const normalizedIndex = ((monthIndex % 12) + 12) % 12;
-      const monthName = monthNames[normalizedIndex]; // Now this will handle negative indices
-      return { name: monthName, offset: monthIndex };
+      return { offset: monthIndex };
     });
   }, [startIndex, endIndex]);
 
@@ -137,12 +119,12 @@ export default function Rdp({}: RdpProps) {
       // Calculate the distance of each month from the top, adjusted by HEADER_HEIGHT
       const rects = Object.entries(monthRefs.current)
         .map(([offset, el]) =>
-          el
+          el && containerRef.current
             ? {
                 offset: parseInt(offset),
                 distance:
-                  el.getBoundingClientRect().top -
-                  containerRef.current!.getBoundingClientRect().top -
+                  el.offsetTop -
+                  containerRef.current.scrollTop -
                   HEADER_HEIGHT +
                   MONTH_CAPTION_HEIGHT,
               }
@@ -200,6 +182,7 @@ export default function Rdp({}: RdpProps) {
         style={{
           height: "100%",
           overflowY: "scroll",
+          WebkitOverflowScrolling: "touch",
           visibility: isCalendarReady ? "visible" : "hidden",
         }}
       >
@@ -212,10 +195,12 @@ export default function Rdp({}: RdpProps) {
             zIndex: 9999,
             borderBottom: "1px solid #eaeaea",
             backgroundImage:
-              "linear-gradient(to bottom, rgba(255, 255, 255, 1.0), rgba(255, 255, 255, 0.3))",
+              "linear-gradient(to bottom, rgb(240, 240, 240), rgba(240, 240, 240, 0.5))",
             backdropFilter: "blur(2rem)",
-            WebkitBackdropFilter: "blur(2rem)",
-            boxShadow: "0 2px 4px rgba(0, 0, 0, 0.05)",
+            WebkitBackdropFilter: "blur(2rem)", // ios
+            // boxShadow: "0 2px 10px rgba(0, 0, 0, 0.1)",
+            willChange: "transform", // ios
+            transform: "translateZ(0)", //ios
           }}
         >
           <Group id="HeaderTop" p="xs" justify="space-between">
@@ -286,7 +271,6 @@ export default function Rdp({}: RdpProps) {
           return (
             <div key={offset}>
               <div
-                id={`${months[month.getMonth()].name}_${offset}`}
                 ref={(el) => {
                   monthRefs.current[offset] = el;
                 }}
