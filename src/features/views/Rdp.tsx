@@ -211,9 +211,11 @@ export default function Rdp({}: RdpProps) {
             top: 0,
             zIndex: 9999,
             borderBottom: "1px solid #eaeaea",
-            background: "rgba(255, 255, 255, 0.6)",
-            backdropFilter: "blur(1rem)",
-            WebkitBackdropFilter: "blur(1rem)",
+            backgroundImage:
+              "linear-gradient(to bottom, rgba(255, 255, 255, 1.0), rgba(255, 255, 255, 0.3))",
+            backdropFilter: "blur(2rem)",
+            WebkitBackdropFilter: "blur(2rem)",
+            boxShadow: "0 2px 4px rgba(0, 0, 0, 0.05)",
           }}
         >
           <Group id="HeaderTop" p="xs" justify="space-between">
@@ -271,7 +273,7 @@ export default function Rdp({}: RdpProps) {
           </Group>
           <Group grow gap={0}>
             {DaysOfWeek.map((day, index) => (
-              <Text key={index} style={{ paddingLeft: PADDING_SM }}>
+              <Text size="xs" key={index} style={{ paddingLeft: PADDING_SM }}>
                 {day}
               </Text>
             ))}
