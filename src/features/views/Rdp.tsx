@@ -133,32 +133,29 @@ export default function Rdp({}: RdpProps) {
         setStartIndex((prev) => prev - LOAD_MONTHS);
       }
 
-      // Track the months' distances from the top of the container
-
       // Calculate the distance of each month from the top, adjusted by HEADER_HEIGHT
       const rects = Object.entries(monthRefs.current)
-        .map(([offset, el]) => {
-          if (!el) return null;
-          const rect = el.getBoundingClientRect();
-          // Calculate the distance from the top of the month to the top of the container
-          const distanceFromTop = Math.abs(
-            rect.top - container.getBoundingClientRect().top - HEADER_HEIGHT
-          );
-          return { offset: parseInt(offset), distance: distanceFromTop };
-        })
-        .filter(Boolean) // Remove any null values
-        .sort((a, b) => a!.distance - b!.distance); // Sort by closest distance from top
-
+        .map(([offset, el]) =>
+          el
+            ? {
+                offset: parseInt(offset),
+                distance:
+                  el.getBoundingClientRect().top -
+                  containerRef.current!.getBoundingClientRect().top -
+                  HEADER_HEIGHT,
+              }
+            : null
+        )
+        .filter(Boolean)
+        .filter((item) => item!.distance <= 0) // Only months that are above the top
+        .sort((a, b) => b!.distance - a!.distance); // Sort by closest distance
       const closest = rects[0]; // Get the closest month
 
-      if (closest && closest.offset !== lastLoggedMonth.current) {
-        // Only change the currentMonth when the previous month is completely scrolled above the top
-
+      if (closest && closest.offset !== startIndex) {
         const visibleMonth = addMonths(
           startOfMonth(new Date()),
           closest.offset
         );
-        lastLoggedMonth.current = closest.offset;
         setCurrentMonth(visibleMonth);
       }
     };
@@ -170,10 +167,8 @@ export default function Rdp({}: RdpProps) {
   const scrollToToday = (smooth: boolean = true) => {
     const el = monthRefs.current[0];
     if (el && containerRef.current) {
-      const scrollTop =
-        el.offsetTop - containerRef.current.offsetTop - HEADER_HEIGHT;
       containerRef.current.scrollTo({
-        top: scrollTop,
+        top: el.offsetTop - containerRef.current.offsetTop - HEADER_HEIGHT,
         behavior: smooth ? "smooth" : "auto",
       });
     }
@@ -277,12 +272,12 @@ export default function Rdp({}: RdpProps) {
         </Stack>
         {/* END OF HEADER COMPONENT */}
 
-        {months.map(({ name, offset }) => {
+        {months.map(({ offset }) => {
           const month = addMonths(startOfMonth(new Date()), offset);
           return (
             <div key={offset}>
               <div
-                id={`${name}_${offset}`}
+                id={`${months[month.getMonth()].name}_${offset}`}
                 ref={(el) => {
                   monthRefs.current[offset] = el;
                 }}
