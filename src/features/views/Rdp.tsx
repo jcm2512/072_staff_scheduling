@@ -1,15 +1,20 @@
+// Rdp.tsx
+
 // React and libraries
+import { useState, useMemo, useRef, useEffect } from "react";
 import {
-  useState,
-  useMemo,
-  useRef,
-  useEffect,
-  Component,
-  ReactNode,
-} from "react";
-import { Stack, Text, Loader, Center, Title, Group } from "@mantine/core";
-import { DayPicker, DayButtonProps } from "react-day-picker";
-import { addMonths, startOfMonth, format } from "date-fns";
+  Stack,
+  Text,
+  Loader,
+  Center,
+  Title,
+  Group,
+  Box,
+  em,
+  Burger,
+} from "@mantine/core";
+import { DayPicker } from "react-day-picker";
+import { addMonths, startOfMonth } from "date-fns";
 import { collection, onSnapshot } from "firebase/firestore";
 
 // App-specific imports
@@ -20,12 +25,14 @@ import { useEmployeeId } from "@/hooks/useEmployeeId";
 import "react-day-picker/dist/style.css";
 import "./rdp.css";
 
+import { useMediaQuery } from "@mantine/hooks";
+import logo from "@/assets/shiftori_logo.png";
+import { useDisclosure } from "@mantine/hooks";
+
 type RdpProps = {
-  onMonthChange?: (date: Date) => void;
+  // onMonthChange?: (date: Date) => void;
   schedule?: Record<string, Record<string, any>>; // All months' data
   date?: Date;
-  hasHeaderBar: boolean;
-  setHasHeaderBar: (value: boolean) => void;
 };
 
 type DaySchedule = {
@@ -43,12 +50,12 @@ const PADDING_SM = "0.3rem";
 
 const DaysOfWeek = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
-export default function Rdp({
-  onMonthChange,
-  // date,
-  setHasHeaderBar,
-}: RdpProps) {
-  setHasHeaderBar(true);
+export default function Rdp({}: // date,
+RdpProps) {
+  const isMobile = useMediaQuery(`(max-width: ${em(768)})`);
+  const [currentMonth, setCurrentMonth] = useState<Date | null>(null);
+  const [mobileOpened, { toggle: toggleMobile }] = useDisclosure();
+
   const containerRef = useRef<HTMLDivElement | null>(null);
   const [selected, setSelected] = useState<Date[] | undefined>([]);
   const [startIndex, setStartIndex] = useState(-6); // 6 months before today
@@ -87,6 +94,7 @@ export default function Rdp({
 
   useEffect(() => {
     if (!employeeId) return;
+
     const scheduleCollectionRef = collection(
       db,
       "companies",
@@ -113,12 +121,12 @@ export default function Rdp({
 
       setSchedule(mergedDays);
       setFetchedSchedule(true);
+      setIsCalendarReady(true); // Directly set when data is ready
     });
 
     return () => unsubscribe();
   }, [employeeId]);
 
-  // Scroll logic
   useEffect(() => {
     const container = containerRef.current;
     if (!container) return;
@@ -177,12 +185,9 @@ export default function Rdp({
           startOfMonth(new Date()),
           closest.offset
         );
-        // setCurrentMonthLabel(format(visibleMonth, "MMMM yyyy"));
         lastLoggedMonth.current = closest.offset;
 
-        if (onMonthChange) {
-          onMonthChange(visibleMonth); // 🔥 trigger parent update
-        }
+        setCurrentMonth(visibleMonth); // Update the state directly here
       }
     };
 
@@ -191,20 +196,10 @@ export default function Rdp({
   }, [startIndex, endIndex]);
 
   useEffect(() => {
-    if (!fetchedSchedule) return;
+    if (!isCalendarReady) return;
 
-    const timeout = setTimeout(() => {
-      const todayEl = monthRefs.current[0];
-      if (todayEl && containerRef.current) {
-        scrollToToday(false);
-        setIsCalendarReady(true); // ✅ reveal calendar only when ready
-      } else {
-        console.warn("monthRefs not ready yet.");
-      }
-    }, 50);
-
-    return () => clearTimeout(timeout);
-  }, [fetchedSchedule]);
+    scrollToToday(false); // Scroll to the current month when ready
+  }, [isCalendarReady]);
 
   const LoadingScreen: React.FC = () => {
     return (
@@ -229,9 +224,8 @@ export default function Rdp({
           visibility: isCalendarReady ? "visible" : "hidden",
         }}
       >
-        <Group
-          gap="0"
-          grow
+        {/* HEADER COMPONENT */}
+        <Stack
           style={{
             position: "sticky",
             top: 0,
@@ -242,18 +236,76 @@ export default function Rdp({
             WebkitBackdropFilter: "blur(1rem)",
           }}
         >
-          {DaysOfWeek.map((day) => {
-            return (
-              <Text
-                style={{
-                  paddingLeft: PADDING_SM,
-                }}
-              >
-                {day}
-              </Text>
-            );
-          })}
-        </Group>
+          <Group id="HeaderTop" p="xs" justify="space-between">
+            {/* Left: Logo and Titles */}
+            <Group gap="xs" w={isMobile ? 60 : 300}>
+              <img src={logo} alt="Shiftori" style={{ height: 40 }} />
+              {!isMobile && (
+                <>
+                  <Title order={1}>シフトリ</Title>
+                  <Title order={2}>
+                    <Text>SHIFTORI2</Text>
+                  </Title>
+                </>
+              )}
+            </Group>
+
+            {/* Center: Current Month */}
+            <Box
+              style={{
+                flex: 1,
+                display: "flex",
+                flexDirection: "row",
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+            >
+              <Stack align="center" gap="0">
+                <Title order={4} style={{ width: "6em", textAlign: "center" }}>
+                  {currentMonth
+                    ? currentMonth.toLocaleString("en", { month: "long" })
+                    : ""}
+                </Title>
+                {currentMonth &&
+                  currentMonth.getFullYear() !== new Date().getFullYear() && (
+                    <Title
+                      order={1}
+                      size="1em"
+                      style={{ width: "6em", textAlign: "center" }}
+                    >
+                      {currentMonth.toLocaleString("en", { year: "numeric" })}
+                    </Title>
+                  )}
+              </Stack>
+            </Box>
+
+            {/* Right: Burger Menu */}
+            <Group w={60} justify="flex-end">
+              <Burger
+                opened={mobileOpened}
+                onClick={toggleMobile}
+                hiddenFrom="sm"
+                size="sm"
+              />
+            </Group>
+          </Group>
+          <Group grow gap={0}>
+            {DaysOfWeek.map((day, index) => {
+              return (
+                <Text
+                  key={index}
+                  style={{
+                    paddingLeft: PADDING_SM,
+                  }}
+                >
+                  {day}
+                </Text>
+              );
+            })}
+          </Group>
+        </Stack>
+        {/* END OF HEADER COMPONENT */}
+
         {months.map((offset) => {
           const month = addMonths(startOfMonth(new Date()), offset);
           return (
