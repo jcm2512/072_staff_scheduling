@@ -21,6 +21,9 @@ import { collection, onSnapshot } from "firebase/firestore";
 import { db } from "@/firebaseConfig";
 import { useEmployeeId } from "@/hooks/useEmployeeId";
 
+// utils
+import { debounce } from "@/utils/debounce"; // Adjust path as needed
+
 // Styles
 import "react-day-picker/dist/style.css";
 import "./rdp.css";
@@ -62,6 +65,16 @@ export default function Rdp({}: RdpProps) {
   const [fetchedSchedule, setFetchedSchedule] = useState(false);
   const [isCalendarReady, setIsCalendarReady] = useState(false);
   const HEADER_HEIGHT = 100;
+
+  const getMonthFromOffset = (() => {
+    const cache = new Map<number, Date>();
+    return (offset: number) => {
+      if (!cache.has(offset)) {
+        cache.set(offset, addMonths(startOfMonth(new Date()), offset));
+      }
+      return cache.get(offset)!;
+    };
+  })();
 
   const months = useMemo(() => {
     return Array.from({ length: endIndex - startIndex + 1 }, (_, i) => {
@@ -136,16 +149,16 @@ export default function Rdp({}: RdpProps) {
       const closest = rects[0]; // Get the closest month
 
       if (closest && closest.offset !== startIndex) {
-        const visibleMonth = addMonths(
-          startOfMonth(new Date()),
-          closest.offset
-        );
+        const visibleMonth = getMonthFromOffset(closest.offset);
+
         setCurrentMonth(visibleMonth);
       }
     };
 
-    container.addEventListener("scroll", handleScroll);
-    return () => container.removeEventListener("scroll", handleScroll);
+    const debouncedScroll = debounce(handleScroll, 50); // 50ms delay is usually enough
+
+    container.addEventListener("scroll", debouncedScroll);
+    return () => container.removeEventListener("scroll", debouncedScroll);
   }, [startIndex, endIndex]);
 
   const scrollToToday = (smooth: boolean = true) => {
@@ -267,7 +280,7 @@ export default function Rdp({}: RdpProps) {
         {/* END OF HEADER COMPONENT */}
 
         {months.map(({ offset }) => {
-          const month = addMonths(startOfMonth(new Date()), offset);
+          const month = getMonthFromOffset(offset);
           return (
             <div key={offset}>
               <div
@@ -313,10 +326,9 @@ export default function Rdp({}: RdpProps) {
                   },
                   DayButton(props) {
                     const date = new Date(props.day.date);
-                    const year = date.getFullYear();
-                    const month = String(date.getMonth() + 1).padStart(2, "0");
                     const dayNum = String(date.getDate()).padStart(2, "0");
-                    const fullDate = `${year}-${month}-${dayNum}`;
+                    const fullDate = date.toISOString().split("T")[0];
+
                     const daySchedule = schedule[fullDate] || {};
 
                     return (
