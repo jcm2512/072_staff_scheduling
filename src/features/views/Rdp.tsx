@@ -143,7 +143,7 @@ export default function Rdp({}: RdpProps) {
                 distance:
                   el.getBoundingClientRect().top -
                   containerRef.current!.getBoundingClientRect().top -
-                  HEADER_HEIGHT -
+                  HEADER_HEIGHT +
                   MONTH_CAPTION_HEIGHT,
               }
             : null
