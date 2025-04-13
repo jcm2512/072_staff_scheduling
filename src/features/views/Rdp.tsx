@@ -60,15 +60,32 @@ export default function Rdp({}: RdpProps) {
   const { employeeId, loading } = useEmployeeId();
   const [fetchedSchedule, setFetchedSchedule] = useState(false);
   const [isCalendarReady, setIsCalendarReady] = useState(false);
+  const HEADER_HEIGHT = 100;
 
-  const months = useMemo(
-    () =>
-      Array.from(
-        { length: endIndex - startIndex + 1 },
-        (_, i) => startIndex + i
-      ),
-    [startIndex, endIndex]
-  );
+  const months = useMemo(() => {
+    const monthNames = [
+      "January",
+      "February",
+      "March",
+      "April",
+      "May",
+      "June",
+      "July",
+      "August",
+      "September",
+      "October",
+      "November",
+      "December",
+    ];
+
+    return Array.from({ length: endIndex - startIndex + 1 }, (_, i) => {
+      const monthIndex = startIndex + i;
+      // Normalize negative monthIndex by adding 12 before applying modulo
+      const normalizedIndex = ((monthIndex % 12) + 12) % 12;
+      const monthName = monthNames[normalizedIndex]; // Now this will handle negative indices
+      return { name: monthName, offset: monthIndex };
+    });
+  }, [startIndex, endIndex]);
 
   useEffect(() => {
     if (!employeeId) return;
@@ -103,28 +120,40 @@ export default function Rdp({}: RdpProps) {
     const handleScroll = () => {
       const { scrollTop, scrollHeight, clientHeight } = container;
 
-      if (scrollTop + clientHeight >= scrollHeight - MONTH_HEIGHT) {
+      // Calculate the top of the current month considering the header height
+      const adjustedScrollTop = scrollTop + HEADER_HEIGHT;
+
+      // When the user has scrolled to the bottom, load more months
+      if (adjustedScrollTop + clientHeight >= scrollHeight - MONTH_HEIGHT) {
         setEndIndex((prev) => prev + LOAD_MONTHS);
       }
 
-      if (scrollTop <= MONTH_HEIGHT) {
+      // When the user is at the top, load previous months
+      if (adjustedScrollTop <= MONTH_HEIGHT) {
         setStartIndex((prev) => prev - LOAD_MONTHS);
       }
 
+      // Track the months' distances from the top of the container
+
+      // Calculate the distance of each month from the top, adjusted by HEADER_HEIGHT
       const rects = Object.entries(monthRefs.current)
         .map(([offset, el]) => {
           if (!el) return null;
           const rect = el.getBoundingClientRect();
+          // Calculate the distance from the top of the month to the top of the container
           const distanceFromTop = Math.abs(
-            rect.top - container.getBoundingClientRect().top
+            rect.top - container.getBoundingClientRect().top - HEADER_HEIGHT
           );
           return { offset: parseInt(offset), distance: distanceFromTop };
         })
-        .filter(Boolean)
-        .sort((a, b) => a!.distance - b!.distance);
+        .filter(Boolean) // Remove any null values
+        .sort((a, b) => a!.distance - b!.distance); // Sort by closest distance from top
 
-      const closest = rects[0];
+      const closest = rects[0]; // Get the closest month
+
       if (closest && closest.offset !== lastLoggedMonth.current) {
+        // Only change the currentMonth when the previous month is completely scrolled above the top
+
         const visibleMonth = addMonths(
           startOfMonth(new Date()),
           closest.offset
@@ -138,20 +167,21 @@ export default function Rdp({}: RdpProps) {
     return () => container.removeEventListener("scroll", handleScroll);
   }, [startIndex, endIndex]);
 
-  useEffect(() => {
-    if (isCalendarReady) scrollToToday(false);
-  }, [isCalendarReady]);
-
   const scrollToToday = (smooth: boolean = true) => {
     const el = monthRefs.current[0];
     if (el && containerRef.current) {
-      const scrollTop = el.offsetTop - containerRef.current.offsetTop;
+      const scrollTop =
+        el.offsetTop - containerRef.current.offsetTop - HEADER_HEIGHT;
       containerRef.current.scrollTo({
         top: scrollTop,
         behavior: smooth ? "smooth" : "auto",
       });
     }
   };
+
+  useEffect(() => {
+    if (isCalendarReady) scrollToToday(false);
+  }, [isCalendarReady]);
 
   const LoadingScreen: React.FC = () => (
     <Center style={{ height: "100vh" }}>
@@ -173,6 +203,7 @@ export default function Rdp({}: RdpProps) {
       >
         {/* HEADER COMPONENT */}
         <Stack
+          h={HEADER_HEIGHT}
           style={{
             position: "sticky",
             top: 0,
@@ -246,11 +277,12 @@ export default function Rdp({}: RdpProps) {
         </Stack>
         {/* END OF HEADER COMPONENT */}
 
-        {months.map((offset) => {
+        {months.map(({ name, offset }) => {
           const month = addMonths(startOfMonth(new Date()), offset);
           return (
             <div key={offset}>
               <div
+                id={`${name}_${offset}`}
                 ref={(el) => {
                   monthRefs.current[offset] = el;
                 }}
