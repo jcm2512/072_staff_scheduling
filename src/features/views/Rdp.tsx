@@ -33,6 +33,7 @@ const MONTH_HEIGHT = 360;
 const LOAD_MONTHS = 3;
 const PADDING_SM = "0.3rem";
 const DaysOfWeek = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+const MONTH_CAPTION_HEIGHT = 36;
 
 type RdpProps = {
   schedule?: Record<string, Record<string, any>>;
@@ -142,7 +143,8 @@ export default function Rdp({}: RdpProps) {
                 distance:
                   el.getBoundingClientRect().top -
                   containerRef.current!.getBoundingClientRect().top -
-                  HEADER_HEIGHT,
+                  HEADER_HEIGHT -
+                  MONTH_CAPTION_HEIGHT,
               }
             : null
         )
@@ -168,7 +170,12 @@ export default function Rdp({}: RdpProps) {
     const el = monthRefs.current[0];
     if (el && containerRef.current) {
       containerRef.current.scrollTo({
-        top: el.offsetTop - containerRef.current.offsetTop - HEADER_HEIGHT,
+        top:
+          el.offsetTop -
+          containerRef.current.offsetTop -
+          HEADER_HEIGHT +
+          MONTH_CAPTION_HEIGHT +
+          2, // TODO: Remove hard coding 2 pixel to scroll to below div border
         behavior: smooth ? "smooth" : "auto",
       });
     }
@@ -305,7 +312,13 @@ export default function Rdp({}: RdpProps) {
                 components={{
                   MonthCaption(props) {
                     return (
-                      <Title order={5} style={{ paddingLeft: PADDING_SM }}>
+                      <Title
+                        order={5}
+                        style={{
+                          paddingLeft: PADDING_SM,
+                          height: MONTH_CAPTION_HEIGHT,
+                        }}
+                      >
                         {props.calendarMonth.date.toLocaleString("en", {
                           month: "long",
                         })}
