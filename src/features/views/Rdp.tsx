@@ -113,23 +113,48 @@ export default function Rdp({}: RdpProps) {
     const container = containerRef.current;
     if (!container) return;
 
+    const canLoadMoreTop = { current: true }; // Only allow load once per top scroll
+    const canLoadMoreBottom = { current: true }; // Optional: for bottom as well
+
     const handleScroll = () => {
       const { scrollTop, scrollHeight, clientHeight } = container;
-
-      // Calculate the top of the current month considering the header height
       const adjustedScrollTop = scrollTop + HEADER_HEIGHT;
 
-      // When the user has scrolled to the bottom, load more months
-      if (adjustedScrollTop + clientHeight >= scrollHeight - MONTH_HEIGHT) {
+      // --- Load more at bottom ---
+      if (
+        adjustedScrollTop + clientHeight >= scrollHeight - MONTH_HEIGHT &&
+        canLoadMoreBottom.current
+      ) {
+        canLoadMoreBottom.current = false;
         setEndIndex((prev) => prev + LOAD_MONTHS);
       }
 
-      // When the user is at the top, load previous months
-      if (adjustedScrollTop <= MONTH_HEIGHT) {
-        setStartIndex((prev) => prev - LOAD_MONTHS);
+      // Reset bottom flag when scrolling away from bottom
+      if (adjustedScrollTop + clientHeight < scrollHeight - MONTH_HEIGHT * 2) {
+        canLoadMoreBottom.current = true;
       }
 
-      // Calculate the distance of each month from the top, adjusted by HEADER_HEIGHT
+      // --- Load more at top ---
+      if (adjustedScrollTop <= MONTH_HEIGHT && canLoadMoreTop.current) {
+        canLoadMoreTop.current = false;
+        setStartIndex((prev) => {
+          const newStart = prev - LOAD_MONTHS;
+
+          // Wait until DOM updates before re-triggering scroll logic
+          setTimeout(() => {
+            if (containerRef.current) handleScroll();
+          }, 0);
+
+          return newStart;
+        });
+      }
+
+      // Reset top flag when scrolling away from top
+      if (adjustedScrollTop > MONTH_HEIGHT * 2) {
+        canLoadMoreTop.current = true;
+      }
+
+      // --- Update current visible month ---
       const rects = Object.entries(monthRefs.current)
         .map(([offset, el]) =>
           el && containerRef.current
@@ -144,19 +169,18 @@ export default function Rdp({}: RdpProps) {
             : null
         )
         .filter(Boolean)
-        .filter((item) => item!.distance <= 0) // Only months that are above the top
-        .sort((a, b) => b!.distance - a!.distance); // Sort by closest distance
-      const closest = rects[0]; // Get the closest month
+        .filter((item) => item!.distance <= 0)
+        .sort((a, b) => b!.distance - a!.distance);
 
-      if (closest && closest.offset !== startIndex) {
+      const closest = rects[0];
+      if (closest && closest.offset !== lastLoggedMonth.current) {
+        lastLoggedMonth.current = closest.offset;
         const visibleMonth = getMonthFromOffset(closest.offset);
-
         setCurrentMonth(visibleMonth);
       }
     };
 
-    const debouncedScroll = debounce(handleScroll, 50); // 50ms delay is usually enough
-
+    const debouncedScroll = debounce(handleScroll, 50);
     container.addEventListener("scroll", debouncedScroll);
     return () => container.removeEventListener("scroll", debouncedScroll);
   }, [startIndex, endIndex]);
