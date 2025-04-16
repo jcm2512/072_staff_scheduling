@@ -76,7 +76,7 @@ export function App() {
             <>
               <Route path="/rdp" element={<Rdp />} />
               <Route path="/virtualized" element={<Virtualized />} />
-              <Route path="*" element={<Navigate to="/*" />} />
+              <Route path="*" element={<Navigate to="/virtualized" />} />
             </>
           ) : (
             <Route path="*" element={<AuthenticationForm />} />
