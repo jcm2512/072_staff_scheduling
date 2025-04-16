@@ -2,10 +2,19 @@
 import logo from "@/assets/shiftori_logo.png";
 
 // React and libraries
-import { useRef, useMemo } from "react";
-import { Stack, Text, Title, Group, Box, Burger } from "@mantine/core";
+import { useRef, useMemo, useState } from "react";
 import { DayPicker } from "react-day-picker";
 import { addMonths, startOfMonth } from "date-fns";
+import {
+  Stack,
+  Text,
+  Loader,
+  Center,
+  Title,
+  Group,
+  Box,
+  Burger,
+} from "@mantine/core";
 
 import {
   List,
@@ -16,9 +25,8 @@ import {
 
 import { ListRowRenderer } from "react-virtualized";
 
-// App-specific imports
-
-// utils
+// Layouts
+import Header from "@/features/components/Header";
 
 // Styles
 import "react-day-picker/dist/style.css";
@@ -27,22 +35,27 @@ import "react-day-picker/dist/style.css";
 import { useMediaQuery } from "@mantine/hooks";
 
 // Constants
-
 const getMonthFromOffset = (offset: number) =>
   addMonths(startOfMonth(new Date()), offset);
 
-const TOTAL_MONTHS = 12;
+const TOTAL_MONTHS = 100;
+
+const HEADER_HEIGHT = 60;
+const MONTH_HEIGHT = 360;
+const LOAD_MONTHS = 3;
+const PADDING_SM = "0.3rem";
+const DaysOfWeek = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+const MONTH_CAPTION_HEIGHT = 36;
 
 export default function Virtualized() {
+  const [currentMonthLabel, setCurrentMonthLabel] = useState("");
+
   const isMobile = useMediaQuery(`(max-width: 768px)`);
   const containerRef = useRef<HTMLDivElement | null>(null);
-  const HEADER_HEIGHT = 100;
-
   const months = useMemo(
     () => Array.from({ length: TOTAL_MONTHS }, (_, i) => i),
     []
   );
-
   // Cache to dynamically measure height
   const cache = useRef(
     new CellMeasurerCache({
@@ -63,90 +76,151 @@ export default function Virtualized() {
         parent={parent}
       >
         <div style={style}>
-          <DayPicker month={month} captionLayout="dropdown" showOutsideDays />
+          <DayPicker
+            styles={{
+              day: { padding: "0" },
+              week: { borderTop: "1px solid #eaeaea" },
+              months: { maxWidth: "100%" },
+              month: {
+                width: "100%",
+                display: "flex",
+                flexDirection: "column",
+              },
+              month_grid: { flexGrow: "1" },
+            }}
+            mode="multiple"
+            month={month}
+            // selected={selected}
+            // onSelect={setSelected}
+            hideWeekdays
+            hideNavigation
+            modifiers={{ weekend: { dayOfWeek: [0, 6] } }}
+            components={{
+              MonthCaption(props) {
+                return (
+                  <Title
+                    order={5}
+                    style={{
+                      paddingLeft: PADDING_SM,
+                      height: MONTH_CAPTION_HEIGHT,
+                    }}
+                  >
+                    {props.calendarMonth.date.toLocaleString("en", {
+                      month: "long",
+                    })}
+                  </Title>
+                );
+              },
+              DayButton(props) {
+                const date = new Date(props.day.date);
+                const dayNum = String(date.getDate()).padStart(2, "0");
+                const fullDate = date.toISOString().split("T")[0];
+
+                // const daySchedule = schedule[fullDate] || {};
+
+                return (
+                  <Stack
+                    align="center"
+                    style={{ height: "6rem", width: "100%" }}
+                    gap={0}
+                  >
+                    <Text
+                      className="DayNum"
+                      size="sm"
+                      style={{
+                        fontWeight: "300",
+                        alignSelf: "flex-start",
+                        paddingLeft: PADDING_SM,
+                      }}
+                    >
+                      {dayNum}
+                    </Text>
+
+                    <Text
+                      //   c={daySchedule.am === "Office" ? "black" : "#1A535C"}
+                      inline
+                      size="xs"
+                      m="0.5vh"
+                      //   bg={daySchedule.am === "Office" ? "lightgrey" : "#4ECDC4"}
+                      style={{
+                        width: "90%",
+                        borderRadius: PADDING_SM,
+                        textAlign: "center",
+                        lineHeight: "1.3rem",
+                        fontWeight: "500",
+                      }}
+                    >
+                      {/* {daySchedule.am || ""} */}
+                    </Text>
+
+                    <Text
+                      //   c={daySchedule.pm === "Office" ? "black" : "#055561"}
+                      //   bg={daySchedule.pm === "Office" ? "lightgrey" : "#C4F5FC"}
+                      inline
+                      size="xs"
+                      m="0.5vh"
+                      style={{
+                        width: "90%",
+                        borderRadius: PADDING_SM,
+                        textAlign: "center",
+                        lineHeight: "1.3rem",
+                        fontWeight: "bold",
+                      }}
+                    >
+                      {/* {daySchedule.pm || ""} */}
+                    </Text>
+                  </Stack>
+                );
+              },
+            }}
+          />
         </div>
       </CellMeasurer>
     );
   };
 
   return (
-    <div style={{ position: "relative", width: "100%" }}>
-      <div
-        ref={containerRef}
-        style={{
-          height: "100vh",
-          display: "flex",
-          flexDirection: "column",
-          overflow: "hidden", // ✅ prevent outer scrollbars
+    <div
+      ref={containerRef}
+      style={{
+        flex: 1,
+        height: "100vh",
+        display: "flex",
+        flexDirection: "column",
+        overflow: "hidden",
+      }}
+    >
+      <Header
+        {...{
+          isMobile,
+          HEADER_HEIGHT,
+          logo,
+          CONTEXTUAL_TITLE: currentMonthLabel,
         }}
-      >
-        {/* HEADER COMPONENT */}
-        <Stack
-          h={HEADER_HEIGHT}
-          style={{
-            position: "sticky",
-            top: 0,
-            zIndex: 9999,
-            borderBottom: "1px solid #eaeaea",
-            backgroundImage:
-              "linear-gradient(to bottom, rgb(240, 240, 240), rgba(240, 240, 240, 0.5))",
-            backdropFilter: "blur(2rem)",
-            WebkitBackdropFilter: "blur(2rem)", // ios
-            // boxShadow: "0 2px 10px rgba(0, 0, 0, 0.1)",
-            willChange: "transform", // ios
-            transform: "translateZ(0)", //ios
-          }}
-        >
-          <Group id="HeaderTop" p="xs" justify="space-between">
-            {/* Left: Logo and Titles */}
-            <Group gap="xs" w={isMobile ? 60 : 300}>
-              <img src={logo} alt="Shiftori" style={{ height: 40 }} />
-              {!isMobile && (
-                <>
-                  <Title order={1}>シフトリ</Title>
-                  <Title order={2}>
-                    <Text>SHIFTORI</Text>
-                  </Title>
-                </>
-              )}
-            </Group>
-
-            {/* Center: Title */}
-            <Box
-              style={{
-                flex: 1,
-                display: "flex",
-                flexDirection: "row",
-                alignItems: "center",
-                justifyContent: "center",
+      />
+      <div id="body" style={{ flex: 1, overflow: "hidden" }}>
+        <AutoSizer>
+          {({ height, width }) => (
+            <List
+              width={width}
+              height={height}
+              rowCount={months.length}
+              deferredMeasurementCache={cache}
+              rowHeight={cache.rowHeight}
+              rowRenderer={rowRenderer}
+              overscanRowCount={2}
+              onRowsRendered={({ startIndex }) => {
+                const visibleMonth = getMonthFromOffset(startIndex);
+                setCurrentMonthLabel(
+                  visibleMonth.toLocaleString("en", {
+                    month: "long",
+                    year: "numeric",
+                  })
+                );
               }}
-            >
-              Title
-            </Box>
-
-            {/* Right: Burger Menu */}
-            <Group w={60} justify="flex-end">
-              <Burger hiddenFrom="sm" size="sm" />
-            </Group>
-          </Group>
-        </Stack>
-        {/* END OF HEADER COMPONENT */}
-
-        <div id="body" style={{ flex: 1, overflow: "hidden" }}>
-          <AutoSizer>
-            {({ height, width }) => (
-              <List
-                width={width}
-                height={height}
-                rowCount={months.length}
-                deferredMeasurementCache={cache}
-                rowHeight={cache.rowHeight}
-                rowRenderer={rowRenderer}
-                overscanRowCount={2}
-              />
-            )}
-          </AutoSizer>
-        </div>
+            />
+          )}
+        </AutoSizer>
       </div>
     </div>
   );

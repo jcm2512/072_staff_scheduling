@@ -67,6 +67,7 @@ export function App() {
       <AppShell.Main
         style={{
           height: "100vh",
+          flex: 1,
           display: "flex",
           justifyContent: "center",
         }}
