@@ -27,6 +27,7 @@ import { AuthenticationForm } from "./features/auth/AuthenticationForm";
 // Components
 // import { NotifyButton } from "@/components/notifyButton";
 import Rdp from "@/features/views/Rdp";
+import Virtualized from "@/features/views/Virtualized";
 
 export function App() {
   // Hooks
@@ -74,8 +75,8 @@ export function App() {
           {user ? (
             <>
               <Route path="/rdp" element={<Rdp />} />
-
-              <Route path="*" element={<Navigate to="/rdp" />} />
+              <Route path="/virtualized" element={<Virtualized />} />
+              <Route path="*" element={<Navigate to="/*" />} />
             </>
           ) : (
             <Route path="*" element={<AuthenticationForm />} />
