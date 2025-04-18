@@ -5,25 +5,15 @@ import logo from "@/assets/shiftori_logo.png";
 import { useRef, useMemo, useState, useEffect } from "react";
 import { DayPicker } from "react-day-picker";
 import { addMonths, startOfMonth } from "date-fns";
-import {
-  Stack,
-  Text,
-  Loader,
-  Center,
-  Title,
-  Group,
-  Box,
-  Burger,
-} from "@mantine/core";
+import { Stack, Text, Title } from "@mantine/core";
 
 import {
   List,
   AutoSizer,
   CellMeasurer,
   CellMeasurerCache,
+  ListRowRenderer,
 } from "react-virtualized";
-
-import { ListRowRenderer } from "react-virtualized";
 
 // Layouts
 import Header from "@/features/components/Header";
@@ -34,17 +24,17 @@ import "react-day-picker/dist/style.css";
 // Hooks
 import { useMediaQuery } from "@mantine/hooks";
 
+// DEBUG
+
 // Constants
+const YEARS_TO_RENDER = 2;
 const START_YEAR = new Date().getFullYear() - 1;
 const START_MONTH = 3; // April (0-indexed)
 const START_OFFSET_DATE = new Date(START_YEAR, START_MONTH, 1);
-const TOTAL_MONTHS = 12 * 11; // 11 years: last year + 10 years into future
-
+const TOTAL_MONTHS = 12 * YEARS_TO_RENDER;
+const OVERSCAN_ROW_COUNT = 2;
 const HEADER_HEIGHT = 60;
-const MONTH_HEIGHT = 360;
-const LOAD_MONTHS = 3;
 const PADDING_SM = "0.3rem";
-const DaysOfWeek = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 const MONTH_CAPTION_HEIGHT = 36;
 
 const getMonthFromOffset = (offset: number) =>
@@ -63,20 +53,21 @@ export default function Virtualized() {
 
   const listRef = useRef<List | null>(null);
   const initialScrollRow = useRef<number>(todayOffset); // or todayOffset, etc.
-
   const [currentMonthLabel, setCurrentMonthLabel] = useState("");
-
   const hasScrolled = useRef(false);
   const isMobile = useMediaQuery(`(max-width: 768px)`);
-  const containerRef = useRef<HTMLDivElement | null>(null);
+
+  //   const containerRef = useRef<HTMLDivElement | null>(null);
+
   const months = useMemo(
     () => Array.from({ length: TOTAL_MONTHS }, (_, i) => i),
     []
   );
+
   // Cache to dynamically measure height
   const cache = useRef(
     new CellMeasurerCache({
-      defaultHeight: 360,
+      defaultHeight: 200,
       fixedWidth: true,
     })
   ).current;
@@ -103,6 +94,8 @@ export default function Virtualized() {
       initialScrollRow.current >= startIndex &&
       initialScrollRow.current <= stopIndex
     ) {
+      cache.clear(initialScrollRow.current, 0);
+      listRef.current?.recomputeRowHeights(initialScrollRow.current);
       listRef.current?.scrollToRow(initialScrollRow.current);
       hasScrolled.current = true;
       console.log("✅ Final scroll triggered to:", initialScrollRow.current);
@@ -134,8 +127,6 @@ export default function Virtualized() {
             }}
             mode="multiple"
             month={month}
-            // selected={selected}
-            // onSelect={setSelected}
             hideWeekdays
             hideNavigation
             modifiers={{ weekend: { dayOfWeek: [0, 6] } }}
@@ -158,7 +149,7 @@ export default function Virtualized() {
               DayButton(props) {
                 const date = new Date(props.day.date);
                 const dayNum = String(date.getDate()).padStart(2, "0");
-                const fullDate = date.toISOString().split("T")[0];
+                // const fullDate = date.toISOString().split("T")[0];
 
                 // const daySchedule = schedule[fullDate] || {};
 
@@ -223,18 +214,21 @@ export default function Virtualized() {
     );
   };
 
+  // FIXES scroll jump on scrolling previous months
   useEffect(() => {
-    const timeout = setTimeout(() => {
-      console.log("🚀 Initial jump to:", initialScrollRow.current);
-      listRef.current?.scrollToRow(initialScrollRow.current);
-    }, 0); // or 50ms for safety
-
-    return () => clearTimeout(timeout);
+    const range = 2 * OVERSCAN_ROW_COUNT + 1; // overscan above + overscan below + current month
+    for (
+      let i = Math.max(0, initialScrollRow.current - range);
+      i <= Math.min(TOTAL_MONTHS - 1, initialScrollRow.current + range);
+      i++
+    ) {
+      cache.clear(i, 0);
+      listRef.current?.recomputeRowHeights(i);
+    }
   }, []);
 
   return (
     <div
-      ref={containerRef}
       style={{
         flex: 1,
         height: "100vh",
@@ -262,7 +256,8 @@ export default function Virtualized() {
               deferredMeasurementCache={cache}
               rowHeight={cache.rowHeight}
               rowRenderer={rowRenderer}
-              overscanRowCount={2}
+              overscanRowCount={OVERSCAN_ROW_COUNT}
+              scrollToIndex={initialScrollRow.current}
               scrollToAlignment="start"
               onRowsRendered={handleRowsRendered}
             />
