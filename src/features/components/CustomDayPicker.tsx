@@ -12,11 +12,13 @@ const MONTH_CAPTION_HEIGHT = 36;
 type CustomDayPickerProps = {
   month: Date;
   cellHeight: number;
+  schedule: any;
 };
 
 export default function CustomDayPicker({
   month,
   cellHeight,
+  schedule,
 }: CustomDayPickerProps) {
   return (
     <DayPicker
@@ -55,9 +57,9 @@ export default function CustomDayPicker({
         DayButton(props) {
           const date = new Date(props.day.date);
           const dayNum = String(date.getDate()).padStart(2, "0");
-          // const fullDate = date.toISOString().split("T")[0];
+          const fullDate = date.toISOString().split("T")[0];
 
-          // const daySchedule = schedule[fullDate] || {};
+          const daySchedule = schedule[fullDate] || {};
 
           return (
             <Stack
@@ -78,11 +80,11 @@ export default function CustomDayPicker({
               </Text>
 
               <Text
-                //   c={daySchedule.am === "Office" ? "black" : "#1A535C"}
+                c={daySchedule.am === "Office" ? "black" : "#1A535C"}
                 inline
                 size="xs"
                 m="0.5vh"
-                //   bg={daySchedule.am === "Office" ? "lightgrey" : "#4ECDC4"}
+                bg={daySchedule.am === "Office" ? "lightgrey" : "#4ECDC4"}
                 style={{
                   width: "90%",
                   borderRadius: PADDING_SM,
@@ -91,12 +93,12 @@ export default function CustomDayPicker({
                   fontWeight: "500",
                 }}
               >
-                {/* {daySchedule.am || ""} */}
+                {daySchedule.am || ""}
               </Text>
 
               <Text
-                //   c={daySchedule.pm === "Office" ? "black" : "#055561"}
-                //   bg={daySchedule.pm === "Office" ? "lightgrey" : "#C4F5FC"}
+                c={daySchedule.pm === "Office" ? "black" : "#055561"}
+                bg={daySchedule.pm === "Office" ? "lightgrey" : "#C4F5FC"}
                 inline
                 size="xs"
                 m="0.5vh"
@@ -108,7 +110,7 @@ export default function CustomDayPicker({
                   fontWeight: "bold",
                 }}
               >
-                {/* {daySchedule.pm || ""} */}
+                {daySchedule.pm || ""}
               </Text>
             </Stack>
           );

@@ -21,8 +21,14 @@ import "react-day-picker/dist/style.css";
 
 // Hooks
 import { useMediaQuery } from "@mantine/hooks";
+import { useEmployeeId } from "@/hooks/useEmployeeId";
 
+// Components
 import CustomDayPicker from "@/features/components/CustomDayPicker";
+
+// Database
+import { collection, onSnapshot } from "firebase/firestore";
+import { db } from "@/firebaseConfig";
 
 // DEBUG
 
@@ -35,6 +41,13 @@ const TOTAL_MONTHS = 12 * YEARS_TO_RENDER;
 const OVERSCAN_ROW_COUNT = 2;
 const HEADER_HEIGHT = 60;
 const DAY_CELL_HEIGHT_REM = 6;
+
+type DaySchedule = {
+  am?: string;
+  pm?: string;
+  allday?: boolean;
+  irregular?: boolean;
+};
 
 // Memoized function
 const getMonthFromOffset = (() => {
@@ -65,6 +78,10 @@ const remToPx = (rem: number): number => {
 const DAY_CELL_HEIGHT_PX = remToPx(DAY_CELL_HEIGHT_REM);
 
 export default function Virtualized() {
+  const { employeeId, loading } = useEmployeeId();
+  const [schedule, setSchedule] = useState<Record<string, DaySchedule>>({});
+  const [fetchedSchedule, setFetchedSchedule] = useState(false);
+
   const todayOffset = useMemo(() => getTodayOffset(), []);
 
   const listRef = useRef<List | null>(null);
@@ -123,7 +140,11 @@ export default function Virtualized() {
         parent={parent}
       >
         <div style={style}>
-          <CustomDayPicker month={month} cellHeight={DAY_CELL_HEIGHT_REM} />
+          <CustomDayPicker
+            month={month}
+            cellHeight={DAY_CELL_HEIGHT_REM}
+            schedule={schedule}
+          />
         </div>
       </CellMeasurer>
     );
@@ -141,6 +162,39 @@ export default function Virtualized() {
       }
     }
   }, []);
+
+  useEffect(() => {
+    if (!employeeId) return;
+    const scheduleCollectionRef = collection(
+      db,
+      "companies",
+      "companyId02",
+      "teacher",
+      employeeId,
+      "monthlySchedule"
+    );
+
+    const unsubscribe = onSnapshot(scheduleCollectionRef, (snapshot) => {
+      let mergedDays: Record<string, DaySchedule> = {};
+
+      snapshot.forEach((docSnapshot: any) => {
+        if (docSnapshot.exists()) {
+          const data = docSnapshot.data();
+          const days = data ?? {};
+
+          mergedDays = {
+            ...mergedDays,
+            ...days,
+          };
+        }
+      });
+
+      setSchedule(mergedDays);
+      setFetchedSchedule(true);
+    });
+
+    return () => unsubscribe();
+  }, [employeeId]);
 
   return (
     <div
