@@ -55,7 +55,7 @@ export function App() {
   if (loading) {
     return (
       <Center style={{ height: "100vh" }}>
-        <Loader size="lg" color="teal" />
+        <Loader size="lg" color="#4ECDC4" />
       </Center>
     );
   }
@@ -76,9 +76,8 @@ export function App() {
       <Routes>
         {user ? (
           <>
-            <Route path="/rdp" element={<Rdp />} />
-            <Route path="/virtualized" element={<Virtualized />} />
-            <Route path="*" element={<Navigate to="/virtualized" />} />
+            <Route path="/calendar" element={<Virtualized />} />
+            <Route path="*" element={<Navigate to="/calendar" />} />
           </>
         ) : (
           <Route path="*" element={<AuthenticationForm />} />
