@@ -4,6 +4,7 @@ import logo from "@/assets/shiftori_logo.png";
 // React and libraries
 import { useRef, useMemo, useState, useEffect } from "react";
 import { addMonths, startOfMonth } from "date-fns";
+import { Text } from "@mantine/core";
 
 import {
   List,
@@ -39,8 +40,8 @@ const START_MONTH = 3; // April (0-indexed)
 const START_OFFSET_DATE = new Date(START_YEAR, START_MONTH, 1);
 const TOTAL_MONTHS = 12 * YEARS_TO_RENDER;
 const OVERSCAN_ROW_COUNT = 2;
-const HEADER_HEIGHT = 60;
 const DAY_CELL_HEIGHT_REM = 6;
+const PADDING = "0.3rem";
 
 type DaySchedule = {
   am?: string;
@@ -78,6 +79,11 @@ const remToPx = (rem: number): number => {
 const DAY_CELL_HEIGHT_PX = remToPx(DAY_CELL_HEIGHT_REM);
 
 export default function Virtualized() {
+  const bodyRef = useRef<HTMLDivElement | null>(null);
+  const [innerWidth, setInnerWidth] = useState(0);
+
+  const [headerHeight, setHeaderHeight] = useState<number>(60); // Fallback height
+
   const { employeeId, loading } = useEmployeeId();
   const [schedule, setSchedule] = useState<Record<string, DaySchedule>>({});
   const [fetchedSchedule, setFetchedSchedule] = useState(false);
@@ -110,7 +116,7 @@ export default function Virtualized() {
       const rowHeight = cache.rowHeight({ index: i });
 
       // check which month is visble
-      if (y + rowHeight > scrollTop + HEADER_HEIGHT + DAY_CELL_HEIGHT_PX) {
+      if (y + rowHeight > scrollTop + headerHeight + DAY_CELL_HEIGHT_PX) {
         // only set the current month if different from previous
         // prevents updating on every tick
         if (lastVisibleIndex.current !== i) {
@@ -141,6 +147,7 @@ export default function Virtualized() {
       >
         <div style={style}>
           <CustomDayPicker
+            PADDING={PADDING}
             month={month}
             cellHeight={DAY_CELL_HEIGHT_REM}
             schedule={schedule}
@@ -149,6 +156,27 @@ export default function Virtualized() {
       </CellMeasurer>
     );
   };
+
+  useEffect(() => {
+    const scrollContainer = listRef.current?._scrollingContainer as HTMLElement;
+    if (!scrollContainer) return;
+
+    const update = () => {
+      const width = scrollContainer.clientWidth; // ✅ excludes scrollbar
+      setInnerWidth(width);
+    };
+
+    update();
+
+    const observer = new ResizeObserver(update);
+    observer.observe(scrollContainer);
+
+    return () => observer.disconnect();
+  }, []);
+
+  useEffect(() => {
+    console.log("innerWidth changed:", innerWidth);
+  }, [innerWidth]);
 
   // FIXES scroll jump on scrolling previous months
   useEffect(() => {
@@ -207,8 +235,9 @@ export default function Virtualized() {
     >
       <Header
         {...{
+          setHeaderHeight,
+          PADDING,
           isMobile,
-          HEADER_HEIGHT,
           logo,
           CONTEXTUAL_TITLE: currentMonthLabel,
         }}
@@ -216,6 +245,7 @@ export default function Virtualized() {
 
       <div
         id="body"
+        ref={bodyRef}
         style={{
           flex: 1,
           position: "relative",
@@ -223,21 +253,24 @@ export default function Virtualized() {
         }}
       >
         <AutoSizer>
-          {({ height, width }) => (
-            <List
-              ref={listRef}
-              width={width}
-              height={height}
-              rowCount={months.length}
-              deferredMeasurementCache={cache}
-              rowHeight={cache.rowHeight}
-              rowRenderer={rowRenderer}
-              overscanRowCount={OVERSCAN_ROW_COUNT}
-              scrollToIndex={initialScrollRow.current}
-              scrollToAlignment="auto"
-              onScroll={handleScroll}
-            />
-          )}
+          {({ height, width }) => {
+            return (
+              <List
+                ref={listRef}
+                width={width}
+                height={height}
+                rowCount={months.length}
+                deferredMeasurementCache={cache}
+                rowHeight={cache.rowHeight}
+                rowRenderer={rowRenderer}
+                overscanRowCount={OVERSCAN_ROW_COUNT}
+                scrollToIndex={initialScrollRow.current}
+                scrollToAlignment="auto"
+                onScroll={handleScroll}
+                className="hideScrollBar"
+              />
+            );
+          }}
         </AutoSizer>
       </div>
     </div>

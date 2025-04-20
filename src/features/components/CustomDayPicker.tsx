@@ -6,16 +6,17 @@ import { Stack, Text, Title } from "@mantine/core";
 import "react-day-picker/dist/style.css";
 
 // Constants
-const PADDING_SM = "0.3rem";
 const MONTH_CAPTION_HEIGHT = 36;
 
 type CustomDayPickerProps = {
   month: Date;
   cellHeight: number;
   schedule: any;
+  PADDING: string;
 };
 
 export default function CustomDayPicker({
+  PADDING,
   month,
   cellHeight,
   schedule,
@@ -44,7 +45,7 @@ export default function CustomDayPicker({
             <Title
               order={5}
               style={{
-                paddingLeft: PADDING_SM,
+                paddingLeft: PADDING,
                 height: MONTH_CAPTION_HEIGHT,
               }}
             >
@@ -73,7 +74,7 @@ export default function CustomDayPicker({
                 style={{
                   fontWeight: "300",
                   alignSelf: "flex-start",
-                  paddingLeft: PADDING_SM,
+                  paddingLeft: PADDING,
                 }}
               >
                 {dayNum}
@@ -87,10 +88,10 @@ export default function CustomDayPicker({
                 bg={daySchedule.am === "Office" ? "lightgrey" : "#4ECDC4"}
                 style={{
                   width: "90%",
-                  borderRadius: PADDING_SM,
+                  borderRadius: PADDING,
                   textAlign: "center",
                   lineHeight: "1.3rem",
-                  fontWeight: "500",
+                  fontWeight: "900",
                 }}
               >
                 {daySchedule.am || ""}
@@ -104,10 +105,10 @@ export default function CustomDayPicker({
                 m="0.5vh"
                 style={{
                   width: "90%",
-                  borderRadius: PADDING_SM,
+                  borderRadius: PADDING,
                   textAlign: "center",
                   lineHeight: "1.3rem",
-                  fontWeight: "bold",
+                  fontWeight: "900",
                 }}
               >
                 {daySchedule.pm || ""}

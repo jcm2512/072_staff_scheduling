@@ -1,26 +1,47 @@
 // Header.tsx
 import { Stack, Text, Title, Group, Box, Burger } from "@mantine/core";
+import { useLayoutEffect, useRef } from "react";
 
 type VirtualizedProps = {
+  setHeaderHeight: (height: number) => void;
+  PADDING: any;
   isMobile: boolean | undefined;
-  HEADER_HEIGHT: number;
   logo: string;
   TITLE_1?: string;
   TITLE_2?: string;
   CONTEXTUAL_TITLE?: string;
 };
 
+const DaysOfWeek = ["S", "M", "T", "W", "Th", "F", "S"];
+
 export default function Header({
+  setHeaderHeight,
+  PADDING,
   isMobile,
-  HEADER_HEIGHT,
   logo,
   TITLE_1 = "シフトリ",
   TITLE_2 = "SHIFTORI",
   CONTEXTUAL_TITLE = "Title",
 }: VirtualizedProps) {
+  const ref = useRef<HTMLDivElement | null>(null);
+
+  useLayoutEffect(() => {
+    if (!ref.current) return;
+
+    const updateHeaderHeight = () =>
+      setHeaderHeight(ref.current?.offsetHeight ?? 60);
+
+    const resizeObserver = new ResizeObserver(updateHeaderHeight);
+
+    resizeObserver.observe(ref.current);
+    updateHeaderHeight(); // initial run
+
+    return () => resizeObserver.disconnect();
+  }, []);
+
   return (
     <Stack
-      h={HEADER_HEIGHT}
+      ref={ref}
       style={{
         position: "fixed",
         top: 0,
@@ -67,6 +88,13 @@ export default function Header({
         <Group w={60} justify="flex-end">
           <Burger hiddenFrom="sm" size="sm" />
         </Group>
+      </Group>
+      <Group grow gap={0}>
+        {DaysOfWeek.map((day, index) => (
+          <Text size="xs" key={index} style={{ paddingLeft: PADDING }}>
+            {day}
+          </Text>
+        ))}
       </Group>
     </Stack>
   );
