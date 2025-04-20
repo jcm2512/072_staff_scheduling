@@ -1,6 +1,6 @@
 import { createContext, useContext, useState } from "react";
 
-type SelectedMenu = "home" | "calendar";
+type SelectedMenu = "schedule" | "notifications" | "settings";
 
 type MenuContextType = {
   selectedMenu: SelectedMenu;
@@ -13,7 +13,7 @@ const MenuContext = createContext<MenuContextType | undefined>(undefined);
 
 export const MenuProvider = ({ children }: { children: React.ReactNode }) => {
   // Hooks
-  const [selectedMenu, setSelectedMenu] = useState<SelectedMenu>("calendar");
+  const [selectedMenu, setSelectedMenu] = useState<SelectedMenu>("schedule");
   const [menuHeight, setMenuHeight] = useState<number>(60);
 
   return (

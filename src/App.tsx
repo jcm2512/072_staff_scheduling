@@ -31,7 +31,7 @@ import Menu from "@/features/components/Menu";
 
 // import { NotifyButton } from "@/components/notifyButton";
 import CalendarView from "@/features/views/CalendarView";
-
+import { BlankView } from "@/features/views/BlankView";
 // Context
 import { HeaderProvider } from "@/context/HeaderContext";
 import { MenuProvider } from "@/context/MenuContext";
@@ -82,7 +82,7 @@ export function App() {
           {user ? (
             <>
               <Route
-                path="/calendar"
+                path="/schedule"
                 element={
                   <CalendarView
                     currentMonthLabel={currentMonthLabel}
@@ -90,7 +90,15 @@ export function App() {
                   />
                 }
               />
-              <Route path="*" element={<Navigate to="/calendar" />} />
+              <Route
+                path="/notifications"
+                element={<BlankView title="Notifications"></BlankView>}
+              ></Route>
+              <Route
+                path="/settings"
+                element={<BlankView title="Settings"></BlankView>}
+              ></Route>
+              <Route path="*" element={<Navigate to="/schedule" />} />
             </>
           ) : (
             <Route path="*" element={<AuthenticationForm />} />
