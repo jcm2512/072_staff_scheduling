@@ -1,10 +1,8 @@
 // Virtualized.tsx
-import logo from "@/assets/shiftori_logo.png";
 
 // React and libraries
 import { useRef, useMemo, useState, useEffect } from "react";
 import { addMonths, startOfMonth } from "date-fns";
-import { Text } from "@mantine/core";
 
 import {
   List,
@@ -15,13 +13,12 @@ import {
 } from "react-virtualized";
 
 // Layouts
-import Header from "@/features/components/Header";
+import { useHeaderContext } from "@/context/HeaderContext";
 
 // Styles
 import "react-day-picker/dist/style.css";
 
 // Hooks
-import { useMediaQuery } from "@mantine/hooks";
 import { useEmployeeId } from "@/hooks/useEmployeeId";
 
 // Components
@@ -33,6 +30,19 @@ import { db } from "@/firebaseConfig";
 
 // DEBUG
 
+type CalendarViewProps = {
+  headerHeight: number;
+  currentMonthLabel?: string;
+  setCurrentMonthLabel: (label: string) => void;
+};
+
+type DaySchedule = {
+  am?: string;
+  pm?: string;
+  allday?: boolean;
+  irregular?: boolean;
+};
+
 // Constants
 const YEARS_TO_RENDER = 2;
 const START_YEAR = new Date().getFullYear() - 1;
@@ -42,13 +52,6 @@ const TOTAL_MONTHS = 12 * YEARS_TO_RENDER;
 const OVERSCAN_ROW_COUNT = 2;
 const DAY_CELL_HEIGHT_REM = 6;
 const PADDING = "0.3rem";
-
-type DaySchedule = {
-  am?: string;
-  pm?: string;
-  allday?: boolean;
-  irregular?: boolean;
-};
 
 // Memoized function
 const getMonthFromOffset = (() => {
@@ -78,23 +81,20 @@ const remToPx = (rem: number): number => {
 
 const DAY_CELL_HEIGHT_PX = remToPx(DAY_CELL_HEIGHT_REM);
 
-export default function Virtualized() {
+export default function CalendarView({
+  headerHeight,
+  setCurrentMonthLabel,
+}: CalendarViewProps) {
+  // Hooks
+  const { setHeaderType } = useHeaderContext();
   const bodyRef = useRef<HTMLDivElement | null>(null);
-
-  const [headerHeight, setHeaderHeight] = useState<number>(60); // Fallback height
-
   const { employeeId, loading } = useEmployeeId();
   const [schedule, setSchedule] = useState<Record<string, DaySchedule>>({});
   const [fetchedSchedule, setFetchedSchedule] = useState(false);
-
   const todayOffset = useMemo(() => getTodayOffset(), []);
-
   const listRef = useRef<List | null>(null);
   const initialScrollRow = useRef<number>(todayOffset);
   const lastVisibleIndex = useRef<number>(-1);
-  const [currentMonthLabel, setCurrentMonthLabel] = useState("");
-  const isMobile = useMediaQuery(`(max-width: 768px)`);
-
   const months = useMemo(
     () => Array.from({ length: TOTAL_MONTHS }, (_, i) => i),
     []
@@ -107,6 +107,11 @@ export default function Virtualized() {
       fixedWidth: true,
     })
   ).current;
+
+  // Side Effects
+  useEffect(() => {
+    setHeaderType("calendar");
+  }, []);
 
   const handleScroll = ({ scrollTop }: { scrollTop: number }) => {
     let y = 0;
@@ -211,16 +216,6 @@ export default function Virtualized() {
         flexDirection: "column",
       }}
     >
-      <Header
-        {...{
-          setHeaderHeight,
-          PADDING,
-          isMobile,
-          logo,
-          CONTEXTUAL_TITLE: currentMonthLabel,
-        }}
-      />
-
       <div
         id="body"
         ref={bodyRef}

@@ -1,4 +1,5 @@
 // App.tsx
+import logo from "@/assets/shiftori_logo.png";
 
 // Import styles of installed packages
 import "@mantine/core/styles.css";
@@ -6,11 +7,11 @@ import "@mantine/dates/styles.css";
 import "@mantine/carousel/styles.css";
 
 // React and Hooks
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Routes, Route, Navigate } from "react-router-dom";
 
 // Mantine components and hooks
-import { AppShell, Loader, Center } from "@mantine/core";
+import { Loader, Center } from "@mantine/core";
 import { Notifications } from "@mantine/notifications";
 
 // Authentication context and components
@@ -25,13 +26,16 @@ import { AuthenticationForm } from "./features/auth/AuthenticationForm";
 // import { SignOut } from "@/features/auth/SignOut";
 
 // Components
+import Header from "@/features/components/Header";
 // import { NotifyButton } from "@/components/notifyButton";
-import Rdp from "@/features/views/Rdp";
-import Virtualized from "@/features/views/CalendarView";
+import CalendarView from "@/features/views/CalendarView";
+
+// Context
+import { HeaderProvider } from "@/context/HeaderContext";
 
 export function App() {
-  // Hooks
-
+  const [headerHeight, setHeaderHeight] = useState<number>(60);
+  const [currentMonthLabel, setCurrentMonthLabel] = useState("");
   const { user, loading } = useAuth();
   // const theme = useMantineTheme();
 
@@ -61,30 +65,35 @@ export function App() {
   }
 
   return (
-    <>
-      {/* <AppShell style={{ backgroundColor: "white" }}> */}
+    <HeaderProvider>
+      <Header
+        {...{
+          PADDING: "0.3rem",
+          isMobile: false, // or detect this here if needed
+          logo,
+          CONTEXTUAL_TITLE: currentMonthLabel,
+        }}
+      />
       <Notifications position="top-left" zIndex={1984} />
-
-      {/* <AppShell.Main
-          style={{
-            height: "100vh",
-            flex: 1,
-            display: "flex",
-            justifyContent: "center",
-          }}
-        > */}
       <Routes>
         {user ? (
           <>
-            <Route path="/calendar" element={<Virtualized />} />
+            <Route
+              path="/calendar"
+              element={
+                <CalendarView
+                  headerHeight={headerHeight}
+                  currentMonthLabel={currentMonthLabel}
+                  setCurrentMonthLabel={setCurrentMonthLabel}
+                />
+              }
+            />
             <Route path="*" element={<Navigate to="/calendar" />} />
           </>
         ) : (
           <Route path="*" element={<AuthenticationForm />} />
         )}
       </Routes>
-      {/* </AppShell.Main> */}
-      {/* </AppShell> */}
-    </>
+    </HeaderProvider>
   );
 }

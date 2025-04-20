@@ -2,8 +2,9 @@
 import { Stack, Text, Title, Group, Box, Burger } from "@mantine/core";
 import { useLayoutEffect, useRef } from "react";
 
+import { useHeaderContext } from "@/context/HeaderContext";
+
 type VirtualizedProps = {
-  setHeaderHeight: (height: number) => void;
   PADDING: any;
   isMobile: boolean | undefined;
   logo: string;
@@ -15,7 +16,6 @@ type VirtualizedProps = {
 const DaysOfWeek = ["S", "M", "T", "W", "Th", "F", "S"];
 
 export default function Header({
-  setHeaderHeight,
   PADDING,
   isMobile,
   logo,
@@ -23,8 +23,11 @@ export default function Header({
   TITLE_2 = "SHIFTORI",
   CONTEXTUAL_TITLE = "Title",
 }: VirtualizedProps) {
+  // Hooks
+  const { setHeaderHeight } = useHeaderContext();
   const ref = useRef<HTMLDivElement | null>(null);
 
+  // Side Effects
   useLayoutEffect(() => {
     if (!ref.current) return;
 
@@ -34,7 +37,7 @@ export default function Header({
     const resizeObserver = new ResizeObserver(updateHeaderHeight);
 
     resizeObserver.observe(ref.current);
-    updateHeaderHeight(); // initial run
+    updateHeaderHeight();
 
     return () => resizeObserver.disconnect();
   }, []);
@@ -70,6 +73,7 @@ export default function Header({
             </>
           )}
         </Group>
+        {/* --------------------- */}
 
         {/* Center: Title */}
         <Box
@@ -83,11 +87,13 @@ export default function Header({
         >
           {CONTEXTUAL_TITLE}
         </Box>
+        {/* --------------*/}
 
         {/* Right: Burger Menu */}
         <Group w={60} justify="flex-end">
           <Burger hiddenFrom="sm" size="sm" />
         </Group>
+        {/* ------------------ */}
       </Group>
       <Group grow gap={0}>
         {DaysOfWeek.map((day, index) => (
