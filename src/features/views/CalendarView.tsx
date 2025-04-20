@@ -14,6 +14,7 @@ import {
 
 // Layouts
 import { useHeaderContext } from "@/context/HeaderContext";
+import { useMenuContext } from "@/context/MenuContext";
 
 // Styles
 import "react-day-picker/dist/style.css";
@@ -85,6 +86,7 @@ export default function CalendarView({
 }: CalendarViewProps) {
   // Hooks
   const { headerHeight, setHeaderType } = useHeaderContext();
+  const { menuHeight } = useMenuContext();
   const { employeeId, loading } = useEmployeeId();
   const [schedule, setSchedule] = useState<Record<string, DaySchedule>>({});
   const [fetchedSchedule, setFetchedSchedule] = useState(false);
@@ -207,7 +209,7 @@ export default function CalendarView({
   return (
     <div
       style={{
-        height: "100vh",
+        height: `calc(100vh - ${menuHeight}px)`,
         overflow: "auto",
       }}
     >

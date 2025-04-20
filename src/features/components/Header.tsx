@@ -6,7 +6,6 @@ import { useHeaderContext } from "@/context/HeaderContext";
 
 type VirtualizedProps = {
   PADDING: any;
-  isMobile: boolean | undefined;
   logo: string;
   TITLE_1?: string;
   TITLE_2?: string;
@@ -17,14 +16,14 @@ const DaysOfWeek = ["S", "M", "T", "W", "Th", "F", "S"];
 
 export default function Header({
   PADDING,
-  isMobile,
   logo,
   TITLE_1 = "シフトリ",
   TITLE_2 = "SHIFTORI",
   CONTEXTUAL_TITLE = "Title",
 }: VirtualizedProps) {
   // Hooks
-  const { headerHeight, setHeaderHeight } = useHeaderContext();
+  const { headerHeight, setHeaderHeight, headerType, isMobile } =
+    useHeaderContext();
   const ref = useRef<HTMLDivElement | null>(null);
 
   // Side Effects
@@ -47,7 +46,7 @@ export default function Header({
     <Stack
       ref={ref}
       style={{
-        position: "fixed",
+        position: headerType == "calendar" ? "fixed" : "relative",
         top: 0,
         left: 0,
         right: 0,

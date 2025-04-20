@@ -1,12 +1,15 @@
+import { em } from "@mantine/core";
+import { useMediaQuery } from "@mantine/hooks";
 import { createContext, useContext, useState } from "react";
 
-type HeaderType = "calendar" | "none"; // Add your types
+type HeaderType = "calendar" | "login" | "none"; // Add your types
 
 type HeaderContextType = {
   headerHeight: number;
   setHeaderHeight: (val: number) => void;
   headerType: HeaderType;
   setHeaderType: (val: HeaderType) => void;
+  isMobile: boolean;
 };
 
 const HeaderContext = createContext<HeaderContextType | undefined>(undefined);
@@ -15,6 +18,7 @@ export const HeaderProvider = ({ children }: { children: React.ReactNode }) => {
   // Hooks
   const [headerHeight, setHeaderHeight] = useState<number>(60);
   const [headerType, setHeaderType] = useState<HeaderType>("none");
+  const isMobile = useMediaQuery(`(max-width: ${em(768)})`) ?? false;
 
   return (
     <HeaderContext.Provider
@@ -23,6 +27,7 @@ export const HeaderProvider = ({ children }: { children: React.ReactNode }) => {
         setHeaderHeight,
         headerType,
         setHeaderType,
+        isMobile,
       }}
     >
       {children}

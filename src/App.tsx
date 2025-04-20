@@ -27,11 +27,14 @@ import { AuthenticationForm } from "./features/auth/AuthenticationForm";
 
 // Components
 import Header from "@/features/components/Header";
+import Menu from "@/features/components/Menu";
+
 // import { NotifyButton } from "@/components/notifyButton";
 import CalendarView from "@/features/views/CalendarView";
 
 // Context
 import { HeaderProvider } from "@/context/HeaderContext";
+import { MenuProvider } from "@/context/MenuContext";
 
 export function App() {
   const [currentMonthLabel, setCurrentMonthLabel] = useState("");
@@ -65,33 +68,36 @@ export function App() {
 
   return (
     <HeaderProvider>
-      <Header
-        {...{
-          PADDING: "0.3rem",
-          isMobile: false,
-          logo,
-          CONTEXTUAL_TITLE: currentMonthLabel,
-        }}
-      />
-      <Notifications position="top-left" zIndex={1984} />
-      <Routes>
-        {user ? (
-          <>
-            <Route
-              path="/calendar"
-              element={
-                <CalendarView
-                  currentMonthLabel={currentMonthLabel}
-                  setCurrentMonthLabel={setCurrentMonthLabel}
-                />
-              }
-            />
-            <Route path="*" element={<Navigate to="/calendar" />} />
-          </>
-        ) : (
-          <Route path="*" element={<AuthenticationForm />} />
-        )}
-      </Routes>
+      <MenuProvider>
+        <Header
+          {...{
+            PADDING: "0.3rem",
+            isMobile: false,
+            logo,
+            CONTEXTUAL_TITLE: currentMonthLabel,
+          }}
+        />
+        <Notifications position="top-left" zIndex={1984} />
+        <Routes>
+          {user ? (
+            <>
+              <Route
+                path="/calendar"
+                element={
+                  <CalendarView
+                    currentMonthLabel={currentMonthLabel}
+                    setCurrentMonthLabel={setCurrentMonthLabel}
+                  />
+                }
+              />
+              <Route path="*" element={<Navigate to="/calendar" />} />
+            </>
+          ) : (
+            <Route path="*" element={<AuthenticationForm />} />
+          )}
+        </Routes>
+        <Menu></Menu>
+      </MenuProvider>
     </HeaderProvider>
   );
 }
