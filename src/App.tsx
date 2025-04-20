@@ -82,7 +82,6 @@ export function App() {
               path="/calendar"
               element={
                 <CalendarView
-                  headerHeight={headerHeight}
                   currentMonthLabel={currentMonthLabel}
                   setCurrentMonthLabel={setCurrentMonthLabel}
                 />
