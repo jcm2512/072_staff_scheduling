@@ -11,9 +11,13 @@ const MONTH_CAPTION_HEIGHT = 36;
 
 type CustomDayPickerProps = {
   month: Date;
+  cellHeight: number;
 };
 
-export default function CustomDayPicker({ month }: CustomDayPickerProps) {
+export default function CustomDayPicker({
+  month,
+  cellHeight,
+}: CustomDayPickerProps) {
   return (
     <DayPicker
       styles={{
@@ -58,7 +62,7 @@ export default function CustomDayPicker({ month }: CustomDayPickerProps) {
           return (
             <Stack
               align="center"
-              style={{ height: "6rem", width: "100%" }}
+              style={{ height: `${cellHeight}rem`, width: "100%" }}
               gap={0}
             >
               <Text

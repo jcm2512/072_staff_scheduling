@@ -34,6 +34,7 @@ const START_OFFSET_DATE = new Date(START_YEAR, START_MONTH, 1);
 const TOTAL_MONTHS = 12 * YEARS_TO_RENDER;
 const OVERSCAN_ROW_COUNT = 2;
 const HEADER_HEIGHT = 60;
+const DAY_CELL_HEIGHT_REM = 6;
 
 const getMonthFromOffset = (offset: number) =>
   addMonths(startOfMonth(START_OFFSET_DATE), offset);
@@ -46,16 +47,23 @@ const getTodayOffset = () => {
   return diff;
 };
 
+const remToPx = (rem: number): number => {
+  const rootFontSize = parseFloat(
+    getComputedStyle(document.documentElement).fontSize
+  );
+  return rem * rootFontSize;
+};
+
+const DAY_CELL_HEIGHT_PX = remToPx(DAY_CELL_HEIGHT_REM);
+
 export default function Virtualized() {
   const todayOffset = useMemo(() => getTodayOffset(), []);
 
   const listRef = useRef<List | null>(null);
-  const initialScrollRow = useRef<number>(todayOffset); // or todayOffset, etc.
+  const initialScrollRow = useRef<number>(todayOffset);
+  const lastVisibleIndex = useRef<number>(-1);
   const [currentMonthLabel, setCurrentMonthLabel] = useState("");
-  const hasScrolled = useRef(false);
   const isMobile = useMediaQuery(`(max-width: 768px)`);
-
-  //   const containerRef = useRef<HTMLDivElement | null>(null);
 
   const months = useMemo(
     () => Array.from({ length: TOTAL_MONTHS }, (_, i) => i),
@@ -70,33 +78,29 @@ export default function Virtualized() {
     })
   ).current;
 
-  const handleRowsRendered = ({
-    startIndex,
-    stopIndex,
-  }: {
-    startIndex: number;
-    stopIndex: number;
-  }) => {
-    // 1. Update current visible month label
-    const visibleMonth = getMonthFromOffset(startIndex);
-    setCurrentMonthLabel(
-      visibleMonth.toLocaleString("en", {
-        month: "long",
-        year: "numeric",
-      })
-    );
+  const handleScroll = ({ scrollTop }: { scrollTop: number }) => {
+    let y = 0;
+    // loop though all months
+    for (let i = 0; i < TOTAL_MONTHS; i++) {
+      const rowHeight = cache.rowHeight({ index: i });
 
-    // 2. Perform initial scroll correction if needed
-    if (
-      !hasScrolled.current &&
-      initialScrollRow.current >= startIndex &&
-      initialScrollRow.current <= stopIndex
-    ) {
-      cache.clear(initialScrollRow.current, 0);
-      listRef.current?.recomputeRowHeights(initialScrollRow.current);
-      listRef.current?.scrollToRow(initialScrollRow.current);
-      hasScrolled.current = true;
-      console.log("✅ Final scroll triggered to:", initialScrollRow.current);
+      // check which month is visble
+      if (y + rowHeight > scrollTop + HEADER_HEIGHT + DAY_CELL_HEIGHT_PX) {
+        // only set the current month if different from previous
+        // prevents updating on every tick
+        if (lastVisibleIndex.current !== i) {
+          lastVisibleIndex.current = i;
+          const visibleMonth = getMonthFromOffset(i);
+          setCurrentMonthLabel(
+            visibleMonth.toLocaleString("en", {
+              month: "long",
+              year: "numeric",
+            })
+          );
+        }
+        break;
+      }
+      y += rowHeight;
     }
   };
 
@@ -111,7 +115,7 @@ export default function Virtualized() {
         parent={parent}
       >
         <div style={style}>
-          <CustomDayPicker month={month} />
+          <CustomDayPicker month={month} cellHeight={DAY_CELL_HEIGHT_REM} />
         </div>
       </CellMeasurer>
     );
@@ -168,8 +172,8 @@ export default function Virtualized() {
               rowRenderer={rowRenderer}
               overscanRowCount={OVERSCAN_ROW_COUNT}
               scrollToIndex={initialScrollRow.current}
-              scrollToAlignment="start"
-              onRowsRendered={handleRowsRendered}
+              scrollToAlignment="auto"
+              onScroll={handleScroll}
             />
           )}
         </AutoSizer>
