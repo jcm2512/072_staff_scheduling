@@ -27,7 +27,7 @@ import { AuthenticationForm } from "./features/auth/AuthenticationForm";
 // Components
 // import { NotifyButton } from "@/components/notifyButton";
 import Rdp from "@/features/views/Rdp";
-import Virtualized from "@/features/views/Virtualized";
+import Virtualized from "@/features/views/CalendarView";
 
 export function App() {
   // Hooks
