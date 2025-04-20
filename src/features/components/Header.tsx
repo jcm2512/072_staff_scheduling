@@ -24,7 +24,7 @@ export default function Header({
   CONTEXTUAL_TITLE = "Title",
 }: VirtualizedProps) {
   // Hooks
-  const { setHeaderHeight } = useHeaderContext();
+  const { headerHeight, setHeaderHeight } = useHeaderContext();
   const ref = useRef<HTMLDivElement | null>(null);
 
   // Side Effects
@@ -33,6 +33,7 @@ export default function Header({
 
     const updateHeaderHeight = () =>
       setHeaderHeight(ref.current?.offsetHeight ?? 60);
+    console.log(headerHeight);
 
     const resizeObserver = new ResizeObserver(updateHeaderHeight);
 

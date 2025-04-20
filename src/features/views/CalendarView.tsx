@@ -31,7 +31,6 @@ import { db } from "@/firebaseConfig";
 // DEBUG
 
 type CalendarViewProps = {
-  headerHeight: number;
   currentMonthLabel?: string;
   setCurrentMonthLabel: (label: string) => void;
 };
@@ -82,12 +81,10 @@ const remToPx = (rem: number): number => {
 const DAY_CELL_HEIGHT_PX = remToPx(DAY_CELL_HEIGHT_REM);
 
 export default function CalendarView({
-  headerHeight,
   setCurrentMonthLabel,
 }: CalendarViewProps) {
   // Hooks
-  const { setHeaderType } = useHeaderContext();
-  const bodyRef = useRef<HTMLDivElement | null>(null);
+  const { headerHeight, setHeaderType } = useHeaderContext();
   const { employeeId, loading } = useEmployeeId();
   const [schedule, setSchedule] = useState<Record<string, DaySchedule>>({});
   const [fetchedSchedule, setFetchedSchedule] = useState(false);
@@ -210,42 +207,30 @@ export default function CalendarView({
   return (
     <div
       style={{
-        flex: 1,
         height: "100vh",
-        display: "flex",
-        flexDirection: "column",
+        overflow: "auto",
       }}
     >
-      <div
-        id="body"
-        ref={bodyRef}
-        style={{
-          flex: 1,
-          position: "relative",
-          overflow: "auto",
+      <AutoSizer>
+        {({ height, width }) => {
+          return (
+            <List
+              ref={listRef}
+              width={width}
+              height={height}
+              rowCount={months.length}
+              deferredMeasurementCache={cache}
+              rowHeight={cache.rowHeight}
+              rowRenderer={rowRenderer}
+              overscanRowCount={OVERSCAN_ROW_COUNT}
+              scrollToIndex={initialScrollRow.current}
+              scrollToAlignment="auto"
+              onScroll={handleScroll}
+              className="hideScrollBar"
+            />
+          );
         }}
-      >
-        <AutoSizer>
-          {({ height, width }) => {
-            return (
-              <List
-                ref={listRef}
-                width={width}
-                height={height}
-                rowCount={months.length}
-                deferredMeasurementCache={cache}
-                rowHeight={cache.rowHeight}
-                rowRenderer={rowRenderer}
-                overscanRowCount={OVERSCAN_ROW_COUNT}
-                scrollToIndex={initialScrollRow.current}
-                scrollToAlignment="auto"
-                onScroll={handleScroll}
-                className="hideScrollBar"
-              />
-            );
-          }}
-        </AutoSizer>
-      </div>
+      </AutoSizer>
     </div>
   );
 }
