@@ -34,7 +34,6 @@ import CalendarView from "@/features/views/CalendarView";
 import { HeaderProvider } from "@/context/HeaderContext";
 
 export function App() {
-  const [headerHeight, setHeaderHeight] = useState<number>(60);
   const [currentMonthLabel, setCurrentMonthLabel] = useState("");
   const { user, loading } = useAuth();
   // const theme = useMantineTheme();
@@ -69,7 +68,7 @@ export function App() {
       <Header
         {...{
           PADDING: "0.3rem",
-          isMobile: false, // or detect this here if needed
+          isMobile: false,
           logo,
           CONTEXTUAL_TITLE: currentMonthLabel,
         }}
