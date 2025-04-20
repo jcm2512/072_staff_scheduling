@@ -61,29 +61,31 @@ export function App() {
   }
 
   return (
-    <AppShell style={{ backgroundColor: "white" }}>
+    <>
+      {/* <AppShell style={{ backgroundColor: "white" }}> */}
       <Notifications position="top-left" zIndex={1984} />
 
-      <AppShell.Main
-        style={{
-          height: "100vh",
-          flex: 1,
-          display: "flex",
-          justifyContent: "center",
-        }}
-      >
-        <Routes>
-          {user ? (
-            <>
-              <Route path="/rdp" element={<Rdp />} />
-              <Route path="/virtualized" element={<Virtualized />} />
-              <Route path="*" element={<Navigate to="/virtualized" />} />
-            </>
-          ) : (
-            <Route path="*" element={<AuthenticationForm />} />
-          )}
-        </Routes>
-      </AppShell.Main>
-    </AppShell>
+      {/* <AppShell.Main
+          style={{
+            height: "100vh",
+            flex: 1,
+            display: "flex",
+            justifyContent: "center",
+          }}
+        > */}
+      <Routes>
+        {user ? (
+          <>
+            <Route path="/rdp" element={<Rdp />} />
+            <Route path="/virtualized" element={<Virtualized />} />
+            <Route path="*" element={<Navigate to="/virtualized" />} />
+          </>
+        ) : (
+          <Route path="*" element={<AuthenticationForm />} />
+        )}
+      </Routes>
+      {/* </AppShell.Main> */}
+      {/* </AppShell> */}
+    </>
   );
 }

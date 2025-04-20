@@ -80,7 +80,6 @@ const DAY_CELL_HEIGHT_PX = remToPx(DAY_CELL_HEIGHT_REM);
 
 export default function Virtualized() {
   const bodyRef = useRef<HTMLDivElement | null>(null);
-  const [innerWidth, setInnerWidth] = useState(0);
 
   const [headerHeight, setHeaderHeight] = useState<number>(60); // Fallback height
 
@@ -156,27 +155,6 @@ export default function Virtualized() {
       </CellMeasurer>
     );
   };
-
-  useEffect(() => {
-    const scrollContainer = listRef.current?._scrollingContainer as HTMLElement;
-    if (!scrollContainer) return;
-
-    const update = () => {
-      const width = scrollContainer.clientWidth; // ✅ excludes scrollbar
-      setInnerWidth(width);
-    };
-
-    update();
-
-    const observer = new ResizeObserver(update);
-    observer.observe(scrollContainer);
-
-    return () => observer.disconnect();
-  }, []);
-
-  useEffect(() => {
-    console.log("innerWidth changed:", innerWidth);
-  }, [innerWidth]);
 
   // FIXES scroll jump on scrolling previous months
   useEffect(() => {
