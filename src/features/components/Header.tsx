@@ -22,14 +22,16 @@ export default function Header({
     <Stack
       h={HEADER_HEIGHT}
       style={{
-        position: "sticky",
+        position: "fixed",
         top: 0,
+        left: 0,
+        right: 0,
         zIndex: 9999,
         borderBottom: "1px solid #eaeaea",
         backgroundImage:
-          "linear-gradient(to bottom, rgb(240, 240, 240), rgba(240, 240, 240, 0.5))",
-        backdropFilter: "blur(2rem)",
-        WebkitBackdropFilter: "blur(2rem)", // ios
+          "linear-gradient(to bottom, rgb(255, 255, 255), rgba(255, 255, 255, 0.1))",
+        backdropFilter: "blur(1rem)",
+        WebkitBackdropFilter: "blur(1rem)", // ios
         willChange: "transform", // ios
         transform: "translateZ(0)", //ios
       }}

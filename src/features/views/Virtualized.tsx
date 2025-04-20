@@ -3,9 +3,7 @@ import logo from "@/assets/shiftori_logo.png";
 
 // React and libraries
 import { useRef, useMemo, useState, useEffect } from "react";
-import { DayPicker } from "react-day-picker";
 import { addMonths, startOfMonth } from "date-fns";
-import { Stack, Text, Title } from "@mantine/core";
 
 import {
   List,
@@ -24,6 +22,8 @@ import "react-day-picker/dist/style.css";
 // Hooks
 import { useMediaQuery } from "@mantine/hooks";
 
+import CustomDayPicker from "@/features/components/CustomDayPicker";
+
 // DEBUG
 
 // Constants
@@ -34,8 +34,6 @@ const START_OFFSET_DATE = new Date(START_YEAR, START_MONTH, 1);
 const TOTAL_MONTHS = 12 * YEARS_TO_RENDER;
 const OVERSCAN_ROW_COUNT = 2;
 const HEADER_HEIGHT = 60;
-const PADDING_SM = "0.3rem";
-const MONTH_CAPTION_HEIGHT = 36;
 
 const getMonthFromOffset = (offset: number) =>
   addMonths(startOfMonth(START_OFFSET_DATE), offset);
@@ -113,102 +111,7 @@ export default function Virtualized() {
         parent={parent}
       >
         <div style={style}>
-          <DayPicker
-            styles={{
-              day: { padding: "0" },
-              week: { borderTop: "1px solid #eaeaea" },
-              months: { maxWidth: "100%" },
-              month: {
-                width: "100%",
-                display: "flex",
-                flexDirection: "column",
-              },
-              month_grid: { flexGrow: "1" },
-            }}
-            mode="multiple"
-            month={month}
-            hideWeekdays
-            hideNavigation
-            modifiers={{ weekend: { dayOfWeek: [0, 6] } }}
-            components={{
-              MonthCaption(props) {
-                return (
-                  <Title
-                    order={5}
-                    style={{
-                      paddingLeft: PADDING_SM,
-                      height: MONTH_CAPTION_HEIGHT,
-                    }}
-                  >
-                    {props.calendarMonth.date.toLocaleString("en", {
-                      month: "long",
-                    })}
-                  </Title>
-                );
-              },
-              DayButton(props) {
-                const date = new Date(props.day.date);
-                const dayNum = String(date.getDate()).padStart(2, "0");
-                // const fullDate = date.toISOString().split("T")[0];
-
-                // const daySchedule = schedule[fullDate] || {};
-
-                return (
-                  <Stack
-                    align="center"
-                    style={{ height: "6rem", width: "100%" }}
-                    gap={0}
-                  >
-                    <Text
-                      className="DayNum"
-                      size="sm"
-                      style={{
-                        fontWeight: "300",
-                        alignSelf: "flex-start",
-                        paddingLeft: PADDING_SM,
-                      }}
-                    >
-                      {dayNum}
-                    </Text>
-
-                    <Text
-                      //   c={daySchedule.am === "Office" ? "black" : "#1A535C"}
-                      inline
-                      size="xs"
-                      m="0.5vh"
-                      //   bg={daySchedule.am === "Office" ? "lightgrey" : "#4ECDC4"}
-                      style={{
-                        width: "90%",
-                        borderRadius: PADDING_SM,
-                        textAlign: "center",
-                        lineHeight: "1.3rem",
-                        fontWeight: "500",
-                      }}
-                    >
-                      {/* {daySchedule.am || ""} */}
-                    </Text>
-
-                    <Text
-                      //   c={daySchedule.pm === "Office" ? "black" : "#055561"}
-                      //   bg={daySchedule.pm === "Office" ? "lightgrey" : "#C4F5FC"}
-                      inline
-                      size="xs"
-                      m="0.5vh"
-                      style={{
-                        width: "90%",
-                        borderRadius: PADDING_SM,
-                        textAlign: "center",
-                        lineHeight: "1.3rem",
-                        fontWeight: "bold",
-                      }}
-                    >
-                      {/* {daySchedule.pm || ""} */}
-                    </Text>
-                  </Stack>
-                );
-              },
-            }}
-          />
+          <CustomDayPicker month={month} />
         </div>
       </CellMeasurer>
     );
@@ -216,14 +119,14 @@ export default function Virtualized() {
 
   // FIXES scroll jump on scrolling previous months
   useEffect(() => {
-    const range = 2 * OVERSCAN_ROW_COUNT + 1; // overscan above + overscan below + current month
-    for (
-      let i = Math.max(0, initialScrollRow.current - range);
-      i <= Math.min(TOTAL_MONTHS - 1, initialScrollRow.current + range);
-      i++
-    ) {
-      cache.clear(i, 0);
-      listRef.current?.recomputeRowHeights(i);
+    const firstRow = initialScrollRow.current - OVERSCAN_ROW_COUNT;
+    const lastRow = initialScrollRow.current + OVERSCAN_ROW_COUNT;
+
+    for (let i = firstRow; i <= lastRow; i++) {
+      if (i >= 0 && i < TOTAL_MONTHS) {
+        cache.clear(i, 0);
+        listRef.current?.recomputeRowHeights(i);
+      }
     }
   }, []);
 
@@ -234,7 +137,6 @@ export default function Virtualized() {
         height: "100vh",
         display: "flex",
         flexDirection: "column",
-        overflow: "hidden",
       }}
     >
       <Header
@@ -245,7 +147,15 @@ export default function Virtualized() {
           CONTEXTUAL_TITLE: currentMonthLabel,
         }}
       />
-      <div id="body" style={{ flex: 1, overflow: "hidden" }}>
+
+      <div
+        id="body"
+        style={{
+          flex: 1,
+          position: "relative",
+          overflow: "auto",
+        }}
+      >
         <AutoSizer>
           {({ height, width }) => (
             <List
