@@ -54,9 +54,9 @@ export default function Header({
         zIndex: 9999,
         borderBottom: "1px solid #eaeaea",
         backgroundImage:
-          "linear-gradient(to bottom, rgb(255, 255, 255), rgba(255, 255, 255, 0.1))",
-        backdropFilter: "blur(1rem)",
-        WebkitBackdropFilter: "blur(1rem)", // ios
+          "linear-gradient(to bottom, rgb(255, 255, 255), rgba(240, 240, 240, 0.4))",
+        backdropFilter: "blur(0.5rem)",
+        WebkitBackdropFilter: "blur(2rem)", // ios
         willChange: "transform", // ios
         transform: "translateZ(0)", //ios
       }}
