@@ -36,8 +36,16 @@ const OVERSCAN_ROW_COUNT = 2;
 const HEADER_HEIGHT = 60;
 const DAY_CELL_HEIGHT_REM = 6;
 
-const getMonthFromOffset = (offset: number) =>
-  addMonths(startOfMonth(START_OFFSET_DATE), offset);
+// Memoized function
+const getMonthFromOffset = (() => {
+  const cache = new Map<number, Date>();
+  return (offset: number) => {
+    if (!cache.has(offset)) {
+      cache.set(offset, addMonths(startOfMonth(START_OFFSET_DATE), offset));
+    }
+    return cache.get(offset)!;
+  };
+})();
 
 const getTodayOffset = () => {
   const today = startOfMonth(new Date());
