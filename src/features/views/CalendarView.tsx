@@ -230,8 +230,15 @@ export default function CalendarView({
         opened={opened}
         onClose={close}
         title={selectedDay?.toDateString()}
-        radius={"lg"}
         overlayProps={{ backgroundOpacity: 0.2, blur: 3 }}
+        styles={{
+          content: {
+            borderTopLeftRadius: "1rem",
+            borderTopRightRadius: "1rem",
+            borderBottomLeftRadius: 0,
+            borderBottomRightRadius: 0,
+          },
+        }}
       ></Drawer>
       <div
         style={{
