@@ -4,14 +4,11 @@ import { ActionIcon } from "@mantine/core";
 import {
   TbCalendar,
   TbCalendarFilled,
-  TbHome,
-  TbHomeFilled,
   TbSettings,
   TbSettingsFilled,
   TbLayoutList,
   TbLayoutListFilled,
 } from "react-icons/tb";
-import { IoCalendarNumberOutline } from "react-icons/io5";
 
 import { useNavigate, useLocation } from "react-router-dom";
 
@@ -105,7 +102,7 @@ export default function Menu() {
               "aria-label": "Notifications",
             }}
           >
-            {currentPath == "/schedule" ? (
+            {currentPath == "/notifications" ? (
               <TbLayoutListFilled style={iconStyle} />
             ) : (
               <TbLayoutList style={iconStyle} />
@@ -121,7 +118,7 @@ export default function Menu() {
               "aria-label": "Settings",
             }}
           >
-            {currentPath == "/schedule" ? (
+            {currentPath == "/settings" ? (
               <TbSettingsFilled style={iconStyle} />
             ) : (
               <TbSettings style={iconStyle} />

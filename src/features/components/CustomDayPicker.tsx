@@ -5,6 +5,8 @@ import { Stack, Text, Title } from "@mantine/core";
 // Styles
 import "react-day-picker/dist/style.css";
 
+import { useSelectedDayContext } from "@/context/SelectedDayContext";
+
 // Constants
 const MONTH_CAPTION_HEIGHT = 36;
 
@@ -21,6 +23,8 @@ export default function CustomDayPicker({
   cellHeight,
   schedule,
 }: CustomDayPickerProps) {
+  const { selectedDay, setSelectedDay } = useSelectedDayContext();
+
   return (
     <DayPicker
       styles={{
@@ -34,7 +38,12 @@ export default function CustomDayPicker({
         },
         month_grid: { flexGrow: "1" },
       }}
-      mode="multiple"
+      mode="single"
+      onSelect={(selected) => {
+        console.log("✅ selected date:", selected);
+        setSelectedDay(selected);
+      }}
+      selected={selectedDay}
       month={month}
       hideWeekdays
       hideNavigation
@@ -64,55 +73,72 @@ export default function CustomDayPicker({
 
           return (
             <Stack
-              align="center"
-              style={{ height: `${cellHeight}rem`, width: "100%" }}
-              gap={0}
+              // align="center"
+              style={{
+                height: `${cellHeight}rem`,
+                width: "100%",
+              }}
+              // gap={0}
             >
-              <Text
-                className="DayNum"
-                size="sm"
+              <button
+                onClick={props.onClick} // ✅ now types match
                 style={{
-                  fontWeight: "300",
-                  alignSelf: "flex-start",
-                  paddingLeft: PADDING,
+                  display: "flex",
+                  flexDirection: "column",
+                  background: "none",
+                  height: "100%",
+                  width: "100%",
+                  cursor: "pointer",
+                  border: "none",
+                  padding: 0,
                 }}
               >
-                {dayNum}
-              </Text>
+                <Text
+                  className="DayNum"
+                  size="sm"
+                  style={{
+                    fontWeight: "300",
+                    alignSelf: "flex-start",
+                    paddingLeft: PADDING,
+                  }}
+                >
+                  {dayNum}
+                </Text>
 
-              <Text
-                c={daySchedule.am === "Office" ? "black" : "#1A535C"}
-                inline
-                size="xs"
-                m="0.5vh"
-                bg={daySchedule.am === "Office" ? "lightgrey" : "#4ECDC4"}
-                style={{
-                  width: "90%",
-                  borderRadius: PADDING,
-                  textAlign: "center",
-                  lineHeight: "1.3rem",
-                  fontWeight: "900",
-                }}
-              >
-                {daySchedule.am || ""}
-              </Text>
+                <Text
+                  c={daySchedule.am === "Office" ? "black" : "#1A535C"}
+                  inline
+                  size="xs"
+                  m="0.5vh"
+                  bg={daySchedule.am === "Office" ? "lightgrey" : "#4ECDC4"}
+                  style={{
+                    width: "90%",
+                    borderRadius: PADDING,
+                    textAlign: "center",
+                    lineHeight: "1.3rem",
+                    fontWeight: "600",
+                  }}
+                >
+                  {daySchedule.am || ""}
+                </Text>
 
-              <Text
-                c={daySchedule.pm === "Office" ? "black" : "#055561"}
-                bg={daySchedule.pm === "Office" ? "lightgrey" : "#C4F5FC"}
-                inline
-                size="xs"
-                m="0.5vh"
-                style={{
-                  width: "90%",
-                  borderRadius: PADDING,
-                  textAlign: "center",
-                  lineHeight: "1.3rem",
-                  fontWeight: "900",
-                }}
-              >
-                {daySchedule.pm || ""}
-              </Text>
+                <Text
+                  c={daySchedule.pm === "Office" ? "black" : "#055561"}
+                  bg={daySchedule.pm === "Office" ? "lightgrey" : "#C4F5FC"}
+                  inline
+                  size="xs"
+                  m="0.5vh"
+                  style={{
+                    width: "90%",
+                    borderRadius: PADDING,
+                    textAlign: "center",
+                    lineHeight: "1.3rem",
+                    fontWeight: "600",
+                  }}
+                >
+                  {daySchedule.pm || ""}
+                </Text>
+              </button>
             </Stack>
           );
         },

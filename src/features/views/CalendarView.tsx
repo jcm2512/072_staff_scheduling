@@ -29,6 +29,11 @@ import CustomDayPicker from "@/features/components/CustomDayPicker";
 import { collection, onSnapshot } from "firebase/firestore";
 import { db } from "@/firebaseConfig";
 
+import { Drawer } from "@mantine/core";
+
+import { useSelectedDayContext } from "@/context/SelectedDayContext";
+import { useDisclosure } from "@mantine/hooks";
+
 // DEBUG
 
 type CalendarViewProps = {
@@ -85,6 +90,9 @@ export default function CalendarView({
   setCurrentMonthLabel,
 }: CalendarViewProps) {
   // Hooks
+  const { selectedDay } = useSelectedDayContext();
+  const [opened, { open, close }] = useDisclosure(false);
+
   const { headerHeight, setHeaderType } = useHeaderContext();
   const { menuHeight } = useMenuContext();
   const { employeeId, loading } = useEmployeeId();
@@ -111,6 +119,13 @@ export default function CalendarView({
   useEffect(() => {
     setHeaderType("calendar");
   }, []);
+
+  // Open drawer when selectedDay is set (not undefined)
+  useEffect(() => {
+    if (selectedDay) {
+      open();
+    }
+  }, [selectedDay, open]);
 
   const handleScroll = ({ scrollTop }: { scrollTop: number }) => {
     let y = 0;
@@ -207,32 +222,44 @@ export default function CalendarView({
   }, [employeeId]);
 
   return (
-    <div
-      style={{
-        height: `calc(100vh - ${menuHeight}px)`,
-        overflow: "auto",
-      }}
-    >
-      <AutoSizer>
-        {({ height, width }) => {
-          return (
-            <List
-              ref={listRef}
-              width={width}
-              height={height}
-              rowCount={months.length}
-              deferredMeasurementCache={cache}
-              rowHeight={cache.rowHeight}
-              rowRenderer={rowRenderer}
-              overscanRowCount={OVERSCAN_ROW_COUNT}
-              scrollToIndex={initialScrollRow.current}
-              scrollToAlignment="auto"
-              onScroll={handleScroll}
-              className="hideScrollBar"
-            />
-          );
+    <>
+      <Drawer
+        position="bottom"
+        size={"90%"}
+        zIndex={10000}
+        opened={opened}
+        onClose={close}
+        title={selectedDay?.toDateString()}
+        radius={"lg"}
+        overlayProps={{ backgroundOpacity: 0.2, blur: 3 }}
+      ></Drawer>
+      <div
+        style={{
+          height: `calc(100vh - ${menuHeight}px)`,
+          overflow: "auto",
         }}
-      </AutoSizer>
-    </div>
+      >
+        <AutoSizer>
+          {({ height, width }) => {
+            return (
+              <List
+                ref={listRef}
+                width={width}
+                height={height}
+                rowCount={months.length}
+                deferredMeasurementCache={cache}
+                rowHeight={cache.rowHeight}
+                rowRenderer={rowRenderer}
+                overscanRowCount={OVERSCAN_ROW_COUNT}
+                scrollToIndex={initialScrollRow.current}
+                scrollToAlignment="auto"
+                onScroll={handleScroll}
+                className="hideScrollBar"
+              />
+            );
+          }}
+        </AutoSizer>
+      </div>
+    </>
   );
 }
