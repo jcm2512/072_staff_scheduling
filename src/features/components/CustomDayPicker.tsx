@@ -23,7 +23,7 @@ export default function CustomDayPicker({
   cellHeight,
   schedule,
 }: CustomDayPickerProps) {
-  const { selectedDay, setSelectedDay } = useSelectedDayContext();
+  const { setSelectedDay } = useSelectedDayContext();
 
   return (
     <DayPicker
@@ -39,11 +39,11 @@ export default function CustomDayPicker({
         month_grid: { flexGrow: "1" },
       }}
       mode="single"
-      onSelect={(selected) => {
-        console.log("✅ selected date:", selected);
-        setSelectedDay(selected);
-      }}
-      selected={selectedDay}
+      // onSelect={(selected) => {
+      //   console.log("✅ selected date:", selected);
+      //   setSelectedDay(selected);
+      // }}
+      // selected={selectedDay}
       month={month}
       hideWeekdays
       hideNavigation
@@ -81,7 +81,9 @@ export default function CustomDayPicker({
               // gap={0}
             >
               <button
-                onClick={props.onClick} // ✅ now types match
+                onClick={() => {
+                  setSelectedDay(date);
+                }}
                 style={{
                   display: "flex",
                   flexDirection: "column",
@@ -94,6 +96,7 @@ export default function CustomDayPicker({
                 }}
               >
                 <Text
+                  c={"black"}
                   className="DayNum"
                   size="sm"
                   style={{
