@@ -39,11 +39,6 @@ export default function CustomDayPicker({
         month_grid: { flexGrow: "1" },
       }}
       mode="single"
-      // onSelect={(selected) => {
-      //   console.log("✅ selected date:", selected);
-      //   setSelectedDay(selected);
-      // }}
-      // selected={selectedDay}
       month={month}
       hideWeekdays
       hideNavigation

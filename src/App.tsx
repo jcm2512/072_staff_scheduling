@@ -36,6 +36,7 @@ import { BlankView } from "@/features/views/BlankView";
 import { HeaderProvider } from "@/context/HeaderContext";
 import { MenuProvider } from "@/context/MenuContext";
 import { SelectedDayProvider } from "@/context/SelectedDayContext";
+import { ScheduleProvider } from "@/context/ScheduleContext";
 
 export function App() {
   const [currentMonthLabel, setCurrentMonthLabel] = useState("");
@@ -86,12 +87,14 @@ export function App() {
                 path="/schedule"
                 element={
                   <>
-                    <SelectedDayProvider>
-                      <CalendarView
-                        currentMonthLabel={currentMonthLabel}
-                        setCurrentMonthLabel={setCurrentMonthLabel}
-                      />
-                    </SelectedDayProvider>
+                    <ScheduleProvider>
+                      <SelectedDayProvider>
+                        <CalendarView
+                          currentMonthLabel={currentMonthLabel}
+                          setCurrentMonthLabel={setCurrentMonthLabel}
+                        />
+                      </SelectedDayProvider>
+                    </ScheduleProvider>
                   </>
                 }
               />
