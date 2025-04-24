@@ -1,72 +1,43 @@
 // Virtualized.tsx
 
 // React and libraries
-import { useRef, useMemo, useState, useEffect } from "react";
+import { useEffect, useMemo, useRef } from "react";
 import { addMonths, startOfMonth } from "date-fns";
-
 import {
-  List,
   AutoSizer,
   CellMeasurer,
   CellMeasurerCache,
+  List,
   ListRowRenderer,
 } from "react-virtualized";
-
-// Layouts
-import { useHeaderContext } from "@/context/HeaderContext";
-import { useMenuContext } from "@/context/MenuContext";
+import { useNavigate } from "react-router-dom";
 
 // Styles
 import "react-day-picker/dist/style.css";
 
-// Hooks
-import { useEmployeeId } from "@/hooks/useEmployeeId";
-
-// Components
-import CustomDayPicker from "@/features/components/CustomDayPicker";
-
-// Database
-import {
-  collection,
-  doc,
-  getDocs,
-  onSnapshot,
-  serverTimestamp,
-  updateDoc,
-} from "firebase/firestore";
-import { db } from "@/firebaseConfig";
-
-import { Drawer, Text, Switch } from "@mantine/core";
-
-import { useSelectedDayContext } from "@/context/SelectedDayContext";
+// UI Components
+import { Drawer, Switch, Text } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 
+// App Components
+import CustomDayPicker from "@/features/components/CustomDayPicker";
+import DayDrawerComponent from "@/features/components/DayDrawerComponent";
+
+// Contexts
+import { useHeaderContext, HeaderType } from "@/context/HeaderContext";
+import { useMenuContext } from "@/context/MenuContext";
 import { useScheduleContext } from "@/context/ScheduleContext";
+import { useSelectedDayContext } from "@/context/SelectedDayContext";
 import { useUserPrefsContext } from "@/context/UserPrefsContext";
 
-import DayDrawerComponent from "@/features/components/DayDrawerComponent";
+//  Theme / Config
 import { zIndex } from "@/themes/zindex";
-import { useNavigate } from "react-router-dom";
-
-import { HeaderType } from "@/context/HeaderContext";
-
-// DEBUG
 
 type CalendarViewProps = {
   currentMonthLabel?: string;
   setCurrentMonthLabel: (label: string) => void;
   headerType?: HeaderType;
 };
-
-type DaySchedule = {
-  am?: string;
-  pm?: string;
-  allday?: boolean;
-  irregular?: boolean;
-};
-
-// DEBUG
-const DEBUG = true;
 
 // Constants
 const YEARS_TO_RENDER = 2;
@@ -119,9 +90,7 @@ export default function CalendarView({
 
   const { headerHeight, setHeaderType } = useHeaderContext();
   const { menuHeight } = useMenuContext();
-  const { employeeId, loading } = useEmployeeId();
-  const { schedule, setSchedule } = useScheduleContext(); ///  <-WWWIPP
-  const [fetchedSchedule, setFetchedSchedule] = useState(false);
+  const { schedule, setSchedule } = useScheduleContext();
   const todayOffset = useMemo(() => getTodayOffset(), []);
   const listRef = useRef<List | null>(null);
   const initialScrollRow = useRef<number>(todayOffset);
@@ -214,39 +183,6 @@ export default function CalendarView({
       }
     }
   }, []);
-
-  useEffect(() => {
-    if (!employeeId) return;
-    const scheduleCollectionRef = collection(
-      db,
-      "companies",
-      "companyId02",
-      "teacher",
-      employeeId,
-      "monthlySchedule"
-    );
-
-    const unsubscribe = onSnapshot(scheduleCollectionRef, (snapshot) => {
-      let mergedDays: Record<string, DaySchedule> = {};
-
-      snapshot.forEach((docSnapshot: any) => {
-        if (docSnapshot.exists()) {
-          const data = docSnapshot.data();
-          const days = data?.days ?? {};
-
-          mergedDays = {
-            ...mergedDays,
-            ...days,
-          };
-        }
-      });
-
-      setSchedule(mergedDays);
-      setFetchedSchedule(true);
-    });
-
-    return () => unsubscribe();
-  }, [employeeId]);
 
   return (
     <>
