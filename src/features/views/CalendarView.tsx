@@ -29,26 +29,26 @@ import CustomDayPicker from "@/features/components/CustomDayPicker";
 import { collection, onSnapshot } from "firebase/firestore";
 import { db } from "@/firebaseConfig";
 
-import {
-  Divider,
-  Drawer,
-  Group,
-  Pill,
-  Stack,
-  Text,
-  Title,
-} from "@mantine/core";
+import { Drawer, Text, Switch } from "@mantine/core";
 
 import { useSelectedDayContext } from "@/context/SelectedDayContext";
 import { useDisclosure } from "@mantine/hooks";
 
 import { useScheduleContext } from "@/context/ScheduleContext";
+import { useUserPrefsContext } from "@/context/UserPrefsContext";
+
+import DayDrawerComponent from "@/features/components/DayDrawerComponent";
+import { zIndex } from "@/themes/zindex";
+import { useNavigate } from "react-router-dom";
+
+import { HeaderType } from "@/context/HeaderContext";
 
 // DEBUG
 
 type CalendarViewProps = {
   currentMonthLabel?: string;
   setCurrentMonthLabel: (label: string) => void;
+  headerType?: HeaderType;
 };
 
 type DaySchedule = {
@@ -101,10 +101,14 @@ const DAY_CELL_HEIGHT_PX = remToPx(DAY_CELL_HEIGHT_REM);
 
 export default function CalendarView({
   setCurrentMonthLabel,
+  headerType = "calendar",
 }: CalendarViewProps) {
   // Hooks
+  const navigate = useNavigate();
+
   const { selectedDay } = useSelectedDayContext();
   const [opened, { open, close }] = useDisclosure(false);
+  const { newDaySchedule, setNewDaySchedule } = useUserPrefsContext();
 
   const { headerHeight, setHeaderType } = useHeaderContext();
   const { menuHeight } = useMenuContext();
@@ -130,15 +134,18 @@ export default function CalendarView({
 
   // Side Effects
   useEffect(() => {
-    setHeaderType("calendar");
+    setHeaderType(headerType);
   }, []);
 
   // Open drawer when selectedDay is set (not undefined)
   useEffect(() => {
-    if (selectedDay) {
+    if (!selectedDay) return;
+    if (newDaySchedule) {
+      navigate("/day");
+    } else {
       open();
     }
-  }, [selectedDay, open]);
+  }, [selectedDay, newDaySchedule, open, navigate]);
 
   const handleScroll = ({ scrollTop }: { scrollTop: number }) => {
     let y = 0;
@@ -266,258 +273,23 @@ export default function CalendarView({
           },
         }}
       >
-        <Divider label="am" labelPosition="center"></Divider>
-        <Stack
-          gap={"0.3rem"}
-          style={{
-            borderLeft: "1px solid var(--mantine-color-highlight-5)",
-            borderRight: "1px solid var(--mantine-color-highlight-5)",
-            borderBottom: "1px solid var(--mantine-color-highlight-5)",
-            borderTop: "5px solid var(--mantine-color-highlight-5)",
-            borderRadius: "0.5rem",
-          }}
-          p={"xs"}
-        >
-          <Group mb={"1rem"}>
-            <Stack
-              flex={1}
-              align="left"
-              gap={1}
-              style={{ borderRadius: "0.5rem", overflow: "hidden" }}
-            >
-              <Text style={{ fontWeight: 900 }}>Seika </Text>
-              <Text size="sm">Momonosato Kindergarten</Text>
-              <Text size="sm" fw={600} w={"fit-content"}>
-                Hanaten @ 9:40
-              </Text>
-            </Stack>
-            <Stack gap={"xs"} style={{ alignItems: "end" }}>
-              <Text size="2.5rem" style={{ fontWeight: 700 }}>
-                MO
-              </Text>
-              <Pill>Haruka</Pill>
-            </Stack>
-          </Group>
-          <Group>
-            <Text flex={2}>K2</Text>
-            <Group flex={2}>
-              <Text flex={2} style={{ textAlign: "left" }}>
-                10:00
-              </Text>
-              <Text flex={1} style={{ textAlign: "center" }}>
-                -
-              </Text>
-              <Text flex={2} style={{ textAlign: "right" }}>
-                10:20
-              </Text>
-            </Group>
-            <Text flex={1} size="xs" style={{ textAlign: "right" }}></Text>
-          </Group>
-          <Divider></Divider>
-          <Group>
-            <Text flex={2}>K2</Text>
-            <Group flex={2}>
-              <Text flex={2} style={{ textAlign: "left" }}>
-                10:20
-              </Text>
-              <Text flex={1} style={{ textAlign: "center" }}>
-                -
-              </Text>
-              <Text flex={2} style={{ textAlign: "right" }}>
-                10:40
-              </Text>
-            </Group>
-            <Text flex={1} size="xs" style={{ textAlign: "right" }}></Text>
-          </Group>
-          <Divider></Divider>
-          <Group>
-            <Text flex={2}>K2</Text>
-            <Group flex={2}>
-              <Text flex={2} style={{ textAlign: "left" }}>
-                10:40
-              </Text>
-              <Text flex={1} style={{ textAlign: "center" }}>
-                -
-              </Text>
-              <Text flex={2} style={{ textAlign: "right" }}>
-                11:00
-              </Text>
-            </Group>
-            <Text flex={1} size="xs" style={{ textAlign: "right" }}></Text>
-          </Group>
-          <Divider></Divider>
-          <Group>
-            <Text flex={2}>K3</Text>
-            <Group flex={2}>
-              <Text flex={2} style={{ textAlign: "left" }}>
-                11:00
-              </Text>
-              <Text flex={1} style={{ textAlign: "center" }}>
-                -
-              </Text>
-              <Text flex={2} style={{ textAlign: "right" }}>
-                11:20
-              </Text>
-            </Group>
-            <Text flex={1} size="xs" style={{ textAlign: "right" }}></Text>
-          </Group>
-          <Divider></Divider>
-          <Group>
-            <Text flex={2}>K3</Text>
-            <Group flex={2}>
-              <Text flex={2} style={{ textAlign: "left" }}>
-                11:20
-              </Text>
-              <Text flex={1} style={{ textAlign: "center" }}>
-                -
-              </Text>
-              <Text flex={2} style={{ textAlign: "right" }}>
-                11:40
-              </Text>
-            </Group>
-            <Text flex={1} size="xs" style={{ textAlign: "right" }}></Text>
-          </Group>
-          <Divider></Divider>
-          <Group>
-            <Text flex={2}>K3</Text>
-            <Group flex={2}>
-              <Text flex={2} style={{ textAlign: "left" }}>
-                11:40
-              </Text>
-              <Text flex={1} style={{ textAlign: "center" }}>
-                -
-              </Text>
-              <Text flex={2} style={{ textAlign: "right" }}>
-                12:00
-              </Text>
-            </Group>
-            <Text flex={1} size="xs" style={{ textAlign: "right" }}></Text>
-          </Group>
-          <Divider></Divider>
-          <Group>
-            <Text flex={2}>K3</Text>
-            <Group flex={2}>
-              <Text flex={2} style={{ textAlign: "left" }}>
-                12:20
-              </Text>
-              <Text flex={1} style={{ textAlign: "center" }}>
-                -
-              </Text>
-              <Text flex={2} style={{ textAlign: "right" }}>
-                12:40
-              </Text>
-            </Group>
-            <Text flex={1} size="xs" style={{ textAlign: "right" }}></Text>
-          </Group>
-        </Stack>
-        {/* //////////////////////////////////////////////////////////////////// */}
-        <Divider label="pm" labelPosition="center"></Divider>
-        {/* //////////////////////////////////////////////////////////////////// */}
-
-        <Stack
-          gap={"0.25rem"}
-          style={{
-            borderLeft: "1px solid var(--mantine-color-secondary-3)",
-            borderRight: "1px solid var(--mantine-color-secondary-3)",
-            borderBottom: "1px solid var(--mantine-color-secondary-3)",
-            borderTop: "5px solid var(--mantine-color-secondary-3)",
-            borderRadius: "0.5rem",
-          }}
-          p={"xs"}
-        >
-          <Group mb={"1rem"}>
-            <Stack
-              flex={5}
-              align="left"
-              gap={1}
-              style={{ borderRadius: "0.5rem", overflow: "hidden" }}
-            >
-              <Text style={{ fontWeight: 900 }}>Kagai </Text>
-              <Text size="sm">Momonosato Kindergarten</Text>
-              <Text size="sm" fw={600} w={"fit-content"}>
-                Hanaten @ 13:35
-              </Text>{" "}
-            </Stack>
-            <Stack gap={"xs"} style={{ alignItems: "end" }}>
-              <Text size="2.5rem" style={{ fontWeight: 700 }}>
-                MO
-              </Text>
-              <Pill>Haruka</Pill>
-            </Stack>
-          </Group>
-          <Group>
-            <Text flex={2}>K1 / K2</Text>
-            <Group flex={2}>
-              <Text flex={2} style={{ textAlign: "left" }}>
-                14:10
-              </Text>
-              <Text flex={1} style={{ textAlign: "center" }}>
-                -
-              </Text>
-              <Text flex={2} style={{ textAlign: "right" }}>
-                15:00
-              </Text>
-            </Group>
-            <Text flex={1} size="xs" style={{ textAlign: "right" }}>
-              4 students
-            </Text>
-          </Group>
-          <Divider></Divider>
-          <Group>
-            <Text flex={2}>K3</Text>
-            <Group flex={2}>
-              <Text flex={2} style={{ textAlign: "left" }}>
-                15:10
-              </Text>
-              <Text flex={1} style={{ textAlign: "center" }}>
-                -
-              </Text>
-              <Text flex={2} style={{ textAlign: "right" }}>
-                16:00
-              </Text>
-            </Group>
-            <Text flex={1} size="xs" style={{ textAlign: "right" }}>
-              7 students
-            </Text>
-          </Group>
-          <Divider></Divider>
-          <Group>
-            <Text flex={2}>E1</Text>
-            <Group flex={2}>
-              <Text flex={2} style={{ textAlign: "left" }}>
-                16:20
-              </Text>
-              <Text flex={1} style={{ textAlign: "center" }}>
-                -
-              </Text>
-              <Text flex={2} style={{ textAlign: "right" }}>
-                17:10
-              </Text>
-            </Group>
-            <Text flex={1} size="xs" style={{ textAlign: "right" }}>
-              8 students
-            </Text>
-          </Group>
-          <Divider></Divider>
-          <Group>
-            <Text flex={2}>E2</Text>
-            <Group flex={2}>
-              <Text flex={2} style={{ textAlign: "left" }}>
-                17:10
-              </Text>
-              <Text flex={1} style={{ textAlign: "center" }}>
-                -
-              </Text>
-              <Text flex={2} style={{ textAlign: "right" }}>
-                18:00
-              </Text>
-            </Group>
-            <Text flex={1} size="xs" style={{ textAlign: "right" }}>
-              6 students
-            </Text>
-          </Group>
-        </Stack>
+        <DayDrawerComponent></DayDrawerComponent>
       </Drawer>
+      <Switch
+        checked={newDaySchedule}
+        onChange={(event) => setNewDaySchedule(event.currentTarget.checked)}
+        size="lg"
+        onLabel="V2"
+        offLabel="V1"
+        style={{
+          display: "block",
+          position: "absolute",
+          zIndex: zIndex.fixed,
+          top: 100,
+          left: 20,
+        }}
+        defaultChecked
+      />
       <div
         style={{
           height: `calc(100vh - ${menuHeight}px)`,
