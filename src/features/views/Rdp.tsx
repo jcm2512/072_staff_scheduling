@@ -30,6 +30,7 @@ import "./rdp.css";
 
 // Hooks
 import { useMediaQuery, useDisclosure } from "@mantine/hooks";
+import { zIndex } from "@/themes/zindex";
 
 // Constants
 const MONTH_HEIGHT = 360;
@@ -229,7 +230,7 @@ export default function Rdp({}: RdpProps) {
           style={{
             position: "sticky",
             top: 0,
-            zIndex: 9999,
+            zIndex: zIndex.sticky,
             borderBottom: "1px solid #eaeaea",
             backgroundImage:
               "linear-gradient(to bottom, rgb(240, 240, 240), rgba(240, 240, 240, 0.5))",
