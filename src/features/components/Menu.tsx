@@ -14,6 +14,8 @@ import { useNavigate, useLocation } from "react-router-dom";
 
 import { useLayoutEffect, useRef } from "react";
 import { useMenuContext } from "@/context/MenuContext";
+
+import { zIndex } from "@/themes/zindex";
 export default function Menu() {
   const { setMenuHeight } = useMenuContext();
 
@@ -64,7 +66,7 @@ export default function Menu() {
           bottom: 0,
           left: 0,
           right: 0,
-          zIndex: 100,
+          zIndex: zIndex.nav,
           borderTop: "1px solid #eaeaea",
           paddingTop: "0.5rem",
           backgroundImage:
@@ -74,41 +76,54 @@ export default function Menu() {
           textAlign: "center",
         }}
       >
-        <Stack style={iconStackStyle} onClick={() => navigate("/schedule")}>
+        <Stack style={iconStackStyle} onClick={() => navigate("/month")}>
           <ActionIcon
             {...{
               ...actionIconStyle,
-              color: currentPath == "/schedule" ? "primary" : "grey",
+              color: currentPath == "/month" ? "primary" : "grey",
               "aria-label": "Home",
             }}
           >
-            {currentPath == "/schedule" ? (
+            {currentPath == "/month" ? (
               <TbCalendarFilled style={iconStyle} />
             ) : (
               <TbCalendar style={iconStyle} />
             )}
           </ActionIcon>
-          <Text style={{ ...iconTextStyle }}>Schedule</Text>
+          <Text style={{ ...iconTextStyle }}>Month</Text>
         </Stack>
-
-        <Stack
-          style={iconStackStyle}
-          onClick={() => navigate("/notifications")}
-        >
+        <Stack style={iconStackStyle} onClick={() => navigate("/day")}>
           <ActionIcon
             {...{
               ...actionIconStyle,
-              color: currentPath == "/notifications" ? "primary" : "grey",
-              "aria-label": "Notifications",
+              color: currentPath == "/day" ? "primary" : "grey",
+              "aria-label": "Home",
             }}
           >
-            {currentPath == "/notifications" ? (
+            {currentPath == "/day" ? (
+              <TbCalendarFilled style={iconStyle} />
+            ) : (
+              <TbCalendar style={iconStyle} />
+            )}
+          </ActionIcon>
+          <Text style={{ ...iconTextStyle }}>Day</Text>
+        </Stack>
+
+        <Stack style={iconStackStyle} onClick={() => navigate("/inbox")}>
+          <ActionIcon
+            {...{
+              ...actionIconStyle,
+              color: currentPath == "/inbox" ? "primary" : "grey",
+              "aria-label": "Inbox",
+            }}
+          >
+            {currentPath == "/inbox" ? (
               <TbLayoutListFilled style={iconStyle} />
             ) : (
               <TbLayoutList style={iconStyle} />
             )}
           </ActionIcon>
-          <Text style={{ ...iconTextStyle }}>Notifications</Text>
+          <Text style={{ ...iconTextStyle }}>Inbox</Text>
         </Stack>
         <Stack style={iconStackStyle} onClick={() => navigate("/settings")}>
           <ActionIcon

@@ -3,6 +3,7 @@ import { Stack, Text, Title, Group, Box, Burger } from "@mantine/core";
 import { useLayoutEffect, useRef } from "react";
 
 import { useHeaderContext } from "@/context/HeaderContext";
+import { zIndex } from "@/themes/zindex";
 
 type VirtualizedProps = {
   PADDING: any;
@@ -46,11 +47,11 @@ export default function Header({
     <Stack
       ref={ref}
       style={{
-        position: headerType == "calendar" ? "fixed" : "relative",
+        position: "fixed",
         top: 0,
         left: 0,
         right: 0,
-        zIndex: 9999,
+        zIndex: zIndex.sticky,
         borderBottom: "1px solid #eaeaea",
         backgroundImage:
           "linear-gradient(to bottom, rgb(255, 255, 255), rgba(240, 240, 240, 0.4))",
@@ -95,13 +96,15 @@ export default function Header({
         </Group>
         {/* ------------------ */}
       </Group>
-      <Group grow gap={0}>
-        {DaysOfWeek.map((day, index) => (
-          <Text size="xs" key={index} style={{ paddingLeft: PADDING }}>
-            {day}
-          </Text>
-        ))}
-      </Group>
+      {headerType === "calendar" && (
+        <Group grow gap={0}>
+          {DaysOfWeek.map((day, index) => (
+            <Text size="xs" key={index} style={{ paddingLeft: PADDING }}>
+              {day}
+            </Text>
+          ))}
+        </Group>
+      )}
     </Stack>
   );
 }

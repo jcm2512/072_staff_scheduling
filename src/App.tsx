@@ -37,6 +37,7 @@ import { HeaderProvider } from "@/context/HeaderContext";
 import { MenuProvider } from "@/context/MenuContext";
 import { SelectedDayProvider } from "@/context/SelectedDayContext";
 import { ScheduleProvider } from "@/context/ScheduleContext";
+import { UserPrefsProvider } from "@/context/UserPrefsContext";
 
 export function App() {
   const [currentMonthLabel, setCurrentMonthLabel] = useState("");
@@ -69,51 +70,57 @@ export function App() {
   }
 
   return (
-    <HeaderProvider>
-      <MenuProvider>
-        <Header
-          {...{
-            PADDING: "0.3rem",
-            isMobile: false,
-            logo,
-            CONTEXTUAL_TITLE: currentMonthLabel,
-          }}
-        />
-        <Notifications position="top-left" zIndex={1984} />
-        <Routes>
-          {user ? (
-            <>
-              <Route
-                path="/schedule"
-                element={
-                  <>
-                    <ScheduleProvider>
-                      <SelectedDayProvider>
-                        <CalendarView
-                          currentMonthLabel={currentMonthLabel}
-                          setCurrentMonthLabel={setCurrentMonthLabel}
-                        />
-                      </SelectedDayProvider>
-                    </ScheduleProvider>
-                  </>
-                }
-              />
-              <Route
-                path="/notifications"
-                element={<BlankView title="Notifications"></BlankView>}
-              ></Route>
-              <Route
-                path="/settings"
-                element={<BlankView title="Settings"></BlankView>}
-              ></Route>
-              <Route path="*" element={<Navigate to="/schedule" />} />
-            </>
-          ) : (
-            <Route path="*" element={<AuthenticationForm />} />
-          )}
-        </Routes>
-        <Menu></Menu>
-      </MenuProvider>
-    </HeaderProvider>
+    <UserPrefsProvider>
+      <HeaderProvider>
+        <MenuProvider>
+          <Header
+            {...{
+              PADDING: "0.3rem",
+              isMobile: false,
+              logo,
+              CONTEXTUAL_TITLE: currentMonthLabel,
+            }}
+          />
+          <Notifications position="top-left" zIndex={1984} />
+          <Routes>
+            {user ? (
+              <>
+                <Route
+                  path="/month"
+                  element={
+                    <>
+                      <ScheduleProvider>
+                        <SelectedDayProvider>
+                          <CalendarView
+                            currentMonthLabel={currentMonthLabel}
+                            setCurrentMonthLabel={setCurrentMonthLabel}
+                          />
+                        </SelectedDayProvider>
+                      </ScheduleProvider>
+                    </>
+                  }
+                />
+                <Route
+                  path="/inbox"
+                  element={<BlankView title="Inbox"></BlankView>}
+                ></Route>
+                <Route
+                  path="/settings"
+                  element={<BlankView title="Settings"></BlankView>}
+                ></Route>
+                <Route
+                  path="/day"
+                  element={<BlankView title="Day Schedule"></BlankView>}
+                ></Route>
+                <Route path="*" element={<Navigate to="/month" />} />
+              </>
+            ) : (
+              <Route path="*" element={<AuthenticationForm />} />
+            )}
+          </Routes>
+          <Menu></Menu>
+        </MenuProvider>
+      </HeaderProvider>
+    </UserPrefsProvider>
   );
 }

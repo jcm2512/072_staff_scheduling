@@ -2,11 +2,17 @@ import { useHeaderContext } from "@/context/HeaderContext";
 import { Stack, Text } from "@mantine/core";
 import { useEffect } from "react";
 
-export function BlankView({ title }: { title: string }) {
+import { HeaderType } from "@/context/HeaderContext";
+
+type blackViewType = {
+  title: string;
+  headerType?: HeaderType;
+};
+export function BlankView({ title, headerType = "basic" }: blackViewType) {
   const { setHeaderType } = useHeaderContext();
 
   useEffect(() => {
-    setHeaderType("calendar");
+    setHeaderType(headerType);
   }, []);
   return (
     <Stack

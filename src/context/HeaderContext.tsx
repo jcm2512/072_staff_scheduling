@@ -2,7 +2,7 @@ import { em } from "@mantine/core";
 import { useMediaQuery } from "@mantine/hooks";
 import { createContext, useContext, useState } from "react";
 
-type HeaderType = "calendar" | "login" | "none"; // Add your types
+export type HeaderType = "calendar" | "basic" | "none"; // Add your types
 
 type HeaderContextType = {
   headerHeight: number;
