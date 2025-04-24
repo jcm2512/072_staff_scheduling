@@ -90,7 +90,7 @@ export default function CalendarView({
 
   const { headerHeight, setHeaderType } = useHeaderContext();
   const { menuHeight } = useMenuContext();
-  const { schedule, setSchedule } = useScheduleContext();
+  const { schedule } = useScheduleContext();
   const todayOffset = useMemo(() => getTodayOffset(), []);
   const listRef = useRef<List | null>(null);
   const initialScrollRow = useRef<number>(todayOffset);

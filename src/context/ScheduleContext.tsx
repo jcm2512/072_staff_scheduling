@@ -28,7 +28,7 @@ export const ScheduleProvider = ({
 }) => {
   // Hooks
   const [schedule, setSchedule] = useState<Record<string, DaySchedule>>({});
-  const [fetchedSchedule, setFetchedSchedule] = useState(false);
+  const [_fetchedSchedule, setFetchedSchedule] = useState(false);
   const { employeeId } = useEmployeeId();
 
   useEffect(() => {
@@ -48,13 +48,44 @@ export const ScheduleProvider = ({
 
       snapshot.forEach((docSnapshot) => {
         if (docSnapshot.exists()) {
+          const docId = docSnapshot.id;
           const data = docSnapshot.data();
-          const days = data?.days ?? {};
 
-          mergedDays = {
-            ...mergedDays,
-            ...days,
-          };
+          if (!data || !data.days || !data.lastUpdated) return;
+
+          const remoteUpdated = data.lastUpdated.toDate();
+          const localUpdatedStr = localStorage.getItem(
+            `schedule-updated-${docId}`
+          );
+          const cachedUpdated = localUpdatedStr
+            ? new Date(localUpdatedStr)
+            : new Date(0);
+
+          if (remoteUpdated > cachedUpdated) {
+            // Firestore is newer
+            localStorage.setItem(
+              `schedule-${docId}`,
+              JSON.stringify(data.days)
+            );
+            localStorage.setItem(
+              `schedule-updated-${docId}`,
+              remoteUpdated.toISOString()
+            );
+
+            mergedDays = {
+              ...mergedDays,
+              ...data.days,
+            };
+          } else {
+            // Use cache
+            const cached = localStorage.getItem(`schedule-${docId}`);
+            if (cached) {
+              mergedDays = {
+                ...mergedDays,
+                ...JSON.parse(cached),
+              };
+            }
+          }
         }
       });
 
