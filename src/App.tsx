@@ -73,52 +73,52 @@ export function App() {
     <UserPrefsProvider>
       <HeaderProvider>
         <MenuProvider>
-          <Header
-            {...{
-              PADDING: "0.3rem",
-              isMobile: false,
-              logo,
-              CONTEXTUAL_TITLE: currentMonthLabel,
-            }}
-          />
-          <Notifications position="top-left" zIndex={1984} />
-          <Routes>
-            {user ? (
-              <>
-                <Route
-                  path="/month"
-                  element={
-                    <>
-                      <ScheduleProvider>
+          <ScheduleProvider>
+            <Header
+              {...{
+                PADDING: "0.3rem",
+                isMobile: false,
+                logo,
+                CONTEXTUAL_TITLE: currentMonthLabel,
+              }}
+            />
+            <Notifications position="top-left" zIndex={1984} />
+            <Routes>
+              {user ? (
+                <>
+                  <Route
+                    path="/month"
+                    element={
+                      <>
                         <SelectedDayProvider>
                           <CalendarView
                             currentMonthLabel={currentMonthLabel}
                             setCurrentMonthLabel={setCurrentMonthLabel}
                           />
                         </SelectedDayProvider>
-                      </ScheduleProvider>
-                    </>
-                  }
-                />
-                <Route
-                  path="/inbox"
-                  element={<BlankView title="Inbox"></BlankView>}
-                ></Route>
-                <Route
-                  path="/settings"
-                  element={<BlankView title="Settings"></BlankView>}
-                ></Route>
-                <Route
-                  path="/day"
-                  element={<BlankView title="Day Schedule"></BlankView>}
-                ></Route>
-                <Route path="*" element={<Navigate to="/month" />} />
-              </>
-            ) : (
-              <Route path="*" element={<AuthenticationForm />} />
-            )}
-          </Routes>
-          <Menu></Menu>
+                      </>
+                    }
+                  />
+                  <Route
+                    path="/inbox"
+                    element={<BlankView title="Inbox"></BlankView>}
+                  ></Route>
+                  <Route
+                    path="/settings"
+                    element={<BlankView title="Settings"></BlankView>}
+                  ></Route>
+                  <Route
+                    path="/day"
+                    element={<BlankView title="Day Schedule"></BlankView>}
+                  ></Route>
+                  <Route path="*" element={<Navigate to="/month" />} />
+                </>
+              ) : (
+                <Route path="*" element={<AuthenticationForm />} />
+              )}
+            </Routes>
+            <Menu></Menu>
+          </ScheduleProvider>
         </MenuProvider>
       </HeaderProvider>
     </UserPrefsProvider>
