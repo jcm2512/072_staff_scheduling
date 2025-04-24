@@ -26,7 +26,14 @@ import { useEmployeeId } from "@/hooks/useEmployeeId";
 import CustomDayPicker from "@/features/components/CustomDayPicker";
 
 // Database
-import { collection, onSnapshot } from "firebase/firestore";
+import {
+  collection,
+  doc,
+  getDocs,
+  onSnapshot,
+  serverTimestamp,
+  updateDoc,
+} from "firebase/firestore";
 import { db } from "@/firebaseConfig";
 
 import { Drawer, Text, Switch } from "@mantine/core";
@@ -225,7 +232,7 @@ export default function CalendarView({
       snapshot.forEach((docSnapshot: any) => {
         if (docSnapshot.exists()) {
           const data = docSnapshot.data();
-          const days = data ?? {};
+          const days = data?.days ?? {};
 
           mergedDays = {
             ...mergedDays,
