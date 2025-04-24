@@ -10,6 +10,19 @@ import {
   TbLayoutListFilled,
 } from "react-icons/tb";
 
+import {
+  IoCalendar,
+  IoCalendarOutline,
+  IoChatbox,
+  IoChatboxOutline,
+  IoListCircle,
+  IoListCircleOutline,
+  IoSettings,
+  IoSettingsOutline,
+  IoToday,
+  IoTodayOutline,
+} from "react-icons/io5";
+
 import { useNavigate, useLocation } from "react-router-dom";
 
 import { useLayoutEffect, useRef } from "react";
@@ -85,9 +98,9 @@ export default function Menu() {
             }}
           >
             {currentPath == "/month" ? (
-              <TbCalendarFilled style={iconStyle} />
+              <IoCalendar style={iconStyle} />
             ) : (
-              <TbCalendar style={iconStyle} />
+              <IoCalendarOutline style={iconStyle} />
             )}
           </ActionIcon>
           <Text style={{ ...iconTextStyle }}>Month</Text>
@@ -101,9 +114,9 @@ export default function Menu() {
             }}
           >
             {currentPath == "/day" ? (
-              <TbCalendarFilled style={iconStyle} />
+              <IoToday style={iconStyle} />
             ) : (
-              <TbCalendar style={iconStyle} />
+              <IoTodayOutline style={iconStyle} />
             )}
           </ActionIcon>
           <Text style={{ ...iconTextStyle }}>Day</Text>
@@ -118,9 +131,9 @@ export default function Menu() {
             }}
           >
             {currentPath == "/inbox" ? (
-              <TbLayoutListFilled style={iconStyle} />
+              <IoChatbox style={iconStyle} />
             ) : (
-              <TbLayoutList style={iconStyle} />
+              <IoChatboxOutline style={iconStyle} />
             )}
           </ActionIcon>
           <Text style={{ ...iconTextStyle }}>Inbox</Text>
@@ -134,9 +147,9 @@ export default function Menu() {
             }}
           >
             {currentPath == "/settings" ? (
-              <TbSettingsFilled style={iconStyle} />
+              <IoSettings style={iconStyle} />
             ) : (
-              <TbSettings style={iconStyle} />
+              <IoSettingsOutline style={iconStyle} />
             )}
           </ActionIcon>
           <Text
