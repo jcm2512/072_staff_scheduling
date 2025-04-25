@@ -32,6 +32,8 @@ import Menu from "@/features/components/Menu";
 // import { NotifyButton } from "@/components/notifyButton";
 import CalendarView from "@/features/views/CalendarView";
 import { BlankView } from "@/features/views/BlankView";
+import { DayView } from "@/features/views/DayView";
+
 // Context
 import { HeaderProvider } from "@/context/HeaderContext";
 import { MenuProvider } from "@/context/MenuContext";
@@ -74,50 +76,47 @@ export function App() {
       <HeaderProvider>
         <MenuProvider>
           <ScheduleProvider>
-            <Header
-              {...{
-                PADDING: "0.3rem",
-                isMobile: false,
-                logo,
-                CONTEXTUAL_TITLE: currentMonthLabel,
-              }}
-            />
-            <Notifications position="top-left" zIndex={1984} />
-            <Routes>
-              {user ? (
-                <>
-                  <Route
-                    path="/month"
-                    element={
-                      <>
-                        <SelectedDayProvider>
+            <SelectedDayProvider>
+              <Header
+                {...{
+                  PADDING: "0.3rem",
+                  isMobile: false,
+                  logo,
+                  CONTEXTUAL_TITLE: currentMonthLabel,
+                }}
+              />
+              <Notifications position="top-left" zIndex={1984} />
+              <Routes>
+                {user ? (
+                  <>
+                    <Route
+                      path="/month"
+                      element={
+                        <>
                           <CalendarView
                             currentMonthLabel={currentMonthLabel}
                             setCurrentMonthLabel={setCurrentMonthLabel}
                           />
-                        </SelectedDayProvider>
-                      </>
-                    }
-                  />
-                  <Route
-                    path="/inbox"
-                    element={<BlankView title="Inbox"></BlankView>}
-                  ></Route>
-                  <Route
-                    path="/settings"
-                    element={<BlankView title="Settings"></BlankView>}
-                  ></Route>
-                  <Route
-                    path="/day"
-                    element={<BlankView title="Day Schedule"></BlankView>}
-                  ></Route>
-                  <Route path="*" element={<Navigate to="/month" />} />
-                </>
-              ) : (
-                <Route path="*" element={<AuthenticationForm />} />
-              )}
-            </Routes>
-            <Menu></Menu>
+                        </>
+                      }
+                    />
+                    <Route
+                      path="/inbox"
+                      element={<BlankView title="Inbox"></BlankView>}
+                    ></Route>
+                    <Route
+                      path="/settings"
+                      element={<BlankView title="Settings"></BlankView>}
+                    ></Route>
+                    <Route path="/day" element={<DayView></DayView>}></Route>
+                    <Route path="*" element={<Navigate to="/month" />} />
+                  </>
+                ) : (
+                  <Route path="*" element={<AuthenticationForm />} />
+                )}
+              </Routes>
+              <Menu></Menu>
+            </SelectedDayProvider>
           </ScheduleProvider>
         </MenuProvider>
       </HeaderProvider>

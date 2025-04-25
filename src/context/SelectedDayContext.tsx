@@ -1,4 +1,4 @@
-import { createContext, useContext, useState } from "react";
+import { createContext, useContext, useEffect, useState } from "react";
 
 type SelectedDayContextType = {
   selectedDay: Date | undefined;
@@ -15,7 +15,13 @@ export const SelectedDayProvider = ({
   children: React.ReactNode;
 }) => {
   // Hooks
-  const [selectedDay, setSelectedDay] = useState<Date | undefined>();
+  const [selectedDay, _setSelectedDay] = useState<Date | undefined>();
+
+  const setSelectedDay = (val: Date | undefined) => {
+    console.log("🔍 setSelectedDay called with:", val?.toISOString());
+    console.trace("setSelectedDay was triggered by:");
+    _setSelectedDay(val);
+  };
 
   return (
     <SelectedDayContext.Provider

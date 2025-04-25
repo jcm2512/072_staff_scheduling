@@ -84,7 +84,7 @@ export default function CalendarView({
   // Hooks
   const navigate = useNavigate();
 
-  const { selectedDay } = useSelectedDayContext();
+  const { setSelectedDay, selectedDay } = useSelectedDayContext();
   const [opened, { open, close }] = useDisclosure(false);
   const { newDaySchedule, setNewDaySchedule } = useUserPrefsContext();
 
@@ -113,7 +113,7 @@ export default function CalendarView({
     setHeaderType(headerType);
   }, []);
 
-  // Open drawer when selectedDay is set (not undefined)
+  // reset selectedDay when loading page
   useEffect(() => {
     if (!selectedDay) return;
     if (newDaySchedule) {

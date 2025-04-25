@@ -27,10 +27,12 @@ import { useNavigate, useLocation } from "react-router-dom";
 
 import { useLayoutEffect, useRef } from "react";
 import { useMenuContext } from "@/context/MenuContext";
+import { useSelectedDayContext } from "@/context/SelectedDayContext";
 
 import { zIndex } from "@/themes/zindex";
 export default function Menu() {
   const { setMenuHeight } = useMenuContext();
+  const { selectedDay, setSelectedDay } = useSelectedDayContext();
 
   const navigate = useNavigate();
   const location = useLocation();
@@ -89,7 +91,13 @@ export default function Menu() {
           textAlign: "center",
         }}
       >
-        <Stack style={iconStackStyle} onClick={() => navigate("/month")}>
+        <Stack
+          style={iconStackStyle}
+          onClick={() => {
+            setSelectedDay(undefined); // ✅ Clear it BEFORE navigation
+            navigate("/month");
+          }}
+        >
           <ActionIcon
             {...{
               ...actionIconStyle,
@@ -105,7 +113,13 @@ export default function Menu() {
           </ActionIcon>
           <Text style={{ ...iconTextStyle }}>Month</Text>
         </Stack>
-        <Stack style={iconStackStyle} onClick={() => navigate("/day")}>
+        <Stack
+          style={iconStackStyle}
+          onClick={() => {
+            setSelectedDay(new Date());
+            navigate("/day");
+          }}
+        >
           <ActionIcon
             {...{
               ...actionIconStyle,
