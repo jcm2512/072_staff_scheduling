@@ -14,9 +14,13 @@ type DayViewType = {
 };
 
 const theme = createTheme("google", {
+  hourHeight: "4rem",
   style: {
     dayLabels: {
       display: "none",
+    },
+    eventTiles: {
+      fontSize: "0.8rem",
     },
   },
 });
@@ -61,7 +65,7 @@ const resolveClassData = async (
       events.push({
         startTime: cls.start,
         endTime: cls.end,
-        title: cls.class ?? cls.code ?? "Class",
+        title: `${schoolId} ${cls.class ?? ""}`,
         color,
       });
     });
@@ -152,7 +156,7 @@ export function DayView({ headerType = "basic" }: DayViewType) {
       <ScheduleView
         theme={theme}
         daySchedules={data.length > 0 ? data : [{ name: "", events: [] }]}
-        viewStartTime={7}
+        viewStartTime={8}
         viewEndTime={24}
       />
     </Stack>
