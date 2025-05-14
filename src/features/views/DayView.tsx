@@ -29,20 +29,55 @@ const resolveClassData = async (
   events: any[]
 ) => {
   const ref = doc(db, "companies", "companyId02", "schools", schoolId);
-  const snap = await getDoc(ref);
-  if (!snap.exists()) return;
 
-  const shiftData = snap.data()?.[shiftType];
-  if (!shiftData || !Array.isArray(shiftData.classes)) return;
+  try {
+    const snap = await getDoc(ref);
 
-  shiftData.classes.forEach((cls: any) => {
+    if (!snap.exists()) {
+      // School doc missing → fallback to default block
+      events.push({
+        startTime: shiftType === "S" ? 10 : 14,
+        endTime: shiftType === "S" ? 12 : 17,
+        title: schoolId,
+        color,
+      });
+      return;
+    }
+
+    const shiftData = snap.data()?.[shiftType];
+    if (!shiftData || !Array.isArray(shiftData.classes)) {
+      // Shift data missing or malformed → fallback block
+      events.push({
+        startTime: shiftType === "S" ? 10 : 14,
+        endTime: shiftType === "S" ? 12 : 17,
+        title: schoolId,
+        color,
+      });
+      return;
+    }
+
+    // ✅ Valid data — use it
+    shiftData.classes.forEach((cls: any) => {
+      events.push({
+        startTime: cls.start,
+        endTime: cls.end,
+        title: cls.class ?? cls.code ?? "Class",
+        color,
+      });
+    });
+  } catch (err) {
+    console.error(
+      `Error loading school data for ${schoolId} (${shiftType})`,
+      err
+    );
+    // Last-resort fallback for network/security errors
     events.push({
-      startTime: cls.start,
-      endTime: cls.end,
-      title: cls.class ?? cls.code ?? "Class",
+      startTime: shiftType === "S" ? 10 : 14,
+      endTime: shiftType === "S" ? 12 : 17,
+      title: `${schoolId} (load error)`,
       color,
     });
-  });
+  }
 };
 
 export function DayView({ headerType = "basic" }: DayViewType) {
