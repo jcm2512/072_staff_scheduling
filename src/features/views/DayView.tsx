@@ -21,6 +21,30 @@ const theme = createTheme("google", {
   },
 });
 
+// 🔧 Helper: Fetch class data for either Seika or Kagai
+const resolveClassData = async (
+  schoolId: string,
+  shiftType: "S" | "K",
+  color: string,
+  events: any[]
+) => {
+  const ref = doc(db, "companies", "companyId02", "schools", schoolId);
+  const snap = await getDoc(ref);
+  if (!snap.exists()) return;
+
+  const shiftData = snap.data()?.[shiftType];
+  if (!shiftData || !Array.isArray(shiftData.classes)) return;
+
+  shiftData.classes.forEach((cls: any) => {
+    events.push({
+      startTime: cls.start,
+      endTime: cls.end,
+      title: cls.class ?? cls.code ?? "Class",
+      color,
+    });
+  });
+};
+
 export function DayView({ headerType = "basic" }: DayViewType) {
   const { selectedDay } = useSelectedDayContext();
   const { setHeaderType } = useHeaderContext();
@@ -49,46 +73,32 @@ export function DayView({ headerType = "basic" }: DayViewType) {
       );
       const snapshot = await getDoc(ref);
 
-      if (snapshot.exists()) {
-        const docData = snapshot.data();
-        const dayData = docData.days?.[dateStr];
+      if (!snapshot.exists()) return;
 
-        if (dayData) {
-          const events = [];
+      const docData = snapshot.data();
+      const dayData = docData.days?.[dateStr];
 
-          if (typeof dayData.am === "string" && dayData.am.trim()) {
-            events.push({
-              startTime: 10,
-              endTime: 12,
-              title: dayData.am,
-              color: "#4ECDC4",
-            });
-          }
-
-          if (typeof dayData.pm === "string" && dayData.pm.trim()) {
-            events.push({
-              startTime: 14,
-              endTime: 18,
-              title: dayData.pm,
-              color: "#C4F5FC",
-            });
-          }
-
-          setData([
-            {
-              name: selectedDay.toDateString(),
-              events: events.length > 0 ? events : [],
-            },
-          ]);
-        } else {
-          setData([
-            {
-              name: selectedDay.toDateString(),
-              events: [],
-            },
-          ]);
-        }
+      if (!dayData) {
+        setData([{ name: selectedDay.toDateString(), events: [] }]);
+        return;
       }
+
+      const events: any[] = [];
+
+      if (typeof dayData.am === "string" && dayData.am.trim()) {
+        await resolveClassData(dayData.am, "S", "#4ECDC4", events); // AM = Seika
+      }
+
+      if (typeof dayData.pm === "string" && dayData.pm.trim()) {
+        await resolveClassData(dayData.pm, "K", "#C4F5FC", events); // PM = Kagai
+      }
+
+      setData([
+        {
+          name: selectedDay.toDateString(),
+          events: events.length > 0 ? events : [],
+        },
+      ]);
     };
 
     fetchDaySchedule();
