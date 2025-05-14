@@ -14,7 +14,7 @@ type DayViewType = {
 };
 
 const theme = createTheme("google", {
-  hourHeight: "4rem",
+  hourHeight: "6rem",
   style: {
     dayLabels: {
       display: "none",
