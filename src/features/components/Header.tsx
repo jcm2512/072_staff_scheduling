@@ -1,4 +1,6 @@
 // Header.tsx
+import logo from "@/assets/shiftori_logo.png";
+
 import { Stack, Text, Title, Group, Box, Burger } from "@mantine/core";
 import { useLayoutEffect, useRef } from "react";
 
@@ -6,24 +8,21 @@ import { useHeaderContext } from "@/context/HeaderContext";
 import { zIndex } from "@/themes/zindex";
 
 type VirtualizedProps = {
-  PADDING: any;
-  logo: string;
+  PADDING?: any;
   TITLE_1?: string;
   TITLE_2?: string;
-  CONTEXTUAL_TITLE?: string;
 };
 
 const DaysOfWeek = ["S", "M", "T", "W", "Th", "F", "S"];
 
 export default function Header({
-  PADDING,
-  logo,
+  PADDING = "0.3rem",
   TITLE_1 = "シフトリ",
   TITLE_2 = "SHIFTORI",
-  CONTEXTUAL_TITLE = "Title",
 }: VirtualizedProps) {
   // Hooks
-  const { setHeaderHeight, headerType, isMobile } = useHeaderContext();
+  const { setHeaderHeight, headerType, isMobile, contextualHeaderTitle } =
+    useHeaderContext();
   const ref = useRef<HTMLDivElement | null>(null);
 
   // Side Effects
@@ -85,7 +84,7 @@ export default function Header({
             justifyContent: "center",
           }}
         >
-          {CONTEXTUAL_TITLE}
+          {contextualHeaderTitle}
         </Box>
         {/* --------------*/}
 

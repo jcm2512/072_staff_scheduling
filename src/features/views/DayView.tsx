@@ -86,12 +86,19 @@ const resolveClassData = async (
 
 export function DayView({ headerType = "basic" }: DayViewType) {
   const { selectedDay } = useSelectedDayContext();
-  const { setHeaderType } = useHeaderContext();
+  const { setHeaderType, setContextualHeaderTitle } = useHeaderContext();
   const { menuHeight } = useMenuContext();
   const [data, setData] = useState<any[]>([]);
 
   useEffect(() => {
     setHeaderType(headerType);
+    setContextualHeaderTitle(
+      (selectedDay ?? new Date()).toLocaleString("en", {
+        weekday: "short",
+        month: "short",
+        day: "numeric",
+      })
+    );
   }, []);
 
   useEffect(() => {

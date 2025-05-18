@@ -10,6 +10,8 @@ type HeaderContextType = {
   headerType: HeaderType;
   setHeaderType: (val: HeaderType) => void;
   isMobile: boolean;
+  contextualHeaderTitle: string;
+  setContextualHeaderTitle: (val: string) => void;
 };
 
 const HeaderContext = createContext<HeaderContextType | undefined>(undefined);
@@ -18,6 +20,8 @@ export const HeaderProvider = ({ children }: { children: React.ReactNode }) => {
   // Hooks
   const [headerHeight, setHeaderHeight] = useState<number>(60);
   const [headerType, setHeaderType] = useState<HeaderType>("none");
+  const [contextualHeaderTitle, setContextualHeaderTitle] =
+    useState<string>("");
   const isMobile = useMediaQuery(`(max-width: ${em(768)})`) ?? false;
 
   return (
@@ -28,6 +32,8 @@ export const HeaderProvider = ({ children }: { children: React.ReactNode }) => {
         headerType,
         setHeaderType,
         isMobile,
+        contextualHeaderTitle,
+        setContextualHeaderTitle,
       }}
     >
       {children}

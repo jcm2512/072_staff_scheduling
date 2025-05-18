@@ -1,6 +1,4 @@
 // App.tsx
-import logo from "@/assets/shiftori_logo.png";
-
 // Import styles of installed packages
 import "@mantine/core/styles.css";
 import "@mantine/dates/styles.css";
@@ -43,7 +41,6 @@ import { UserPrefsProvider } from "@/context/UserPrefsContext";
 import { SessionProvider } from "@/context/SessionContext";
 
 export function App() {
-  const [currentMonthLabel, setCurrentMonthLabel] = useState("");
   const { user, loading } = useAuth();
   // const theme = useMantineTheme();
 
@@ -79,14 +76,7 @@ export function App() {
           <MenuProvider>
             <ScheduleProvider>
               <SelectedDayProvider>
-                <Header
-                  {...{
-                    PADDING: "0.3rem",
-                    isMobile: false,
-                    logo,
-                    CONTEXTUAL_TITLE: currentMonthLabel,
-                  }}
-                />
+                <Header />
                 <Notifications position="top-left" zIndex={1984} />
                 <Routes>
                   {user ? (
@@ -95,10 +85,7 @@ export function App() {
                         path="/month"
                         element={
                           <>
-                            <CalendarView
-                              currentMonthLabel={currentMonthLabel}
-                              setCurrentMonthLabel={setCurrentMonthLabel}
-                            />
+                            <CalendarView />
                           </>
                         }
                       />

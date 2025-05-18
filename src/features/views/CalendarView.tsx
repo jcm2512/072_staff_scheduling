@@ -29,7 +29,6 @@ import { useSelectedDayContext } from "@/context/SelectedDayContext";
 
 type CalendarViewProps = {
   currentMonthLabel?: string;
-  setCurrentMonthLabel: (label: string) => void;
   headerType?: HeaderType;
 };
 
@@ -72,13 +71,13 @@ const remToPx = (rem: number): number => {
 const DAY_CELL_HEIGHT_PX = remToPx(DAY_CELL_HEIGHT_REM);
 
 export default function CalendarView({
-  setCurrentMonthLabel,
   headerType = "calendar",
 }: CalendarViewProps) {
   // Hooks
   const { selectedDay } = useSelectedDayContext();
 
-  const { headerHeight, setHeaderType } = useHeaderContext();
+  const { headerHeight, setHeaderType, setContextualHeaderTitle } =
+    useHeaderContext();
   const { menuHeight } = useMenuContext();
   const { schedule } = useScheduleContext();
   const todayOffset = useMemo(() => getDateOffset(selectedDay), [selectedDay]);
@@ -118,7 +117,7 @@ export default function CalendarView({
           lastVisibleIndex.current = i;
           const visibleMonth = getMonthFromOffset(i);
 
-          setCurrentMonthLabel(
+          setContextualHeaderTitle(
             visibleMonth.toLocaleString("en", {
               month: "long",
               year: "numeric",
