@@ -28,7 +28,6 @@ import { useHeaderContext, HeaderType } from "@/context/HeaderContext";
 import { useMenuContext } from "@/context/MenuContext";
 import { useScheduleContext } from "@/context/ScheduleContext";
 import { useSelectedDayContext } from "@/context/SelectedDayContext";
-import { useUserPrefsContext } from "@/context/UserPrefsContext";
 
 //  Theme / Config
 // import { zIndex } from "@/themes/zindex";
@@ -86,7 +85,6 @@ export default function CalendarView({
 
   const { selectedDay } = useSelectedDayContext();
   const [opened, { open, close }] = useDisclosure(false);
-  // const { newDaySchedule } = useUserPrefsContext();
 
   const { headerHeight, setHeaderType } = useHeaderContext();
   const { menuHeight } = useMenuContext();
