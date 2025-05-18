@@ -21,7 +21,7 @@ import CustomDayPicker from "@/features/components/CustomDayPicker";
 import { useHeaderContext, HeaderType } from "@/context/HeaderContext";
 import { useMenuContext } from "@/context/MenuContext";
 import { useScheduleContext } from "@/context/ScheduleContext";
-import { useSessionContext } from "@/context/SessionContext";
+// import { useSessionContext } from "@/context/SessionContext";
 import { useSelectedDayContext } from "@/context/SelectedDayContext";
 
 //  Theme / Config
@@ -76,7 +76,6 @@ export default function CalendarView({
   headerType = "calendar",
 }: CalendarViewProps) {
   // Hooks
-  // const { calendarScrollIndex } = useSessionContext();
   const { selectedDay } = useSelectedDayContext();
 
   const { headerHeight, setHeaderType } = useHeaderContext();
@@ -101,6 +100,7 @@ export default function CalendarView({
 
   // Side Effects
   useEffect(() => {
+    console.log(selectedDay);
     setHeaderType(headerType);
   }, []);
 
