@@ -16,12 +16,10 @@ import { useNavigate } from "react-router-dom";
 import "react-day-picker/dist/style.css";
 
 // UI Components
-import { Drawer, Text } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 
 // App Components
 import CustomDayPicker from "@/features/components/CustomDayPicker";
-import DayDrawerComponent from "@/features/components/DayDrawerComponent";
 
 // Contexts
 import { useHeaderContext, HeaderType } from "@/context/HeaderContext";
@@ -84,7 +82,6 @@ export default function CalendarView({
   const navigate = useNavigate();
 
   const { selectedDay } = useSelectedDayContext();
-  const [opened, { open, close }] = useDisclosure(false);
 
   const { headerHeight, setHeaderType } = useHeaderContext();
   const { menuHeight } = useMenuContext();
@@ -115,7 +112,7 @@ export default function CalendarView({
   useEffect(() => {
     if (!selectedDay) return;
     navigate("/day");
-  }, [selectedDay, open, navigate]);
+  }, [selectedDay, navigate]);
 
   const handleScroll = ({ scrollTop }: { scrollTop: number }) => {
     let y = 0;
@@ -180,39 +177,6 @@ export default function CalendarView({
 
   return (
     <>
-      <Drawer
-        position="bottom"
-        size={"90%"}
-        zIndex={10000}
-        opened={opened}
-        onClose={close}
-        title={
-          <Text style={{ fontWeight: 700 }}>
-            {selectedDay?.toLocaleDateString("en-US", {
-              weekday: "long",
-              month: "long",
-              day: "numeric",
-            })}
-          </Text>
-        }
-        overlayProps={{ backgroundOpacity: 0.2, blur: 3 }}
-        styles={{
-          content: {
-            borderTopLeftRadius: "1rem",
-            borderTopRightRadius: "1rem",
-            borderBottomLeftRadius: 0,
-            borderBottomRightRadius: 0,
-          },
-          body: {
-            display: "flex",
-            flexDirection: "column",
-            gap: "1rem",
-          },
-        }}
-      >
-        <DayDrawerComponent></DayDrawerComponent>
-      </Drawer>
-
       <div
         style={{
           height: `calc(100vh - ${menuHeight}px)`,
