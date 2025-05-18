@@ -16,7 +16,7 @@ import { useNavigate } from "react-router-dom";
 import "react-day-picker/dist/style.css";
 
 // UI Components
-import { Drawer, Switch, Text } from "@mantine/core";
+import { Drawer, Text } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 
 // App Components
@@ -31,7 +31,7 @@ import { useSelectedDayContext } from "@/context/SelectedDayContext";
 import { useUserPrefsContext } from "@/context/UserPrefsContext";
 
 //  Theme / Config
-import { zIndex } from "@/themes/zindex";
+// import { zIndex } from "@/themes/zindex";
 
 type CalendarViewProps = {
   currentMonthLabel?: string;
@@ -84,9 +84,9 @@ export default function CalendarView({
   // Hooks
   const navigate = useNavigate();
 
-  const { setSelectedDay, selectedDay } = useSelectedDayContext();
+  const { selectedDay } = useSelectedDayContext();
   const [opened, { open, close }] = useDisclosure(false);
-  const { newDaySchedule, setNewDaySchedule } = useUserPrefsContext();
+  // const { newDaySchedule } = useUserPrefsContext();
 
   const { headerHeight, setHeaderType } = useHeaderContext();
   const { menuHeight } = useMenuContext();
@@ -116,12 +116,8 @@ export default function CalendarView({
   // reset selectedDay when loading page
   useEffect(() => {
     if (!selectedDay) return;
-    if (newDaySchedule) {
-      navigate("/day");
-    } else {
-      open();
-    }
-  }, [selectedDay, newDaySchedule, open, navigate]);
+    navigate("/day");
+  }, [selectedDay, open, navigate]);
 
   const handleScroll = ({ scrollTop }: { scrollTop: number }) => {
     let y = 0;
@@ -218,21 +214,7 @@ export default function CalendarView({
       >
         <DayDrawerComponent></DayDrawerComponent>
       </Drawer>
-      <Switch
-        checked={newDaySchedule}
-        onChange={(event) => setNewDaySchedule(event.currentTarget.checked)}
-        size="lg"
-        onLabel="V2"
-        offLabel="V1"
-        style={{
-          display: "block",
-          position: "absolute",
-          zIndex: zIndex.fixed,
-          top: 100,
-          left: 20,
-        }}
-        defaultChecked
-      />
+
       <div
         style={{
           height: `calc(100vh - ${menuHeight}px)`,

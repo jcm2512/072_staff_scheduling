@@ -1,8 +1,8 @@
 import { createContext, useContext, useState } from "react";
 
 type UserPrefsContextType = {
-  newDaySchedule: boolean;
-  setNewDaySchedule: (val: boolean) => void;
+  // newDaySchedule: boolean;
+  // setNewDaySchedule: (val: boolean) => void;
 };
 
 const UserPrefsContext = createContext<UserPrefsContextType | undefined>(
@@ -15,14 +15,14 @@ export const UserPrefsProvider = ({
   children: React.ReactNode;
 }) => {
   // Hooks
-  const [newDaySchedule, setNewDaySchedule] = useState<boolean>(true);
 
   return (
     <UserPrefsContext.Provider
-      value={{
-        newDaySchedule,
-        setNewDaySchedule,
-      }}
+      value={
+        {
+          // user prefs
+        }
+      }
     >
       {children}
     </UserPrefsContext.Provider>
