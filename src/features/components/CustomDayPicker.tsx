@@ -6,6 +6,7 @@ import { Stack, Text, Title } from "@mantine/core";
 import "react-day-picker/dist/style.css";
 
 import { useSelectedDayContext } from "@/context/SelectedDayContext";
+import { useNavigate } from "react-router-dom";
 
 // Constants
 const MONTH_CAPTION_HEIGHT = 36;
@@ -23,6 +24,8 @@ export default function CustomDayPicker({
   cellHeight,
   schedule,
 }: CustomDayPickerProps) {
+  const navigate = useNavigate();
+
   const { setSelectedDay } = useSelectedDayContext();
 
   return (
@@ -68,16 +71,15 @@ export default function CustomDayPicker({
 
           return (
             <Stack
-              // align="center"
               style={{
                 height: `${cellHeight}rem`,
                 width: "100%",
               }}
-              // gap={0}
             >
               <button
                 onClick={() => {
                   setSelectedDay(date);
+                  navigate("/day");
                 }}
                 style={{
                   display: "flex",

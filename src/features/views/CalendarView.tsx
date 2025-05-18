@@ -10,13 +10,9 @@ import {
   List,
   ListRowRenderer,
 } from "react-virtualized";
-import { useNavigate } from "react-router-dom";
 
 // Styles
 import "react-day-picker/dist/style.css";
-
-// UI Components
-import { useDisclosure } from "@mantine/hooks";
 
 // App Components
 import CustomDayPicker from "@/features/components/CustomDayPicker";
@@ -25,7 +21,6 @@ import CustomDayPicker from "@/features/components/CustomDayPicker";
 import { useHeaderContext, HeaderType } from "@/context/HeaderContext";
 import { useMenuContext } from "@/context/MenuContext";
 import { useScheduleContext } from "@/context/ScheduleContext";
-import { useSelectedDayContext } from "@/context/SelectedDayContext";
 
 //  Theme / Config
 // import { zIndex } from "@/themes/zindex";
@@ -79,10 +74,6 @@ export default function CalendarView({
   headerType = "calendar",
 }: CalendarViewProps) {
   // Hooks
-  const navigate = useNavigate();
-
-  const { selectedDay } = useSelectedDayContext();
-
   const { headerHeight, setHeaderType } = useHeaderContext();
   const { menuHeight } = useMenuContext();
   const { schedule } = useScheduleContext();
@@ -107,12 +98,6 @@ export default function CalendarView({
   useEffect(() => {
     setHeaderType(headerType);
   }, []);
-
-  // reset selectedDay when loading page
-  useEffect(() => {
-    if (!selectedDay) return;
-    navigate("/day");
-  }, [selectedDay, navigate]);
 
   const handleScroll = ({ scrollTop }: { scrollTop: number }) => {
     let y = 0;
