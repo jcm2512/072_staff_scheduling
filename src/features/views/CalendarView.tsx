@@ -21,6 +21,8 @@ import CustomDayPicker from "@/features/components/CustomDayPicker";
 import { useHeaderContext, HeaderType } from "@/context/HeaderContext";
 import { useMenuContext } from "@/context/MenuContext";
 import { useScheduleContext } from "@/context/ScheduleContext";
+import { useSessionContext } from "@/context/SessionContext";
+import { useSelectedDayContext } from "@/context/SelectedDayContext";
 
 //  Theme / Config
 // import { zIndex } from "@/themes/zindex";
@@ -52,8 +54,8 @@ const getMonthFromOffset = (() => {
   };
 })();
 
-const getTodayOffset = () => {
-  const today = startOfMonth(new Date());
+const getDateOffset = (baseDate: Date | undefined) => {
+  const today = startOfMonth(baseDate ?? new Date());
   const diff =
     (today.getFullYear() - START_OFFSET_DATE.getFullYear()) * 12 +
     (today.getMonth() - START_OFFSET_DATE.getMonth());
@@ -74,10 +76,13 @@ export default function CalendarView({
   headerType = "calendar",
 }: CalendarViewProps) {
   // Hooks
+  // const { calendarScrollIndex } = useSessionContext();
+  const { selectedDay } = useSelectedDayContext();
+
   const { headerHeight, setHeaderType } = useHeaderContext();
   const { menuHeight } = useMenuContext();
   const { schedule } = useScheduleContext();
-  const todayOffset = useMemo(() => getTodayOffset(), []);
+  const todayOffset = useMemo(() => getDateOffset(selectedDay), [selectedDay]);
   const listRef = useRef<List | null>(null);
   const initialScrollRow = useRef<number>(todayOffset);
   const lastVisibleIndex = useRef<number>(-1);
@@ -112,6 +117,7 @@ export default function CalendarView({
         if (lastVisibleIndex.current !== i) {
           lastVisibleIndex.current = i;
           const visibleMonth = getMonthFromOffset(i);
+
           setCurrentMonthLabel(
             visibleMonth.toLocaleString("en", {
               month: "long",

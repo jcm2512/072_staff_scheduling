@@ -40,6 +40,7 @@ import { MenuProvider } from "@/context/MenuContext";
 import { SelectedDayProvider } from "@/context/SelectedDayContext";
 import { ScheduleProvider } from "@/context/ScheduleContext";
 import { UserPrefsProvider } from "@/context/UserPrefsContext";
+import { SessionProvider } from "@/context/SessionContext";
 
 export function App() {
   const [currentMonthLabel, setCurrentMonthLabel] = useState("");
@@ -72,54 +73,56 @@ export function App() {
   }
 
   return (
-    <UserPrefsProvider>
-      <HeaderProvider>
-        <MenuProvider>
-          <ScheduleProvider>
-            <SelectedDayProvider>
-              <Header
-                {...{
-                  PADDING: "0.3rem",
-                  isMobile: false,
-                  logo,
-                  CONTEXTUAL_TITLE: currentMonthLabel,
-                }}
-              />
-              <Notifications position="top-left" zIndex={1984} />
-              <Routes>
-                {user ? (
-                  <>
-                    <Route
-                      path="/month"
-                      element={
-                        <>
-                          <CalendarView
-                            currentMonthLabel={currentMonthLabel}
-                            setCurrentMonthLabel={setCurrentMonthLabel}
-                          />
-                        </>
-                      }
-                    />
-                    <Route
-                      path="/inbox"
-                      element={<BlankView title="Inbox"></BlankView>}
-                    ></Route>
-                    <Route
-                      path="/settings"
-                      element={<BlankView title="Settings"></BlankView>}
-                    ></Route>
-                    <Route path="/day" element={<DayView></DayView>}></Route>
-                    <Route path="*" element={<Navigate to="/month" />} />
-                  </>
-                ) : (
-                  <Route path="*" element={<AuthenticationForm />} />
-                )}
-              </Routes>
-              <Menu></Menu>
-            </SelectedDayProvider>
-          </ScheduleProvider>
-        </MenuProvider>
-      </HeaderProvider>
-    </UserPrefsProvider>
+    <SessionProvider>
+      <UserPrefsProvider>
+        <HeaderProvider>
+          <MenuProvider>
+            <ScheduleProvider>
+              <SelectedDayProvider>
+                <Header
+                  {...{
+                    PADDING: "0.3rem",
+                    isMobile: false,
+                    logo,
+                    CONTEXTUAL_TITLE: currentMonthLabel,
+                  }}
+                />
+                <Notifications position="top-left" zIndex={1984} />
+                <Routes>
+                  {user ? (
+                    <>
+                      <Route
+                        path="/month"
+                        element={
+                          <>
+                            <CalendarView
+                              currentMonthLabel={currentMonthLabel}
+                              setCurrentMonthLabel={setCurrentMonthLabel}
+                            />
+                          </>
+                        }
+                      />
+                      <Route
+                        path="/inbox"
+                        element={<BlankView title="Inbox"></BlankView>}
+                      ></Route>
+                      <Route
+                        path="/settings"
+                        element={<BlankView title="Settings"></BlankView>}
+                      ></Route>
+                      <Route path="/day" element={<DayView></DayView>}></Route>
+                      <Route path="*" element={<Navigate to="/month" />} />
+                    </>
+                  ) : (
+                    <Route path="*" element={<AuthenticationForm />} />
+                  )}
+                </Routes>
+                <Menu></Menu>
+              </SelectedDayProvider>
+            </ScheduleProvider>
+          </MenuProvider>
+        </HeaderProvider>
+      </UserPrefsProvider>
+    </SessionProvider>
   );
 }
