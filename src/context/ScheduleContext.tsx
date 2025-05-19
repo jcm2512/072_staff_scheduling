@@ -34,6 +34,24 @@ export const ScheduleProvider = ({
   useEffect(() => {
     if (!employeeId) return;
 
+    const storageKey = `${employeeId}-schedule`;
+    const localCacheKey = localStorage.getItem(storageKey);
+    const localCacheDB = localCacheKey ? JSON.parse(localCacheKey) : {};
+
+    let localSchedule = {};
+    for (const key in localCacheDB) {
+      if (localCacheDB[key]?.days) {
+        localSchedule = {
+          ...localSchedule,
+          ...localCacheDB[key].days,
+        };
+      }
+    }
+
+    // Load local cache
+    setSchedule(localSchedule);
+    setFetchedSchedule(true);
+
     const scheduleCollectionRef = collection(
       db,
       "companies",
@@ -45,52 +63,47 @@ export const ScheduleProvider = ({
 
     const unsubscribe = onSnapshot(scheduleCollectionRef, (snapshot) => {
       let mergedDays: Record<string, DaySchedule> = {};
+      let updated = false;
 
       snapshot.forEach((docSnapshot) => {
         if (docSnapshot.exists()) {
           const docId = docSnapshot.id;
-          const data = docSnapshot.data();
+          // SD stands for [S]chedule [D]ata
+          const remoteDB = docSnapshot.data();
 
-          if (!data || !data.days || !data.lastUpdated) return;
+          if (!remoteDB || !remoteDB.days) return;
 
-          const remoteUpdated = data.lastUpdated.toDate();
-          const localUpdatedStr = localStorage.getItem(
-            `schedule-updated-${docId}`
-          );
-          const cachedUpdated = localUpdatedStr
-            ? new Date(localUpdatedStr)
+          const lastUpdatedRemote = remoteDB.lastUpdated
+            ? remoteDB.lastUpdated.toDate()
+            : new Date(0); // fallback if entry doesn't have a key for last update
+
+          const lastUpdatedLocal = localCacheDB[docId]?.lastUpdated
+            ? new Date(localCacheDB[docId].lastUpdated)
             : new Date(0);
 
-          if (remoteUpdated > cachedUpdated) {
-            // Firestore is newer
-            localStorage.setItem(
-              `schedule-${docId}`,
-              JSON.stringify(data.days)
-            );
-            localStorage.setItem(
-              `schedule-updated-${docId}`,
-              remoteUpdated.toISOString()
-            );
+          if (lastUpdatedRemote > lastUpdatedLocal) {
+            // Remote DB is newer
+            localCacheDB[docId] = {
+              days: remoteDB.days,
+              lastUpdated: lastUpdatedRemote.toISOString(),
+            };
 
             mergedDays = {
               ...mergedDays,
-              ...data.days,
+              ...remoteDB.days,
             };
-          } else {
-            // Use cache
-            const cached = localStorage.getItem(`schedule-${docId}`);
-            if (cached) {
-              mergedDays = {
-                ...mergedDays,
-                ...JSON.parse(cached),
-              };
-            }
+
+            updated = true;
+            console.log(`Local Cache Updated for ${docId}`);
           }
         }
       });
 
-      setSchedule(mergedDays);
-      setFetchedSchedule(true);
+      if (updated) {
+        localStorage.setItem(storageKey, JSON.stringify(localCacheDB));
+        setSchedule(mergedDays);
+        setFetchedSchedule(true);
+      }
     });
 
     return () => unsubscribe();
